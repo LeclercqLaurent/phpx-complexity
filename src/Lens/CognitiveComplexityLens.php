@@ -44,6 +44,14 @@ final class CognitiveComplexityLens implements Lens
         return 'S3776';
     }
 
+    public function description(): string
+    {
+        return 'Effort mental pour suivre le flux de contrôle : +1 par branche '
+            . '(if/else, boucle, switch, catch, ternaire, séquence &&/||) et +N '
+            . "supplémentaire selon le niveau d'imbrication. Mesure la difficulté de "
+            . 'lecture, pas le nombre de chemins (≠ complexité cyclomatique).';
+    }
+
     public function measure(Node\FunctionLike $function, array $stmts): float
     {
         return (float) $this->walkList($stmts, 0, null);

@@ -18,6 +18,7 @@ use PhpxComplexity\Qa\QaPresenceChecker;
 use PhpxComplexity\Qa\QaToolRegistry;
 use PhpxComplexity\Report\ConsoleReporter;
 use PhpxComplexity\Report\CoverageReporter;
+use PhpxComplexity\Report\HtmlReporter;
 use PhpxComplexity\Report\JsonReporter;
 use PhpxComplexity\Report\QaReporter;
 
@@ -67,6 +68,26 @@ final class Application
 
         if (isset($options['json'])) {
             $this->stdout((new JsonReporter($lenses, $config))->render($results, $analysis['files'], $analysis['parseErrors'], $qaResults, $coverage, $presence));
+        } elseif (isset($options['html'])) {
+            $html = (new HtmlReporter($lenses, $config))->render($results, $analysis['files'], $analysis['parseErrors'], $qaResults, $coverage, $presence);
+            // Précédence : --html=FICHIER (CLI) > html.path (config) > stdout.
+            $target = is_string($options['html']) ? $options['html'] : $config->htmlPath;
+            if (is_string($target)) {
+                $dir = \dirname($target);
+                if (!is_dir($dir) && !@mkdir($dir, 0o777, true) && !is_dir($dir)) {
+                    $this->stderr(sprintf('Répertoire de sortie introuvable et non créable : %s', $dir));
+
+                    return 2;
+                }
+                if (false === @file_put_contents($target, $html)) {
+                    $this->stderr(sprintf('Écriture impossible : %s', $target));
+
+                    return 2;
+                }
+                $this->stderr(sprintf('Rapport HTML écrit : %s', $target));
+            } else {
+                $this->stdout($html);
+            }
         } else {
             $reporter = new ConsoleReporter($lenses, $config);
             $this->stdout($reporter->render($results, $analysis['files'], !isset($options['no-divergence'])));
@@ -175,6 +196,10 @@ final class Application
                 $options['help'] = true;
             } elseif ('--json' === $arg) {
                 $options['json'] = true;
+            } elseif ('--html' === $arg) {
+                $options['html'] = true;
+            } elseif (str_starts_with($arg, '--html=')) {
+                $options['html'] = substr($arg, 7);
             } elseif ('--no-divergence' === $arg) {
                 $options['no-divergence'] = true;
             } elseif ('--qa' === $arg) {
@@ -216,6 +241,8 @@ final class Application
 
             OPTIONS
               --json                 Sortie JSON (CI, dashboards)
+              --html[=FICHIER]       Rapport HTML autonome (hors-ligne). Sans valeur :
+                                     sortie standard ; avec =FICHIER : écrit le fichier
               --qa                   Vérifie la présence des outils de QA du projet
               --coverage             Lit un rapport de couverture (clover/cobertura) s'il
                                      existe + faits de présence de tests (statique)

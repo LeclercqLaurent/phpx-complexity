@@ -23,6 +23,9 @@ interface Lens
     /** Référence SonarQube si applicable (ex. « S3776 »), sinon chaîne vide. */
     public function reference(): string;
 
+    /** Définition lisible de ce que mesure la lentille (une à deux phrases). */
+    public function description(): string;
+
     /**
      * Valeur brute pour une fonction/méthode.
      *

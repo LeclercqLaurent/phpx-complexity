@@ -75,6 +75,10 @@ bin/phpx-complexity /chemin/vers/projet
 # Sortie JSON pour la CI
 bin/phpx-complexity /chemin/vers/projet --json > complexity.json
 
+# Rapport HTML autonome (un seul fichier, hors-ligne, ouvrable au navigateur)
+bin/phpx-complexity /chemin/vers/projet --html=rapport.html
+# … le nuage de points lentille-vs-lentille rend visible la divergence
+
 # Vérifier aussi la présence des outils de QA (PHPStan, CS-Fixer, PHPUnit, CI…)
 bin/phpx-complexity /chemin/vers/projet --qa
 
@@ -94,9 +98,14 @@ Place un `phpx-complexity.json` à la racine du projet audité (voir
 {
     "thresholds": { "cognitive": 15, "params": 7, "returns": 3, "live_peak": 8, "entangle": 4 },
     "exclude": ["/vendor/", "/tests/"],
-    "top": 25
+    "top": 25,
+    "html": { "path": "build/phpx-complexity.html" }
 }
 ```
+
+`html.path` fixe le fichier de sortie du rapport HTML : avec `--html` (sans
+valeur), le rapport est écrit à ce chemin au lieu de la sortie standard.
+Précédence : `--html=FICHIER` (CLI) > `html.path` (config) > stdout.
 
 ## Build PHAR
 

@@ -31,6 +31,13 @@ final class ParameterCountLens implements Lens
         return 'S107';
     }
 
+    public function description(): string
+    {
+        return 'Nombre de paramètres de la signature. Mesure les degrés de liberté '
+            . "en entrée : au-delà du seuil, l'appel devient difficile à mémoriser et "
+            . 'trahit souvent une responsabilité à scinder ou un objet à introduire.';
+    }
+
     public function measure(Node\FunctionLike $function, array $stmts): float
     {
         return (float) count($function->getParams());

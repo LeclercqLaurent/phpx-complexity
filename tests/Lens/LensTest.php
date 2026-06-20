@@ -21,6 +21,20 @@ final class LensTest extends TestCase
         self::assertSame(3.0, $this->measure(new ParameterCountLens(), 'function f($a, $b, $c) {}'));
     }
 
+    public function testEachLensExposesANonEmptyDescription(): void
+    {
+        $lenses = [
+            new CognitiveComplexityLens(),
+            new ParameterCountLens(),
+            new ReturnCountLens(),
+            new LiveVariablePeakLens(),
+            new EntanglementLens(),
+        ];
+        foreach ($lenses as $lens) {
+            self::assertNotSame('', trim($lens->description()), $lens->key() . ' doit définir sa mesure');
+        }
+    }
+
     public function testReturnCountIgnoresNestedClosures(): void
     {
         $code = 'function f($x) {

@@ -13,5 +13,8 @@
     },
     "coverage": {
         "path": "build/logs/clover.xml"
+    },
+    "html": {
+        "path": "build/phpx-complexity.html"
     }
 }

@@ -39,6 +39,7 @@ final class JsonReporter
             $lenses[$lens->key()] = [
                 'label' => $lens->label(),
                 'reference' => $lens->reference(),
+                'description' => $lens->description(),
                 'threshold' => $this->config->threshold($lens->key()),
             ];
         }

@@ -1,0 +1,117 @@
+<?php
+
+declare(strict_types=1);
+
+namespace PhpxComplexity\Tests\Report;
+
+use PhpxComplexity\Analyzer\MethodResult;
+use PhpxComplexity\Config\Config;
+use PhpxComplexity\Lens\CognitiveComplexityLens;
+use PhpxComplexity\Lens\EntanglementLens;
+use PhpxComplexity\Lens\Lens;
+use PhpxComplexity\Lens\LiveVariablePeakLens;
+use PhpxComplexity\Lens\ParameterCountLens;
+use PhpxComplexity\Lens\ReturnCountLens;
+use PhpxComplexity\Report\HtmlReporter;
+use PHPUnit\Framework\TestCase;
+
+final class HtmlReporterTest extends TestCase
+{
+    public function testRendersSelfContainedDocumentWithSections(): void
+    {
+        $html = $this->render($this->sampleResults());
+
+        self::assertStringStartsWith('<!DOCTYPE html>', $html);
+        self::assertStringContainsString('<table id="methods">', $html);
+        self::assertStringContainsString('id="scatter"', $html);
+        self::assertStringContainsString('<h2>Lentilles</h2>', $html);
+        // Chaque KPI est défini dans la légende.
+        self::assertStringContainsString('ldesc', $html);
+        self::assertStringContainsString('Effort mental', $html);
+        self::assertStringContainsString('mémoire de travail', $html);
+        // Données factuelles présentes : pas de notion de score.
+        self::assertStringNotContainsStringIgnoringCase('score', $html);
+    }
+
+    public function testNoExternalResources(): void
+    {
+        $html = $this->render($this->sampleResults());
+
+        // Aucune ressource réseau : pas de http(s) hormis l'URI de namespace SVG,
+        // ni src=/href= externes.
+        $withoutSvgNs = str_replace('http://www.w3.org/2000/svg', '', $html);
+        self::assertStringNotContainsString('http://', $withoutSvgNs);
+        self::assertStringNotContainsString('https://', $withoutSvgNs);
+        self::assertStringNotContainsString('src=', $html);
+        self::assertStringNotContainsString('href=', $html);
+    }
+
+    public function testEscapesCodeDerivedContent(): void
+    {
+        $evil = new MethodResult(
+            file: 'src/<script>alert(1)</script>.php',
+            name: 'pwn',
+            line: 1,
+            metrics: ['cognitive' => 1.0, 'params' => 0.0, 'returns' => 0.0, 'live_peak' => 0.0, 'entangle' => 0.0],
+            percentile: ['cognitive' => 1.0, 'params' => 0.0, 'returns' => 0.0, 'live_peak' => 0.0, 'entangle' => 0.0],
+            divergence: 1.0,
+        );
+
+        $html = $this->render([$evil]);
+
+        // Le code injecté ne doit jamais apparaître tel quel : ni dans le HTML
+        // serveur (échappé en &lt;), ni dans le JSON embarqué (échappé en <).
+        self::assertStringNotContainsString('<script>alert(1)</script>', $html);
+        // Exactement deux balises </script> légitimes : fermeture du bloc data et
+        // du bloc JS. Une troisième signalerait une évasion du contexte.
+        self::assertSame(2, substr_count($html, '</script>'));
+    }
+
+    /**
+     * @param list<MethodResult> $results
+     */
+    private function render(array $results): string
+    {
+        return (new HtmlReporter($this->lenses(), Config::defaults()))
+            ->render($results, files: 3, parseErrors: []);
+    }
+
+    /**
+     * @return list<MethodResult>
+     */
+    private function sampleResults(): array
+    {
+        return [
+            new MethodResult(
+                file: 'src/Foo.php',
+                name: 'compute',
+                line: 12,
+                metrics: ['cognitive' => 18.0, 'params' => 1.0, 'returns' => 1.0, 'live_peak' => 9.0, 'entangle' => 2.5],
+                percentile: ['cognitive' => 1.0, 'params' => 0.2, 'returns' => 0.2, 'live_peak' => 0.9, 'entangle' => 0.6],
+                divergence: 0.8,
+            ),
+            new MethodResult(
+                file: 'src/Bar.php',
+                name: 'restore',
+                line: 4,
+                metrics: ['cognitive' => 0.0, 'params' => 8.0, 'returns' => 1.0, 'live_peak' => 8.0, 'entangle' => 0.0],
+                percentile: ['cognitive' => 0.0, 'params' => 1.0, 'returns' => 0.2, 'live_peak' => 0.8, 'entangle' => 0.0],
+                divergence: 1.0,
+            ),
+        ];
+    }
+
+    /**
+     * @return list<Lens>
+     */
+    private function lenses(): array
+    {
+        return [
+            new CognitiveComplexityLens(),
+            new ParameterCountLens(),
+            new ReturnCountLens(),
+            new LiveVariablePeakLens(),
+            new EntanglementLens(),
+        ];
+    }
+}

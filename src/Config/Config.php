@@ -21,6 +21,7 @@ final class Config
         public readonly int $top,
         public readonly array $qaRequired = [],
         public readonly ?string $coveragePath = null,
+        public readonly ?string $htmlPath = null,
     ) {
     }
 
@@ -38,6 +39,7 @@ final class Config
             top: 25,
             qaRequired: [],
             coveragePath: null,
+            htmlPath: null,
         );
     }
 
@@ -72,7 +74,12 @@ final class Config
             $coveragePath = $data['coverage']['path'];
         }
 
-        return new self($thresholds, $exclude, $top, $qaRequired, $coveragePath);
+        $htmlPath = $this->htmlPath;
+        if (isset($data['html']['path']) && is_string($data['html']['path'])) {
+            $htmlPath = $data['html']['path'];
+        }
+
+        return new self($thresholds, $exclude, $top, $qaRequired, $coveragePath, $htmlPath);
     }
 
     public function threshold(string $lensKey): float

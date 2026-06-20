@@ -35,6 +35,14 @@ final class ReturnCountLens implements Lens
         return 'S1142';
     }
 
+    public function description(): string
+    {
+        return "Nombre d'instructions « return » dans la portée de la méthode "
+            . '(les fonctions imbriquées comptent pour la leur). Trop de points de '
+            . 'sortie multiplie les chemins terminaux et rend le post-conditionnement '
+            . 'plus dur à raisonner.';
+    }
+
     public function measure(Node\FunctionLike $function, array $stmts): float
     {
         $visitor = new class extends NodeVisitorAbstract {

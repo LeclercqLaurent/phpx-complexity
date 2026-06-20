@@ -43,6 +43,14 @@ final class EntanglementLens implements Lens
         return '';
     }
 
+    public function description(): string
+    {
+        return 'Degré moyen du graphe de co-occurrence des variables locales '
+            . '(2·arêtes / sommets) : une arête relie deux variables réellement '
+            . "combinées par un flux de données. Distingue l'entropie enchevêtrée "
+            . "(coûteuse) de l'entropie plate d'une factory. Seul axe hors S3776/S107.";
+    }
+
     public function measure(Node\FunctionLike $function, array $stmts): float
     {
         $visitor = new class extends NodeVisitorAbstract {

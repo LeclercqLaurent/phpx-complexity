@@ -37,6 +37,14 @@ final class LiveVariablePeakLens implements Lens
         return '';
     }
 
+    public function description(): string
+    {
+        return 'Nombre maximal de variables locales « vivantes » en même temps '
+            . '(durée de vie = de la première à la dernière utilisation, recouvrant '
+            . 'une même ligne). Proxy de la charge en mémoire de travail du lecteur '
+            . '(7±2). Mesure la pression interne, pas la signature (≠ S107).';
+    }
+
     public function measure(Node\FunctionLike $function, array $stmts): float
     {
         $spans = AstHelper::variableSpans($stmts);
