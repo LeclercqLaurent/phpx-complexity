@@ -1,0 +1,24 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+use PhpxComplexity\Cli\Application;
+
+(static function (): void {
+    $candidates = [
+        __DIR__ . '/../vendor/autoload.php', // dépôt cloné / dev
+        __DIR__ . '/../../../autoload.php',  // installé comme dépendance
+    ];
+    foreach ($candidates as $autoload) {
+        if (is_file($autoload)) {
+            require $autoload;
+
+            return;
+        }
+    }
+    fwrite(\STDERR, "Autoloader Composer introuvable. Lancez « composer install ».\n");
+    exit(2);
+})();
+
+exit((new Application())->run($argv));

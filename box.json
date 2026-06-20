@@ -1,0 +1,13 @@
+{
+    "main": "bin/phpx-complexity",
+    "output": "phpx-complexity.phar",
+    "directories": ["src"],
+    "finder": [
+        {
+            "name": "*.php",
+            "in": "vendor"
+        }
+    ],
+    "compression": "GZ",
+    "banner": "phpx-complexity — auditeur de complexité PHP multi-lentilles (MIT)"
+}
