@@ -37,8 +37,19 @@ final class QaReporter
             }
         }
 
+        $coveredCategories = count(array_filter(
+            $byCategory,
+            static fn (array $tools) => [] !== array_filter($tools, static fn (QaToolResult $r) => $r->present),
+        ));
         $missingRequired = $this->missingRequired($results);
-        $lines[] = sprintf('  → %d/%d outils détectés%s', $present, count($results), [] === $missingRequired ? '' : sprintf(', %d requis manquant(s)', count($missingRequired)));
+        $lines[] = sprintf(
+            '  → %d/%d outils détectés, %d/%d catégories couvertes%s',
+            $present,
+            count($results),
+            $coveredCategories,
+            count($byCategory),
+            [] === $missingRequired ? '' : sprintf(', %d requis manquant(s)', count($missingRequired)),
+        );
 
         return implode("\n", $lines) . "\n";
     }

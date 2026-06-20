@@ -96,7 +96,15 @@ final class ConsoleReporter
      */
     private function violationsSection(array $results): string
     {
-        $lines = ['Violations de seuils :'];
+        $methodsInViolation = count(array_filter($results, fn (MethodResult $r) => $this->hasViolation($r)));
+        $totalViolations = array_sum(array_map(fn (MethodResult $r) => $this->violationCount($r), $results));
+
+        $lines = [sprintf(
+            'Dépassements de seuils — %d/%d méthodes concernées (%d dépassement(s) au total) :',
+            $methodsInViolation,
+            count($results),
+            $totalViolations,
+        )];
         $found = false;
         foreach ($this->lenses as $lens) {
             $key = $lens->key();
@@ -140,13 +148,19 @@ final class ConsoleReporter
 
     private function hasViolation(MethodResult $r): bool
     {
+        return $this->violationCount($r) > 0;
+    }
+
+    private function violationCount(MethodResult $r): int
+    {
+        $count = 0;
         foreach ($this->lenses as $lens) {
             if ($r->metric($lens->key()) > $this->config->threshold($lens->key())) {
-                return true;
+                ++$count;
             }
         }
 
-        return false;
+        return $count;
     }
 
     private function divergenceHint(MethodResult $r): string
