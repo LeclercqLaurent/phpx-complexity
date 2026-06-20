@@ -20,6 +20,7 @@ final class Config
         public readonly array $exclude,
         public readonly int $top,
         public readonly array $qaRequired = [],
+        public readonly ?string $coveragePath = null,
     ) {
     }
 
@@ -36,6 +37,7 @@ final class Config
             exclude: ['/vendor/', '/node_modules/', '/var/', '/.git/'],
             top: 25,
             qaRequired: [],
+            coveragePath: null,
         );
     }
 
@@ -65,7 +67,12 @@ final class Config
             $qaRequired = array_values(array_filter($data['qa']['required'], 'is_string'));
         }
 
-        return new self($thresholds, $exclude, $top, $qaRequired);
+        $coveragePath = $this->coveragePath;
+        if (isset($data['coverage']['path']) && is_string($data['coverage']['path'])) {
+            $coveragePath = $data['coverage']['path'];
+        }
+
+        return new self($thresholds, $exclude, $top, $qaRequired, $coveragePath);
     }
 
     public function threshold(string $lensKey): float

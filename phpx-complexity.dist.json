@@ -10,5 +10,8 @@
     "top": 25,
     "qa": {
         "required": ["phpstan", "phpunit"]
+    },
+    "coverage": {
+        "path": "build/logs/clover.xml"
     }
 }

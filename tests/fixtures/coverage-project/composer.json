@@ -1,0 +1,6 @@
+{
+    "name": "sample/coverage-project",
+    "require-dev": {
+        "phpunit/phpunit": "^11.0"
+    }
+}

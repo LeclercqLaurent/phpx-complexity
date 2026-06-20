@@ -7,6 +7,7 @@
     <testsuites>
         <testsuite name="phpx-complexity">
             <directory>tests</directory>
+            <exclude>tests/fixtures</exclude>
         </testsuite>
     </testsuites>
     <source>

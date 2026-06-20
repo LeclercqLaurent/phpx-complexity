@@ -1,0 +1,128 @@
+<?php
+
+declare(strict_types=1);
+
+namespace PhpxComplexity\Coverage;
+
+use PhpxComplexity\Support\ProjectRoot;
+use SimpleXMLElement;
+
+/**
+ * Localise et lit un rapport de couverture déjà généré par le projet (Clover de
+ * PHPUnit ou Cobertura). Ne lance aucun test : pure lecture d'un artefact.
+ */
+final class CoverageReportReader
+{
+    private const CANDIDATES = [
+        'clover.xml',
+        'coverage.xml',
+        'build/logs/clover.xml',
+        'build/coverage/clover.xml',
+        'coverage/clover.xml',
+        'var/coverage/clover.xml',
+        'cobertura.xml',
+        'cobertura-coverage.xml',
+        'coverage/cobertura.xml',
+        'build/logs/cobertura.xml',
+        'build/coverage/cobertura-coverage.xml',
+    ];
+
+    public function read(string $path, ?string $configuredPath): CoverageReport
+    {
+        $root = ProjectRoot::resolve($path);
+        foreach ($this->candidatePaths($root, $configuredPath) as $candidate) {
+            if (!is_file($candidate)) {
+                continue;
+            }
+            $report = $this->parse($candidate);
+            if (null !== $report) {
+                return $report;
+            }
+        }
+
+        return CoverageReport::notFound();
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function candidatePaths(string $root, ?string $configuredPath): array
+    {
+        $paths = [];
+        if (null !== $configuredPath && '' !== $configuredPath) {
+            $paths[] = $this->absolutePath($root, $configuredPath);
+        }
+        foreach (self::CANDIDATES as $relative) {
+            $paths[] = $root . '/' . $relative;
+        }
+
+        return $paths;
+    }
+
+    private function absolutePath(string $root, string $path): string
+    {
+        return str_starts_with($path, '/') ? $path : $root . '/' . $path;
+    }
+
+    private function parse(string $file): ?CoverageReport
+    {
+        $previous = libxml_use_internal_errors(true);
+        $xml = simplexml_load_file($file);
+        libxml_use_internal_errors($previous);
+        if (false === $xml) {
+            return null;
+        }
+
+        if ('coverage' === $xml->getName() && isset($xml['line-rate'])) {
+            return $this->parseCobertura($xml, $file);
+        }
+        if ('coverage' === $xml->getName() && isset($xml->project)) {
+            return $this->parseClover($xml, $file);
+        }
+
+        return null;
+    }
+
+    private function parseClover(SimpleXMLElement $xml, string $file): CoverageReport
+    {
+        $metrics = $xml->project->metrics;
+        if (null === $metrics) {
+            return CoverageReport::notFound();
+        }
+
+        $statements = (int) $metrics['statements'];
+        $coveredStatements = (int) $metrics['coveredstatements'];
+        $methods = (int) $metrics['methods'];
+        $coveredMethods = (int) $metrics['coveredmethods'];
+
+        return CoverageReport::found(
+            format: 'clover',
+            source: $file,
+            linePercent: $this->percent($coveredStatements, $statements),
+            linesCovered: $coveredStatements,
+            linesValid: $statements,
+            methodPercent: $this->percent($coveredMethods, $methods),
+        );
+    }
+
+    private function parseCobertura(SimpleXMLElement $xml, string $file): CoverageReport
+    {
+        $linesCovered = isset($xml['lines-covered']) ? (int) $xml['lines-covered'] : null;
+        $linesValid = isset($xml['lines-valid']) ? (int) $xml['lines-valid'] : null;
+        $linePercent = round((float) $xml['line-rate'] * 100, 1);
+
+        return CoverageReport::found(
+            format: 'cobertura',
+            source: $file,
+            linePercent: $linePercent,
+            linesCovered: $linesCovered,
+            linesValid: $linesValid,
+            methodPercent: null,
+        );
+    }
+
+    private function percent(int $covered, int $total): ?float
+    {
+        return $total > 0 ? round(100 * $covered / $total, 1) : null;
+    }
+}

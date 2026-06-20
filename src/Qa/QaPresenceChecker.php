@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace PhpxComplexity\Qa;
 
+use PhpxComplexity\Support\ProjectRoot;
+
 /**
  * Vérifie la présence des outils de QA à la racine d'un projet, en croisant les
  * dépendances déclarées dans composer.json et les fichiers de configuration.
@@ -25,7 +27,7 @@ final class QaPresenceChecker
      */
     public function check(string $path): array
     {
-        $root = $this->projectRoot($path);
+        $root = ProjectRoot::resolve($path);
         $packages = $this->composerPackages($root);
 
         $results = [];
@@ -50,25 +52,6 @@ final class QaPresenceChecker
         }
 
         return $results;
-    }
-
-    /**
-     * Racine du projet : on part du chemin analysé et on remonte jusqu'au premier
-     * dossier contenant composer.json (cas courant : on audite `app/src` mais la
-     * config QA vit dans `app/`). À défaut, le dossier de départ fait foi.
-     */
-    private function projectRoot(string $path): string
-    {
-        $dir = rtrim(str_replace('\\', '/', is_file($path) ? \dirname($path) : $path), '/');
-        $current = $dir;
-        while ('' !== $current && '/' !== $current) {
-            if (is_file($current . '/composer.json')) {
-                return $current;
-            }
-            $current = \dirname($current);
-        }
-
-        return $dir;
     }
 
     /**

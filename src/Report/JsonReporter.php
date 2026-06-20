@@ -6,6 +6,8 @@ namespace PhpxComplexity\Report;
 
 use PhpxComplexity\Analyzer\MethodResult;
 use PhpxComplexity\Config\Config;
+use PhpxComplexity\Coverage\CoverageReport;
+use PhpxComplexity\Coverage\TestPresence;
 use PhpxComplexity\Lens\Lens;
 use PhpxComplexity\Qa\QaToolResult;
 
@@ -28,7 +30,7 @@ final class JsonReporter
      * @param list<string>       $parseErrors
      * @param list<QaToolResult> $qaResults
      */
-    public function render(array $results, int $files, array $parseErrors, array $qaResults = []): string
+    public function render(array $results, int $files, array $parseErrors, array $qaResults = [], ?CoverageReport $coverage = null, ?TestPresence $presence = null): string
     {
         usort($results, static fn (MethodResult $a, MethodResult $b) => $b->divergence <=> $a->divergence);
 
@@ -85,6 +87,10 @@ final class JsonReporter
             $payload['qa'] = $this->qaPayload($qaResults);
         }
 
+        if (null !== $coverage || null !== $presence) {
+            $payload['coverage'] = $this->coveragePayload($coverage, $presence);
+        }
+
         return (string) json_encode($payload, \JSON_PRETTY_PRINT | \JSON_UNESCAPED_SLASHES | \JSON_UNESCAPED_UNICODE);
     }
 
@@ -133,5 +139,37 @@ final class JsonReporter
         }
 
         return $count;
+    }
+
+    /**
+     * @return array<string,mixed>
+     */
+    private function coveragePayload(?CoverageReport $coverage, ?TestPresence $presence): array
+    {
+        $payload = [];
+
+        if (null !== $coverage) {
+            $payload['report'] = [
+                'measured' => $coverage->found,
+                'format' => $coverage->format,
+                'source' => $coverage->source,
+                'linePercent' => $coverage->linePercent,
+                'linesCovered' => $coverage->linesCovered,
+                'linesValid' => $coverage->linesValid,
+                'methodPercent' => $coverage->methodPercent,
+            ];
+        }
+
+        if (null !== $presence) {
+            $payload['testPresence'] = [
+                'sourceClasses' => $presence->sourceClasses,
+                'testClasses' => $presence->testClasses,
+                'testMethods' => $presence->testMethods,
+                'classesWithTest' => $presence->testedClasses(),
+                'untestedClasses' => $presence->untestedClasses,
+            ];
+        }
+
+        return $payload;
     }
 }

@@ -12,9 +12,12 @@ use PhpxComplexity\Lens\Lens;
 use PhpxComplexity\Lens\LiveVariablePeakLens;
 use PhpxComplexity\Lens\ParameterCountLens;
 use PhpxComplexity\Lens\ReturnCountLens;
+use PhpxComplexity\Coverage\CoverageReportReader;
+use PhpxComplexity\Coverage\TestPresenceAnalyzer;
 use PhpxComplexity\Qa\QaPresenceChecker;
 use PhpxComplexity\Qa\QaToolRegistry;
 use PhpxComplexity\Report\ConsoleReporter;
+use PhpxComplexity\Report\CoverageReporter;
 use PhpxComplexity\Report\JsonReporter;
 use PhpxComplexity\Report\QaReporter;
 
@@ -58,13 +61,20 @@ final class Application
             ? (new QaPresenceChecker(QaToolRegistry::defaults(), $config->qaRequired))->check($path)
             : [];
 
+        $withCoverage = isset($options['coverage']);
+        $coverage = $withCoverage ? (new CoverageReportReader())->read($path, $config->coveragePath) : null;
+        $presence = $withCoverage ? (new TestPresenceAnalyzer())->analyze($path) : null;
+
         if (isset($options['json'])) {
-            $this->stdout((new JsonReporter($lenses, $config))->render($results, $analysis['files'], $analysis['parseErrors'], $qaResults));
+            $this->stdout((new JsonReporter($lenses, $config))->render($results, $analysis['files'], $analysis['parseErrors'], $qaResults, $coverage, $presence));
         } else {
             $reporter = new ConsoleReporter($lenses, $config);
             $this->stdout($reporter->render($results, $analysis['files'], !isset($options['no-divergence'])));
             if (isset($options['qa'])) {
                 $this->stdout("\n" . $qaReporter->render($qaResults));
+            }
+            if (null !== $coverage && null !== $presence) {
+                $this->stdout("\n" . (new CoverageReporter())->render($coverage, $presence));
             }
             foreach ($analysis['parseErrors'] as $error) {
                 $this->stderr('parse: ' . $error);
@@ -169,6 +179,8 @@ final class Application
                 $options['no-divergence'] = true;
             } elseif ('--qa' === $arg) {
                 $options['qa'] = true;
+            } elseif ('--coverage' === $arg) {
+                $options['coverage'] = true;
             } elseif ('--fail-on-violations' === $arg) {
                 $options['fail-on-violations'] = true;
             } elseif (str_starts_with($arg, '--exclude=')) {
@@ -205,6 +217,8 @@ final class Application
             OPTIONS
               --json                 Sortie JSON (CI, dashboards)
               --qa                   Vérifie la présence des outils de QA du projet
+              --coverage             Lit un rapport de couverture (clover/cobertura) s'il
+                                     existe + faits de présence de tests (statique)
               --config=FICHIER       Fichier de config (défaut : phpx-complexity.json)
               --fail-on-violations   Code de sortie 1 si un seuil est dépassé, ou si un
                                      outil QA requis manque (mode gate)

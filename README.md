@@ -41,6 +41,25 @@ la config QA dans `app/`).
 Les outils déclarés `qa.required` dans la config qui manquent font échouer le
 mode gate (`--fail-on-violations`).
 
+## Tests & couverture (`--coverage`)
+
+La couverture est une mesure d'**exécution** : l'outil étant statique et hors-ligne,
+il ne la calcule pas. `--coverage` produit donc deux blocs honnêtes et distincts :
+
+1. **Couverture réelle** — lecture d'un rapport déjà généré par le projet
+   (Clover de PHPUnit ou Cobertura), auto-détecté aux emplacements usuels ou via
+   `coverage.path`. Absence de rapport ⇒ **« non mesurée »** (jamais « 0 % », qui
+   serait un verdict infondé).
+2. **Présence de tests** (proxy statique) — nombre de classes/méthodes de test et
+   liste des classes source **sans aucune** classe `*Test`. C'est un *plancher*,
+   **pas** de la couverture : qu'une classe `FooTest` existe ne prouve pas que
+   `Foo` est testée utilement. Répond à « des tests sont-ils *implémentés* ? »,
+   pas à « couvrent-ils *suffisamment* ? ».
+
+```bash
+bin/phpx-complexity /chemin/vers/projet --coverage
+```
+
 ## Installation
 
 ```bash
