@@ -28,6 +28,19 @@ Sur un code propre, les lentilles convergent. Leur **divergence** est le signal.
 `cognitive`, `params` et `returns` sont des réimplémentations natives (php-parser
 pur, sans PHPStan). `live_peak` et `entangle` sont propres à l'outil.
 
+## Présence des outils de QA (`--qa`)
+
+Au-delà de la complexité, `--qa` audite l'**outillage qualité** du projet cible :
+analyse statique (PHPStan, Psalm), standards (PHP-CS-Fixer, PHP_CodeSniffer),
+refactoring (Rector), tests (PHPUnit, Pest, Behat, Infection), CI (GitHub Actions,
+GitLab CI), EditorConfig. Chaque outil est détecté via `composer.json`
+(require / require-dev) **ou** la présence de son fichier de config. La racine du
+projet est résolue en remontant jusqu'au `composer.json` (auditer `app/src` trouve
+la config QA dans `app/`).
+
+Les outils déclarés `qa.required` dans la config qui manquent font échouer le
+mode gate (`--fail-on-violations`).
+
 ## Installation
 
 ```bash
@@ -42,6 +55,9 @@ bin/phpx-complexity /chemin/vers/projet
 
 # Sortie JSON pour la CI
 bin/phpx-complexity /chemin/vers/projet --json > complexity.json
+
+# Vérifier aussi la présence des outils de QA (PHPStan, CS-Fixer, PHPUnit, CI…)
+bin/phpx-complexity /chemin/vers/projet --qa
 
 # Mode gate : code de sortie 1 si un seuil est dépassé
 bin/phpx-complexity /chemin/vers/projet --fail-on-violations

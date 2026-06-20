@@ -7,6 +7,7 @@ namespace PhpxComplexity\Report;
 use PhpxComplexity\Analyzer\MethodResult;
 use PhpxComplexity\Config\Config;
 use PhpxComplexity\Lens\Lens;
+use PhpxComplexity\Qa\QaToolResult;
 
 /**
  * Export JSON pour CI, dashboards et diff entre deux runs.
@@ -24,8 +25,10 @@ final class JsonReporter
 
     /**
      * @param list<MethodResult> $results
+     * @param list<string>       $parseErrors
+     * @param list<QaToolResult> $qaResults
      */
-    public function render(array $results, int $files, array $parseErrors): string
+    public function render(array $results, int $files, array $parseErrors, array $qaResults = []): string
     {
         usort($results, static fn (MethodResult $a, MethodResult $b) => $b->divergence <=> $a->divergence);
 
@@ -68,6 +71,35 @@ final class JsonReporter
             'methods' => $methods,
         ];
 
+        if ([] !== $qaResults) {
+            $payload['qa'] = $this->qaPayload($qaResults);
+        }
+
         return (string) json_encode($payload, \JSON_PRETTY_PRINT | \JSON_UNESCAPED_SLASHES | \JSON_UNESCAPED_UNICODE);
+    }
+
+    /**
+     * @param list<QaToolResult> $qaResults
+     *
+     * @return array<string,mixed>
+     */
+    private function qaPayload(array $qaResults): array
+    {
+        $tools = [];
+        $missingRequired = [];
+        foreach ($qaResults as $result) {
+            $tools[$result->tool->key] = [
+                'label' => $result->tool->label,
+                'category' => $result->tool->category,
+                'present' => $result->present,
+                'required' => $result->required,
+                'evidence' => $result->evidence,
+            ];
+            if ($result->required && !$result->present) {
+                $missingRequired[] = $result->tool->key;
+            }
+        }
+
+        return ['tools' => $tools, 'missingRequired' => $missingRequired];
     }
 }

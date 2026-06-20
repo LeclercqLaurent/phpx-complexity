@@ -1,0 +1,7 @@
+{
+    "name": "sample/project",
+    "require-dev": {
+        "phpstan/phpstan": "^2.0",
+        "friendsofphp/php-cs-fixer": "^3.0"
+    }
+}

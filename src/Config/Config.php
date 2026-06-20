@@ -13,11 +13,13 @@ final class Config
     /**
      * @param array<string,float> $thresholds  clé de lentille => seuil
      * @param list<string>        $exclude     fragments de chemin exclus
+     * @param list<string>        $qaRequired  clés d'outils QA obligatoires
      */
     private function __construct(
         public readonly array $thresholds,
         public readonly array $exclude,
         public readonly int $top,
+        public readonly array $qaRequired = [],
     ) {
     }
 
@@ -33,6 +35,7 @@ final class Config
             ],
             exclude: ['/vendor/', '/node_modules/', '/var/', '/.git/'],
             top: 25,
+            qaRequired: [],
         );
     }
 
@@ -57,7 +60,12 @@ final class Config
 
         $top = isset($data['top']) && is_numeric($data['top']) ? (int) $data['top'] : $this->top;
 
-        return new self($thresholds, $exclude, $top);
+        $qaRequired = $this->qaRequired;
+        if (isset($data['qa']['required']) && is_array($data['qa']['required'])) {
+            $qaRequired = array_values(array_filter($data['qa']['required'], 'is_string'));
+        }
+
+        return new self($thresholds, $exclude, $top, $qaRequired);
     }
 
     public function threshold(string $lensKey): float
