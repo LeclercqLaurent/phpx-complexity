@@ -30,4 +30,23 @@ final class ConfigTest extends TestCase
         // Type invalide : ignoré, valeur courante conservée.
         self::assertSame('a.html', $base->withOverrides(['html' => ['path' => 123]])->htmlPath);
     }
+
+    public function testExclusionMatchesASegmentOfTheRelativePath(): void
+    {
+        $config = Config::defaults();
+
+        self::assertTrue($config->isExcluded('vendor/autoload.php'), 'segment de premier niveau');
+        self::assertTrue($config->isExcluded('app/vendor/autoload.php'), 'segment imbriqué');
+        self::assertFalse($config->isExcluded('src/Vendorish/Foo.php'), 'pas un segment complet');
+    }
+
+    public function testExclusionIgnoresWhatSurroundsTheAuditedRoot(): void
+    {
+        // Le chemin absolu du projet (/var/www/…, /home/x/tests/…) ne doit jamais
+        // entrer en jeu : seul compte ce qui est SOUS la racine auditée.
+        $config = Config::defaults()->withOverrides(['exclude' => ['/var/', '/tests/']]);
+
+        self::assertFalse($config->isExcluded('src/Foo.php'));
+        self::assertTrue($config->isExcluded('tests/FooTest.php'));
+    }
 }

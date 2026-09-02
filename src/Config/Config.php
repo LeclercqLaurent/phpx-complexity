@@ -112,9 +112,15 @@ final class Config
         return $this->thresholds[$lensKey] ?? \PHP_FLOAT_MAX;
     }
 
-    public function isExcluded(string $path): bool
+    /**
+     * Les fragments se comparent au chemin RELATIF à la racine auditée, préfixé
+     * d'un « / » pour qu'un fragment comme `/vendor/` reconnaisse un segment de
+     * premier niveau. Les comparer au chemin absolu viderait l'audit d'un projet
+     * installé sous /var/www/, /tests/ ou tout autre dossier homonyme.
+     */
+    public function isExcluded(string $relativePath): bool
     {
-        $normalized = str_replace('\\', '/', $path);
+        $normalized = '/' . ltrim(str_replace('\\', '/', $relativePath), '/');
         foreach ($this->exclude as $fragment) {
             if (str_contains($normalized, $fragment)) {
                 return true;

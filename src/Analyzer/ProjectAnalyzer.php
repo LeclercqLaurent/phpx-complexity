@@ -12,6 +12,7 @@ use PhpParser\Parser;
 use PhpParser\ParserFactory;
 use PhpxComplexity\Config\Config;
 use PhpxComplexity\Lens\Lens;
+use PhpxComplexity\Support\RelativePath;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use SplFileInfo;
@@ -81,7 +82,7 @@ final class ProjectAnalyzer
         }
 
         return new MethodResult(
-            file: $this->relativePath($root, $file),
+            file: RelativePath::from($root, $file),
             name: $this->functionName($function),
             line: $function->getStartLine(),
             metrics: $metrics,
@@ -180,18 +181,10 @@ final class ProjectAnalyzer
                 continue;
             }
             $real = $file->getPathname();
-            if (!$this->config->isExcluded($real)) {
+            if (!$this->config->isExcluded(RelativePath::from($path, $real))) {
                 yield $real;
             }
         }
-    }
-
-    private function relativePath(string $root, string $file): string
-    {
-        $root = rtrim(str_replace('\\', '/', is_file($root) ? dirname($root) : $root), '/');
-        $file = str_replace('\\', '/', $file);
-
-        return str_starts_with($file, $root . '/') ? substr($file, strlen($root) + 1) : $file;
     }
 
     private function functionName(Node\FunctionLike $function): string

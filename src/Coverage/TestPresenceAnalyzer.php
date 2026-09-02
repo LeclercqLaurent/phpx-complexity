@@ -10,6 +10,7 @@ use PhpParser\NodeFinder;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;
 use PhpxComplexity\Support\ProjectRoot;
+use PhpxComplexity\Support\RelativePath;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use SplFileInfo;
@@ -150,17 +151,20 @@ final class TestPresenceAnalyzer
             if (!$file instanceof SplFileInfo || !$file->isFile() || 'php' !== strtolower($file->getExtension())) {
                 continue;
             }
-            $normalized = str_replace('\\', '/', $file->getPathname());
-            if (!$this->isExcluded($normalized)) {
+            if (!$this->isExcluded(RelativePath::from($root, $file->getPathname()))) {
                 yield $file->getPathname();
             }
         }
     }
 
-    private function isExcluded(string $path): bool
+    /**
+     * Comme pour la config : fragments comparés au chemin relatif à la racine.
+     */
+    private function isExcluded(string $relativePath): bool
     {
+        $normalized = '/' . ltrim($relativePath, '/');
         foreach (self::EXCLUDED as $fragment) {
-            if (str_contains($path, $fragment)) {
+            if (str_contains($normalized, $fragment)) {
                 return true;
             }
         }

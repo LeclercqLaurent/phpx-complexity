@@ -1,0 +1,4 @@
+{
+    "name": "fixture/var-root-project",
+    "description": "Projet fictif installé sous un dossier « var » : vérifie que les exclusions portent bien sur le chemin relatif."
+}

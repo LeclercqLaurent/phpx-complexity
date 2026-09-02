@@ -103,6 +103,10 @@ Place un `phpx-complexity.json` à la racine du projet audité (voir
 }
 ```
 
+Les fragments d'`exclude` se comparent au chemin **relatif à la racine auditée**,
+jamais au chemin absolu : auditer un projet installé dans `/var/www/monprojet`
+n'est donc pas vidé par le fragment `/var/`.
+
 `html.path` fixe le fichier de sortie du rapport HTML : avec `--html` (sans
 valeur), le rapport est écrit à ce chemin au lieu de la sortie standard.
 Précédence : `--html=FICHIER` (CLI) > `html.path` (config) > stdout.

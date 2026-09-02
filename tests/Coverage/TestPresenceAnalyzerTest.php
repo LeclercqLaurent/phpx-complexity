@@ -28,4 +28,16 @@ final class TestPresenceAnalyzerTest extends TestCase
         self::assertNotContains('Foo', $presence->untestedClasses, 'Foo a FooTest');
         self::assertSame(1, $presence->testedClasses());
     }
+
+    /**
+     * Régression : les exclusions internes de l'analyseur portaient sur le chemin
+     * absolu, donc un projet rangé sous /var/www/ ne remontait aucune classe.
+     */
+    public function testScanIsNotVoidedByAnAncestorDirectoryName(): void
+    {
+        $presence = (new TestPresenceAnalyzer())->analyze(__DIR__ . '/../fixtures/var/www/project/src');
+
+        self::assertSame(1, $presence->sourceClasses, 'Foo');
+        self::assertSame(['Foo'], $presence->untestedClasses);
+    }
 }
