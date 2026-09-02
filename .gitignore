@@ -3,3 +3,5 @@
 /.phpunit.cache/
 /build/
 *.phar
+/tmp/
+/.php-cs-fixer.cache

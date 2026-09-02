@@ -12,6 +12,7 @@ use PhpParser\ParserFactory;
 use PhpxComplexity\Support\ProjectRoot;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use SplFileInfo;
 use Throwable;
 
 /**
@@ -146,7 +147,7 @@ final class TestPresenceAnalyzer
             new RecursiveDirectoryIterator($root, FilesystemIterator::SKIP_DOTS)
         );
         foreach ($iterator as $file) {
-            if (!$file->isFile() || 'php' !== strtolower($file->getExtension())) {
+            if (!$file instanceof SplFileInfo || !$file->isFile() || 'php' !== strtolower($file->getExtension())) {
                 continue;
             }
             $normalized = str_replace('\\', '/', $file->getPathname());

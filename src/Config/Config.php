@@ -64,22 +64,47 @@ final class Config
 
         $top = isset($data['top']) && is_numeric($data['top']) ? (int) $data['top'] : $this->top;
 
-        $qaRequired = $this->qaRequired;
-        if (isset($data['qa']['required']) && is_array($data['qa']['required'])) {
-            $qaRequired = array_values(array_filter($data['qa']['required'], 'is_string'));
-        }
-
-        $coveragePath = $this->coveragePath;
-        if (isset($data['coverage']['path']) && is_string($data['coverage']['path'])) {
-            $coveragePath = $data['coverage']['path'];
-        }
-
-        $htmlPath = $this->htmlPath;
-        if (isset($data['html']['path']) && is_string($data['html']['path'])) {
-            $htmlPath = $data['html']['path'];
-        }
+        $qaRequired = self::nestedStringList($data, 'qa', 'required') ?? $this->qaRequired;
+        $coveragePath = self::nestedString($data, 'coverage', 'path') ?? $this->coveragePath;
+        $htmlPath = self::nestedString($data, 'html', 'path') ?? $this->htmlPath;
 
         return new self($thresholds, $exclude, $top, $qaRequired, $coveragePath, $htmlPath);
+    }
+
+    /**
+     * Valeur imbriquée `data[section][key]`, uniquement si c'est bien une chaîne.
+     *
+     * @param array<string,mixed> $data
+     */
+    private static function nestedString(array $data, string $section, string $key): ?string
+    {
+        $value = self::nested($data, $section, $key);
+
+        return is_string($value) ? $value : null;
+    }
+
+    /**
+     * Idem, pour une liste de chaînes (les entrées non-chaînes sont écartées).
+     *
+     * @param array<string,mixed> $data
+     *
+     * @return list<string>|null
+     */
+    private static function nestedStringList(array $data, string $section, string $key): ?array
+    {
+        $value = self::nested($data, $section, $key);
+
+        return is_array($value) ? array_values(array_filter($value, 'is_string')) : null;
+    }
+
+    /**
+     * @param array<string,mixed> $data
+     */
+    private static function nested(array $data, string $section, string $key): mixed
+    {
+        $sub = $data[$section] ?? null;
+
+        return is_array($sub) ? ($sub[$key] ?? null) : null;
     }
 
     public function threshold(string $lensKey): float

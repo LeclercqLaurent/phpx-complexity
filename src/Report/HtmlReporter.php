@@ -20,6 +20,8 @@ use PhpxComplexity\Qa\QaToolResult;
  * rend visible la DIVERGENCE — les points loin de la diagonale sont les méthodes
  * qu'une métrique isolée laisserait passer. Reste factuel : valeurs brutes,
  * compteurs, seuils. Aucun score.
+ *
+ * @phpstan-type Summary array{files: int, methods: int, methodsInViolation: int, totalViolations: int, parseErrors: int}
  */
 final class HtmlReporter
 {
@@ -93,8 +95,8 @@ final class HtmlReporter
     }
 
     /**
-     * @param array<string,mixed> $summary
-     * @param list<string>        $parseErrors
+     * @param Summary      $summary
+     * @param list<string> $parseErrors
      */
     private function headerHtml(array $summary, array $parseErrors): string
     {
@@ -215,7 +217,7 @@ final class HtmlReporter
      * @param list<string>       $parseErrors
      * @param list<QaToolResult> $qaResults
      *
-     * @return array<string,mixed>
+     * @return array{summary: Summary, lenses: list<array<string,mixed>>, methods: list<array<string,mixed>>}
      */
     private function buildData(array $results, int $files, array $parseErrors, array $qaResults, ?CoverageReport $coverage, ?TestPresence $presence): array
     {

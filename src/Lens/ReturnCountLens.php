@@ -45,7 +45,7 @@ final class ReturnCountLens implements Lens
 
     public function measure(Node\FunctionLike $function, array $stmts): float
     {
-        $visitor = new class extends NodeVisitorAbstract {
+        $visitor = new class () extends NodeVisitorAbstract {
             public int $count = 0;
 
             public function enterNode(Node $node): ?int

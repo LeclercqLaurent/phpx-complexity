@@ -53,7 +53,7 @@ final class EntanglementLens implements Lens
 
     public function measure(Node\FunctionLike $function, array $stmts): float
     {
-        $visitor = new class extends NodeVisitorAbstract {
+        $visitor = new class () extends NodeVisitorAbstract {
             /** @var array<string,true> */
             public array $nodes = [];
             /** @var array<string,true> */

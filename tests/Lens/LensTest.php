@@ -6,13 +6,13 @@ namespace PhpxComplexity\Tests\Lens;
 
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\ParserFactory;
+use PHPUnit\Framework\TestCase;
 use PhpxComplexity\Lens\CognitiveComplexityLens;
 use PhpxComplexity\Lens\EntanglementLens;
 use PhpxComplexity\Lens\Lens;
 use PhpxComplexity\Lens\LiveVariablePeakLens;
 use PhpxComplexity\Lens\ParameterCountLens;
 use PhpxComplexity\Lens\ReturnCountLens;
-use PHPUnit\Framework\TestCase;
 
 final class LensTest extends TestCase
 {

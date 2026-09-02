@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace PhpxComplexity\Tests\Config;
 
-use PhpxComplexity\Config\Config;
 use PHPUnit\Framework\TestCase;
+use PhpxComplexity\Config\Config;
 
 final class ConfigTest extends TestCase
 {

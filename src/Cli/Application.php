@@ -6,14 +6,14 @@ namespace PhpxComplexity\Cli;
 
 use PhpxComplexity\Analyzer\ProjectAnalyzer;
 use PhpxComplexity\Config\Config;
+use PhpxComplexity\Coverage\CoverageReportReader;
+use PhpxComplexity\Coverage\TestPresenceAnalyzer;
 use PhpxComplexity\Lens\CognitiveComplexityLens;
 use PhpxComplexity\Lens\EntanglementLens;
 use PhpxComplexity\Lens\Lens;
 use PhpxComplexity\Lens\LiveVariablePeakLens;
 use PhpxComplexity\Lens\ParameterCountLens;
 use PhpxComplexity\Lens\ReturnCountLens;
-use PhpxComplexity\Coverage\CoverageReportReader;
-use PhpxComplexity\Coverage\TestPresenceAnalyzer;
 use PhpxComplexity\Qa\QaPresenceChecker;
 use PhpxComplexity\Qa\QaToolRegistry;
 use PhpxComplexity\Report\ConsoleReporter;
@@ -42,9 +42,9 @@ final class Application
             return 0;
         }
 
-        $path = $options['path'] ?? getcwd();
-        if (!is_string($path) || !file_exists($path)) {
-            $this->stderr(sprintf('Chemin introuvable : %s', (string) $path));
+        $path = $this->resolvePath($options);
+        if (!file_exists($path)) {
+            $this->stderr(sprintf('Chemin introuvable : %s', $path));
 
             return 2;
         }
@@ -153,10 +153,7 @@ final class Application
 
         $file = $options['config'] ?? $this->autoDetectConfig($path);
         if (is_string($file) && is_file($file)) {
-            $data = json_decode((string) file_get_contents($file), true);
-            if (is_array($data)) {
-                $config = $config->withOverrides($data);
-            }
+            $config = $config->withOverrides($this->decodeConfigFile($file));
         }
 
         $cliOverrides = [];
@@ -168,6 +165,45 @@ final class Application
         }
 
         return [] === $cliOverrides ? $config : $config->withOverrides($cliOverrides);
+    }
+
+    /**
+     * Chemin audité : l'argument s'il est fourni, sinon le répertoire courant.
+     *
+     * @param array<string,string|bool|list<string>> $options
+     */
+    private function resolvePath(array $options): string
+    {
+        $requested = $options['path'] ?? null;
+        if (is_string($requested)) {
+            return $requested;
+        }
+        $cwd = getcwd();
+
+        return is_string($cwd) ? $cwd : '.';
+    }
+
+    /**
+     * Contenu JSON du fichier de config, réduit aux clés textuelles : un tableau
+     * JSON de premier niveau n'est pas une configuration valide.
+     *
+     * @return array<string,mixed>
+     */
+    private function decodeConfigFile(string $file): array
+    {
+        $decoded = json_decode((string) file_get_contents($file), true);
+        if (!is_array($decoded)) {
+            return [];
+        }
+
+        $data = [];
+        foreach ($decoded as $key => $value) {
+            if (is_string($key)) {
+                $data[$key] = $value;
+            }
+        }
+
+        return $data;
     }
 
     private function autoDetectConfig(string $path): ?string

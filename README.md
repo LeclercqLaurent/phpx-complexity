@@ -107,6 +107,23 @@ Place un `phpx-complexity.json` à la racine du projet audité (voir
 valeur), le rapport est écrit à ce chemin au lieu de la sortie standard.
 Précédence : `--html=FICHIER` (CLI) > `html.path` (config) > stdout.
 
+## Qualité du projet
+
+Le projet s'applique à lui-même les exigences qu'il audite :
+
+```bash
+scripts/qa.sh    # PHP-CS-Fixer (PSR-12) + PHPStan level 9 + PHPUnit
+composer qa      # idem
+```
+
+Garde-fou local à lancer avant chaque commit : un code de sortie non nul signale
+un commit à corriger. Comme le reste de l'outil, tout est hors-ligne.
+
+État actuel : **PHPStan level 9 sans erreur**, PSR-12 respecté, tests verts.
+Quelques méthodes dépassent encore les seuils de complexité de l'outil lui-même
+(dont `Cli\Application::run`) : dette assumée et visible, que la future baseline
+(`--baseline`) figera pour n'échouer que sur les régressions.
+
 ## Build PHAR
 
 ```bash

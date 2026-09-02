@@ -14,6 +14,7 @@ use PhpxComplexity\Config\Config;
 use PhpxComplexity\Lens\Lens;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use SplFileInfo;
 use Throwable;
 
 /**
@@ -94,7 +95,7 @@ final class ProjectAnalyzer
      */
     private function functions(array $ast): array
     {
-        $visitor = new class extends NodeVisitorAbstract {
+        $visitor = new class () extends NodeVisitorAbstract {
             /** @var list<Node\FunctionLike> */
             public array $found = [];
 
@@ -175,7 +176,7 @@ final class ProjectAnalyzer
             new RecursiveDirectoryIterator($path, FilesystemIterator::SKIP_DOTS)
         );
         foreach ($iterator as $file) {
-            if (!$file->isFile() || 'php' !== strtolower($file->getExtension())) {
+            if (!$file instanceof SplFileInfo || !$file->isFile() || 'php' !== strtolower($file->getExtension())) {
                 continue;
             }
             $real = $file->getPathname();

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PhpxComplexity\Tests\Report;
 
+use PHPUnit\Framework\TestCase;
 use PhpxComplexity\Analyzer\MethodResult;
 use PhpxComplexity\Config\Config;
 use PhpxComplexity\Lens\CognitiveComplexityLens;
@@ -13,7 +14,6 @@ use PhpxComplexity\Lens\LiveVariablePeakLens;
 use PhpxComplexity\Lens\ParameterCountLens;
 use PhpxComplexity\Lens\ReturnCountLens;
 use PhpxComplexity\Report\HtmlReporter;
-use PHPUnit\Framework\TestCase;
 
 final class HtmlReporterTest extends TestCase
 {

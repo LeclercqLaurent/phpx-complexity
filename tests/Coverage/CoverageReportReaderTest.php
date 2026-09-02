@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace PhpxComplexity\Tests\Coverage;
 
-use PhpxComplexity\Coverage\CoverageReportReader;
 use PHPUnit\Framework\TestCase;
+use PhpxComplexity\Coverage\CoverageReportReader;
 
 final class CoverageReportReaderTest extends TestCase
 {

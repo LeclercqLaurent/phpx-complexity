@@ -23,7 +23,7 @@ final class AstHelper
      */
     public static function localVariables(Node $root): array
     {
-        $visitor = new class extends NodeVisitorAbstract {
+        $visitor = new class () extends NodeVisitorAbstract {
             /** @var array<string,true> */
             public array $names = [];
             private bool $isRoot = true;
@@ -59,7 +59,7 @@ final class AstHelper
      */
     public static function variableSpans(array $stmts): array
     {
-        $visitor = new class extends NodeVisitorAbstract {
+        $visitor = new class () extends NodeVisitorAbstract {
             /** @var array<string,array{0:int,1:int}> */
             public array $spans = [];
 

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace PhpxComplexity\Tests\Qa;
 
+use PHPUnit\Framework\TestCase;
 use PhpxComplexity\Qa\QaPresenceChecker;
 use PhpxComplexity\Qa\QaToolRegistry;
 use PhpxComplexity\Qa\QaToolResult;
-use PHPUnit\Framework\TestCase;
 
 final class QaPresenceCheckerTest extends TestCase
 {

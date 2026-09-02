@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace PhpxComplexity\Tests\Coverage;
 
-use PhpxComplexity\Coverage\TestPresenceAnalyzer;
 use PHPUnit\Framework\TestCase;
+use PhpxComplexity\Coverage\TestPresenceAnalyzer;
 
 final class TestPresenceAnalyzerTest extends TestCase
 {

@@ -15,6 +15,8 @@
         "nikic/php-parser": "^5.0"
     },
     "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.0",
+        "phpstan/phpstan": "^2.0",
         "phpunit/phpunit": "^11.0"
     },
     "autoload": {
@@ -29,7 +31,11 @@
     },
     "bin": ["bin/phpx-complexity"],
     "scripts": {
-        "test": "phpunit"
+        "test": "phpunit",
+        "stan": "phpstan analyse",
+        "cs": "php-cs-fixer fix --dry-run --diff",
+        "cs-fix": "php-cs-fixer fix",
+        "qa": "scripts/qa.sh"
     },
     "config": {
         "sort-packages": true
