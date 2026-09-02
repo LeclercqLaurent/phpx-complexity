@@ -14,6 +14,8 @@ declare(strict_types=1);
  * Reste factuel : distributions, corrélations de rangs, effectifs. Aucun score.
  */
 
+require __DIR__ . '/stats.php';
+
 const LENSES = ['cognitive', 'params', 'returns', 'live_peak', 'entangle'];
 const THRESHOLDS = ['cognitive' => 15.0, 'params' => 7.0, 'returns' => 3.0, 'live_peak' => 8.0, 'entangle' => 3.0];
 
@@ -111,72 +113,4 @@ foreach (LENSES as $lens) {
         $missedByCognitive,
         0 === $flagged ? 0.0 : 100 * $missedByCognitive / $flagged,
     );
-}
-
-/**
- * @param list<float> $sorted
- */
-function percentile(array $sorted, float $q): float
-{
-    $n = count($sorted);
-
-    return 0 === $n ? 0.0 : $sorted[min($n - 1, (int) floor($q * $n))];
-}
-
-function fmt(float $value): string
-{
-    return floor($value) === $value ? (string) (int) $value : number_format($value, 2);
-}
-
-/**
- * Rangs avec égalités moyennées.
- *
- * @param list<float> $values
- *
- * @return list<float>
- */
-function ranks(array $values): array
-{
-    $n = count($values);
-    $order = range(0, $n - 1);
-    usort($order, static fn (int $a, int $b): int => $values[$a] <=> $values[$b]);
-
-    $ranks = array_fill(0, $n, 0.0);
-    $i = 0;
-    while ($i < $n) {
-        $j = $i;
-        while ($j + 1 < $n && $values[$order[$j + 1]] === $values[$order[$i]]) {
-            ++$j;
-        }
-        $average = ($i + $j) / 2 + 1;
-        for ($k = $i; $k <= $j; ++$k) {
-            $ranks[$order[$k]] = $average;
-        }
-        $i = $j + 1;
-    }
-
-    return $ranks;
-}
-
-/**
- * @param list<float> $x
- * @param list<float> $y
- */
-function pearson(array $x, array $y): float
-{
-    $n = count($x);
-    $meanX = array_sum($x) / $n;
-    $meanY = array_sum($y) / $n;
-    $covariance = 0.0;
-    $varianceX = 0.0;
-    $varianceY = 0.0;
-    for ($i = 0; $i < $n; ++$i) {
-        $dx = $x[$i] - $meanX;
-        $dy = $y[$i] - $meanY;
-        $covariance += $dx * $dy;
-        $varianceX += $dx * $dx;
-        $varianceY += $dy * $dy;
-    }
-
-    return 0.0 === $varianceX || 0.0 === $varianceY ? 0.0 : $covariance / sqrt($varianceX * $varianceY);
 }

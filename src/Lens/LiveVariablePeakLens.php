@@ -12,9 +12,18 @@ use PhpxComplexity\Ast\AstHelper;
  * de vie [première occurrence, dernière occurrence] recouvre une même ligne.
  * Proxy de la charge en mémoire de travail imposée au lecteur (cf. 7±2).
  *
- * Distinct de S107 : mesure la pression interne, pas la signature. Une factory
- * `restore()` à 8 champs peut avoir un pic élevé sans aucune logique réelle —
- * c'est pourquoi cette lentille se lit en regard de l'intrication.
+ * Les paramètres UTILISÉS dans le corps comptent, et c'est assumé : un argument
+ * qu'il faut garder en tête occupe bel et bien la mémoire de travail du lecteur.
+ * La lentille n'est donc PAS orthogonale à S107 — mesurée sur 40 594 méthodes,
+ * elle corrèle davantage avec le nombre de paramètres (0,70) qu'avec S3776
+ * (0,64).
+ *
+ * Le signal tient donc à la PAIRE avec l'intrication : une factory `restore()` à
+ * 8 champs a un pic élevé et une intrication nulle, une méthode qui entremêle
+ * réellement ses variables a les deux. Exclure les paramètres du calcul a été
+ * mesuré (docs/validation-lentilles.md) : cela décorrèle de S107 (0,29) mais
+ * rapproche la lentille de S3776 (0,71) et de l'intrication (0,83). La
+ * redondance serait déplacée, pas supprimée.
  */
 final class LiveVariablePeakLens implements Lens
 {
@@ -42,7 +51,9 @@ final class LiveVariablePeakLens implements Lens
         return 'Nombre maximal de variables locales « vivantes » en même temps '
             . '(durée de vie = de la première à la dernière utilisation, recouvrant '
             . 'une même ligne). Proxy de la charge en mémoire de travail du lecteur '
-            . '(7±2). Mesure la pression interne, pas la signature (≠ S107).';
+            . '(7±2). Les paramètres utilisés comptent : à lire en regard de '
+            . "l'intrication, qui seule sépare une signature large d'un "
+            . 'enchevêtrement réel.';
     }
 
     public function measure(Node\FunctionLike $function, array $stmts): float

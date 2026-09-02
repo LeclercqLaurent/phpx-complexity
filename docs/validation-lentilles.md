@@ -140,6 +140,53 @@ morts de S3776 que la lentille existe pour révéler. Elles sont figées dans la
 baseline plutôt que réécrites — les découper ne ferait que **déplacer**
 l'intrication, ce que le garde-fou n°3 interdit de récompenser.
 
+## 4. La variante « paramètres exclus » — mesurée et écartée
+
+L'étude laissait ouverte une piste : exclure les paramètres du calcul de vivacité
+pour coller à l'intention affichée (« la pression interne, pas la signature »).
+Elle a été implémentée et mesurée sur le même corpus (`tools/live-peak-variant.php`),
+seuils placés **au même centile** (p98,2) pour que la comparaison porte sur la
+mesure et non sur une sévérité différente : `live_peak > 8` contre
+`live_internal > 6`.
+
+### Corrélations de rangs
+
+| | `params` | `cognitive` | `entangle` |
+|---|---:|---:|---:|
+| `live_peak` (actuel) | 0,703 | 0,637 | 0,715 |
+| `live_internal` (variante) | **0,287** | **0,708** | **0,825** |
+
+### Rendement au seuil équivalent
+
+| | signalées | hors S3776 | hors S3776 **et** S107 |
+|---|---:|---:|---:|
+| `live_peak` | 530 | 114 (21,5 %) | 102 (19,2 %) |
+| `live_internal` | 601 | 136 (22,6 %) | 135 (22,5 %) |
+
+### Verdict : non adoptée
+
+La variante **fait ce qu'elle promet** — la corrélation à S107 s'effondre de 0,703
+à 0,287, elle cesse donc réellement de remesurer la signature. Mais elle le paie
+partout ailleurs : elle se **rapproche** de S3776 (0,637 → 0,708) et surtout de
+l'intrication (0,715 → **0,825**), au point que les deux lentilles maison
+deviendraient largement redondantes entre elles — précisément ce que le garde-fou
+n°1 interdit. Le gain en découvertes propres, lui, est marginal : 21,5 % → 22,6 %
+hors S3776.
+
+**La redondance serait déplacée, pas supprimée.** C'est, transposé aux métriques,
+le travers que le garde-fou n°3 dénonce pour le code : un découpage qui déplace
+l'entropie hors du champ de mesure ne l'a pas réduite.
+
+**Ce qui a donc été corrigé, c'est la documentation, pas la mesure.** Pour le
+lecteur, un paramètre qu'il faut garder en tête occupe bel et bien la mémoire de
+travail : les inclure est fidèle à la justification 7±2. L'erreur était la
+prétention « ≠ S107 », pas le calcul. Le signal tient à la **paire** avec
+l'intrication, seule capable de séparer une signature large d'un enchevêtrement
+réel.
+
+`tools/live-peak-variant.php` est conservé pour rejouer l'expérience si un élément
+nouveau la justifiait.
+
 ## Ce qu'il faut en retenir
 
 1. La **divergence entre lentilles est réelle et mesurable** : le cœur de l'outil
@@ -149,10 +196,10 @@ l'intrication, ce que le garde-fou n°3 interdit de récompenser.
 3. `entangle` **discrimine bien** le plat de l'enchevêtré ; son seuil d'origine
    le rendait inerte, **ramené à 3** il devient la plus utile des deux lentilles
    maison (38,8 % de découvertes propres contre 21,5 %).
-4. **La question ouverte est désormais `live_peak`**, pas `entangle` : faible
-   rendement marginal, et une corrélation à S107 que sa documentation nie. Deux
-   pistes à trancher — exclure les paramètres du calcul de vivacité pour coller à
-   l'intention affichée (« la pression interne, pas la signature »), ou assumer
-   qu'il ne vaut qu'en paire avec `entangle` et le documenter ainsi.
-5. Aucune nouvelle lentille ne devrait être ajoutée avant que ce point soit
-   réglé : le garde-fou de non-redondance est déjà sévère pour l'existant.
+4. `live_peak` reste la lentille au plus faible rendement marginal et **n'est pas
+   orthogonale à S107** — c'est désormais assumé et documenté. La variante qui
+   aurait corrigé ce point a été mesurée puis **écartée** : elle déplaçait la
+   redondance vers S3776 et l'intrication.
+5. Aucune nouvelle lentille ne devrait être ajoutée sans repasser par ce
+   protocole : le garde-fou de non-redondance est déjà sévère pour l'existant, et
+   l'outillage de mesure est maintenant en place pour l'appliquer.
