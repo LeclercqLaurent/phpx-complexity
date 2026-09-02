@@ -67,10 +67,26 @@ final class Application
      */
     private function usageError(Options $options): ?string
     {
+        if ([] !== $options->unknown) {
+            return sprintf(
+                "Option inconnue : %s\nVoir « phpx-complexity --help » pour la liste.",
+                implode(', ', $options->unknown),
+            );
+        }
+
         if ($options->failOnNew && null === $options->baselineFile) {
             return '--fail-on-new attend une référence : ajouter --baseline=FICHIER.';
         }
 
+        return $this->targetError($options);
+    }
+
+    /**
+     * La cible attendue diffère selon la commande : une URL de dépôt pour fetch,
+     * un chemin existant pour l'audit local.
+     */
+    private function targetError(Options $options): ?string
+    {
         if (Command::Fetch === $options->command) {
             return null === $options->target ? 'La sous-commande « fetch » attend une URL de dépôt.' : null;
         }

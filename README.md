@@ -26,7 +26,10 @@ Sur un code propre, les lentilles convergent. Leur **divergence** est le signal.
 | `entangle` | — | Intrication : degré moyen du graphe de co-occurrence des variables |
 
 `cognitive`, `params` et `returns` sont des réimplémentations natives (php-parser
-pur, sans PHPStan). `live_peak` et `entangle` sont propres à l'outil.
+pur, sans PHPStan). `live_peak` et `entangle` sont propres à l'outil — leur
+non-redondance et leurs seuils sont mesurés sur 40 594 méthodes de 10 projets
+publics dans [docs/validation-lentilles.md](docs/validation-lentilles.md),
+reproductible via `tools/corpus-study.sh`.
 
 ## Présence des outils de QA (`--qa`)
 

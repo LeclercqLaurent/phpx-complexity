@@ -16,6 +16,15 @@ final class Options
     /** @var list<string> */
     public readonly array $exclude;
 
+    /**
+     * Options non reconnues. Les ignorer en silence ferait passer une faute de
+     * frappe pour un succès : « --jsno » rendrait un rapport console avec un
+     * code 0, et la CI croirait avoir du JSON.
+     *
+     * @var list<string>
+     */
+    public readonly array $unknown;
+
     public readonly Command $command;
     /** Chemin local à auditer, ou URL du dépôt en sous-commande « fetch ». */
     public readonly ?string $target;
@@ -60,6 +69,7 @@ final class Options
         $this->failOnNew = isset($raw['fail-on-new']);
         $this->top = null === $top ? null : (int) $top;
         $this->exclude = self::texts($raw, 'exclude');
+        $this->unknown = self::texts($raw, 'unknown');
     }
 
     /**
@@ -117,9 +127,7 @@ final class Options
             if (null === $valued) {
                 // Tout ce qui ne commence pas par un tiret est positionnel :
                 // un verbe éventuel, puis la cible.
-                if (!str_starts_with($arg, '-')) {
-                    $repeated['positionals'][] = $arg;
-                }
+                $repeated[str_starts_with($arg, '-') ? 'unknown' : 'positionals'][] = $arg;
                 continue;
             }
 

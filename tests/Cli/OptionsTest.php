@@ -94,11 +94,22 @@ final class OptionsTest extends TestCase
         self::assertFalse($options->failOnNew);
     }
 
-    public function testUnknownFlagIsIgnoredAndNotTakenForAPath(): void
+    /**
+     * Une option mal orthographiée doit être signalée, jamais absorbée : sinon
+     * « --jsno » rendrait un rapport console avec un code de sortie 0.
+     */
+    public function testUnknownFlagIsRecordedAndNotTakenForAPath(): void
     {
-        $options = new Options(['--inconnu', 'src/']);
+        $options = new Options(['--jsno', 'src/']);
 
+        self::assertSame(['--jsno'], $options->unknown);
         self::assertSame('src/', $options->target);
+        self::assertFalse($options->json);
+    }
+
+    public function testKnownFlagsLeaveNothingUnknown(): void
+    {
+        self::assertSame([], (new Options(['--json', '--qa', 'src/']))->unknown);
     }
 
     public function testFetchVerbConsumesTheFirstPositional(): void
