@@ -1,0 +1,7 @@
+{
+    "tool": "phpx-complexity",
+    "lenses": { "cognitive": { "threshold": 0 } },
+    "methods": [
+        { "file": "src/Sample.php", "name": "compute", "line": 9, "metrics": { "cognitive": 1 } }
+    ]
+}

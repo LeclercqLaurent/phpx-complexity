@@ -6,7 +6,7 @@ namespace PhpxComplexity\Analyzer;
 
 /**
  * Résultat d'analyse d'une méthode/fonction : valeurs brutes par lentille, plus
- * les rangs centiles et le score de divergence calculés à l'échelle du projet.
+ * les rangs centiles et l'écart de divergence calculés à l'échelle du projet.
  */
 final class MethodResult
 {

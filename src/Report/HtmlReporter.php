@@ -6,6 +6,8 @@ namespace PhpxComplexity\Report;
 
 use PhpxComplexity\Analyzer\MethodResult;
 use PhpxComplexity\Audit\AuditResult;
+use PhpxComplexity\Baseline\Comparison;
+use PhpxComplexity\Baseline\DeltaCategory;
 use PhpxComplexity\Config\Config;
 use PhpxComplexity\Coverage\CoverageReport;
 use PhpxComplexity\Coverage\TestPresence;
@@ -35,7 +37,7 @@ final class HtmlReporter
     ) {
     }
 
-    public function render(AuditResult $audit): string
+    public function render(AuditResult $audit, ?Comparison $comparison = null): string
     {
         $data = $this->buildData($audit);
         $json = (string) json_encode(
@@ -49,6 +51,7 @@ final class HtmlReporter
         $generated = $this->headerHtml($summary, $audit->parseErrors);
         $qaSection = [] !== $audit->qaResults ? $this->qaHtml($audit->qaResults) : '';
         $coverageSection = (null !== $audit->coverage || null !== $audit->presence) ? $this->coverageHtml($audit->coverage, $audit->presence) : '';
+        $baselineSection = null !== $comparison ? $this->baselineHtml($comparison) : '';
 
         return <<<HTML
             <!DOCTYPE html>
@@ -81,6 +84,7 @@ final class HtmlReporter
               <p class="hint">Cliquez un en-tête pour trier. <span class="viol-key">!</span> = seuil dépassé.</p>
               <div class="tablewrap"><table id="methods"></table></div>
             </section>
+            {$baselineSection}
             {$qaSection}
             {$coverageSection}
             <script type="application/json" id="data">{$json}</script>
@@ -269,6 +273,50 @@ final class HtmlReporter
         }
 
         return $payload;
+    }
+
+    private function baselineHtml(Comparison $comparison): string
+    {
+        $rows = $this->deltaRows($comparison, DeltaCategory::NewViolation, 'nouvelle')
+            . $this->deltaRows($comparison, DeltaCategory::Worsened, 'aggravée')
+            . $this->deltaRows($comparison, DeltaCategory::Resolved, 'résolue');
+        if ('' === $rows) {
+            $rows = '<tr><td colspan="5" class="mut">Aucun écart : rien n\'a bougé depuis l\'instantané.</td></tr>';
+        }
+
+        $source = $this->e($comparison->source);
+        $regressions = $comparison->regressionCount();
+        $appeared = count($comparison->appeared);
+        $disappeared = count($comparison->disappeared);
+
+        return <<<HTML
+            <section class="card">
+              <h2>Baseline — écarts par rapport à {$source}</h2>
+              <p class="hint">{$regressions} régression(s) · {$appeared} méthode(s) apparue(s) · {$disappeared} disparue(s).
+              Les violations héritées et inchangées ne figurent pas : seul le mouvement est montré.</p>
+              <div class="tablewrap"><table class="static"><tr><th>Nature</th><th>Lentille</th><th>Avant</th><th>Après</th><th>Méthode</th></tr>{$rows}</table></div>
+            </section>
+            HTML;
+    }
+
+    private function deltaRows(Comparison $comparison, DeltaCategory $category, string $label): string
+    {
+        $class = DeltaCategory::Resolved === $category ? 'ok' : 'viol-key';
+        $rows = '';
+        foreach ($comparison->of($category) as $delta) {
+            $rows .= sprintf(
+                '<tr><td><span class="%s">%s</span></td><td class="meth">%s</td><td>%s</td><td>%s</td><td class="meth">%s::%s</td></tr>',
+                $class,
+                $this->e($label),
+                $this->e($delta->lens),
+                null === $delta->before ? '—' : $this->e($this->num($delta->before)),
+                $this->e($this->num($delta->after)),
+                $this->e($delta->file),
+                $this->e($delta->name),
+            );
+        }
+
+        return $rows;
     }
 
     private function e(string $value): string

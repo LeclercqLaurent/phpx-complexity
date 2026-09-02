@@ -6,6 +6,9 @@ namespace PhpxComplexity\Report;
 
 use PhpxComplexity\Analyzer\MethodResult;
 use PhpxComplexity\Audit\AuditResult;
+use PhpxComplexity\Baseline\Comparison;
+use PhpxComplexity\Baseline\DeltaCategory;
+use PhpxComplexity\Baseline\MethodDelta;
 use PhpxComplexity\Config\Config;
 use PhpxComplexity\Coverage\CoverageReport;
 use PhpxComplexity\Coverage\TestPresence;
@@ -26,7 +29,7 @@ final class JsonReporter
     ) {
     }
 
-    public function render(AuditResult $audit): string
+    public function render(AuditResult $audit, ?Comparison $comparison = null): string
     {
         $results = $audit->results;
         usort($results, static fn (MethodResult $a, MethodResult $b) => $b->divergence <=> $a->divergence);
@@ -89,7 +92,49 @@ final class JsonReporter
             $payload['coverage'] = $this->coveragePayload($audit->coverage, $audit->presence);
         }
 
+        if (null !== $comparison) {
+            $payload['baseline'] = $this->baselinePayload($comparison);
+        }
+
         return (string) json_encode($payload, \JSON_PRETTY_PRINT | \JSON_UNESCAPED_SLASHES | \JSON_UNESCAPED_UNICODE);
+    }
+
+    /**
+     * @return array<string,mixed>
+     */
+    private function baselinePayload(Comparison $comparison): array
+    {
+        return [
+            'source' => $comparison->source,
+            'newViolations' => $this->deltaPayload($comparison->of(DeltaCategory::NewViolation)),
+            'worsened' => $this->deltaPayload($comparison->of(DeltaCategory::Worsened)),
+            'resolved' => $this->deltaPayload($comparison->of(DeltaCategory::Resolved)),
+            'appeared' => count($comparison->appeared),
+            'disappeared' => count($comparison->disappeared),
+            'thresholdChanges' => $comparison->thresholdChanges,
+            'regressions' => $comparison->regressionCount(),
+        ];
+    }
+
+    /**
+     * @param list<MethodDelta> $deltas
+     *
+     * @return list<array<string,mixed>>
+     */
+    private function deltaPayload(array $deltas): array
+    {
+        $payload = [];
+        foreach ($deltas as $delta) {
+            $payload[] = [
+                'file' => $delta->file,
+                'name' => $delta->name,
+                'lens' => $delta->lens,
+                'before' => $delta->before,
+                'after' => $delta->after,
+            ];
+        }
+
+        return $payload;
     }
 
     /**

@@ -1,0 +1,8 @@
+{
+    "tool": "phpx-complexity",
+    "lenses": {},
+    "methods": [
+        { "file": "src/Two.php", "name": "render", "line": 40, "metrics": { "cognitive": 2 } },
+        { "file": "src/Two.php", "name": "render", "line": 10, "metrics": { "cognitive": 1 } }
+    ]
+}

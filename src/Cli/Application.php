@@ -6,11 +6,16 @@ namespace PhpxComplexity\Cli;
 
 use PhpxComplexity\Audit\AuditResult;
 use PhpxComplexity\Audit\AuditRunner;
+use PhpxComplexity\Baseline\BaselineComparator;
+use PhpxComplexity\Baseline\Comparison;
+use PhpxComplexity\Baseline\Exception\BaselineException;
+use PhpxComplexity\Baseline\Snapshot;
 use PhpxComplexity\Config\Config;
 use PhpxComplexity\Lens\Lens;
 use PhpxComplexity\Lens\LensRegistry;
 use PhpxComplexity\Report\ConsoleReporter;
 use PhpxComplexity\Report\CoverageReporter;
+use PhpxComplexity\Report\DeltaReporter;
 use PhpxComplexity\Report\HtmlReporter;
 use PhpxComplexity\Report\JsonReporter;
 use PhpxComplexity\Report\QaReporter;
@@ -38,18 +43,68 @@ final class Application
         }
 
         $path = $this->resolvePath($options);
-        if (!file_exists($path)) {
-            $this->stderr(sprintf('Chemin introuvable : %s', $path));
+        $error = $this->usageError($options, $path);
+        if (null !== $error) {
+            $this->stderr($error);
 
             return 2;
         }
 
+        return $this->audit($path, $options);
+    }
+
+    /**
+     * Options incohérentes entre elles ou chemin inutilisable : message d'erreur,
+     * ou null si l'invocation tient debout.
+     */
+    private function usageError(Options $options, string $path): ?string
+    {
+        if (!file_exists($path)) {
+            return sprintf('Chemin introuvable : %s', $path);
+        }
+
+        if ($options->failOnNew && null === $options->baselineFile) {
+            return '--fail-on-new attend une référence : ajouter --baseline=FICHIER.';
+        }
+
+        return null;
+    }
+
+    private function audit(string $path, Options $options): int
+    {
         $config = $this->loadConfig($path, $options);
         $lenses = LensRegistry::defaults($config);
-        $audit = (new AuditRunner($lenses, $config))->run($path, $options->qa, $options->coverage);
-        $emitted = $this->emit($audit, $options, $config, $lenses);
+        $result = (new AuditRunner($lenses, $config))->run($path, $options->qa, $options->coverage);
 
-        return 0 === $emitted ? $this->exitCode($audit, $options, $config, $lenses) : $emitted;
+        try {
+            $comparison = $this->compare($result, $options, $config, $lenses);
+        } catch (BaselineException $e) {
+            $this->stderr($e->getMessage());
+
+            return 2;
+        }
+
+        $emitted = $this->emit($result, $comparison, $options, $config, $lenses);
+
+        return 0 === $emitted ? $this->exitCode($result, $comparison, $options, $config, $lenses) : $emitted;
+    }
+
+    /**
+     * @param list<Lens> $lenses
+     *
+     * @throws BaselineException
+     */
+    private function compare(AuditResult $audit, Options $options, Config $config, array $lenses): ?Comparison
+    {
+        if (null === $options->baselineFile) {
+            return null;
+        }
+
+        return (new BaselineComparator($lenses, $config))->compare(
+            Snapshot::fromFile($options->baselineFile),
+            Snapshot::fromAudit($audit, $config, $lenses),
+            $options->baselineFile,
+        );
     }
 
     /**
@@ -57,10 +112,10 @@ final class Application
      *
      * @param list<Lens> $lenses
      */
-    private function emit(AuditResult $audit, Options $options, Config $config, array $lenses): int
+    private function emit(AuditResult $audit, ?Comparison $comparison, Options $options, Config $config, array $lenses): int
     {
         if ($options->json) {
-            $this->stdout((new JsonReporter($lenses, $config))->render($audit));
+            $this->stdout((new JsonReporter($lenses, $config))->render($audit, $comparison));
 
             return 0;
         }
@@ -69,10 +124,10 @@ final class Application
             // Précédence : --html=FICHIER (CLI) > html.path (config) > stdout.
             $target = $options->htmlTarget ?? $config->htmlPath;
 
-            return $this->emitHtml((new HtmlReporter($lenses, $config))->render($audit), $target);
+            return $this->emitHtml((new HtmlReporter($lenses, $config))->render($audit, $comparison), $target);
         }
 
-        $this->emitConsole($audit, $options, $config, $lenses);
+        $this->emitConsole($audit, $comparison, $options, $config, $lenses);
 
         return 0;
     }
@@ -117,9 +172,13 @@ final class Application
     /**
      * @param list<Lens> $lenses
      */
-    private function emitConsole(AuditResult $audit, Options $options, Config $config, array $lenses): void
+    private function emitConsole(AuditResult $audit, ?Comparison $comparison, Options $options, Config $config, array $lenses): void
     {
         $this->stdout((new ConsoleReporter($lenses, $config))->render($audit, $options->showDivergence));
+
+        if (null !== $comparison) {
+            $this->stdout("\n" . (new DeltaReporter())->render($comparison));
+        }
 
         if ([] !== $audit->qaResults) {
             $this->stdout("\n" . (new QaReporter())->render($audit->qaResults));
@@ -139,8 +198,13 @@ final class Application
      *
      * @param list<Lens> $lenses
      */
-    private function exitCode(AuditResult $audit, Options $options, Config $config, array $lenses): int
+    private function exitCode(AuditResult $audit, ?Comparison $comparison, Options $options, Config $config, array $lenses): int
     {
+        // Cliquet : seules les régressions échouent, l'existant hérité passe.
+        if ($options->failOnNew && null !== $comparison && $comparison->regressionCount() > 0) {
+            return 1;
+        }
+
         if (!$options->failOnViolations) {
             return 0;
         }
@@ -263,6 +327,10 @@ final class Application
               --coverage             Lit un rapport de couverture (clover/cobertura) s'il
                                      existe + faits de présence de tests (statique)
               --config=FICHIER       Fichier de config (défaut : phpx-complexity.json)
+              --baseline=FICHIER     Compare à un instantané figé (une sortie --json).
+                                     Affiche nouvelles violations, aggravées, résolues
+              --fail-on-new          Code de sortie 1 sur les seules RÉGRESSIONS par
+                                     rapport à la baseline : l'existant hérité passe
               --fail-on-violations   Code de sortie 1 si un seuil est dépassé, ou si un
                                      outil QA requis manque (mode gate)
               --top=N                Nombre de lignes du classement

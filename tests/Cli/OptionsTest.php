@@ -75,6 +75,22 @@ final class OptionsTest extends TestCase
         self::assertSame(['/tests/', '/fixtures/'], $options->exclude);
     }
 
+    public function testBaselineOptions(): void
+    {
+        $options = new Options(['--baseline=baseline.json', '--fail-on-new']);
+
+        self::assertSame('baseline.json', $options->baselineFile);
+        self::assertTrue($options->failOnNew);
+    }
+
+    public function testBaselineOptionsDefaultToOff(): void
+    {
+        $options = new Options([]);
+
+        self::assertNull($options->baselineFile);
+        self::assertFalse($options->failOnNew);
+    }
+
     public function testUnknownFlagIsIgnoredAndNotTakenForAPath(): void
     {
         $options = new Options(['--inconnu', 'src/']);

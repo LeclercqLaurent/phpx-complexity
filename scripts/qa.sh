@@ -27,6 +27,9 @@ run() {
 run "PHP-CS-Fixer (PSR-12)" php vendor/bin/php-cs-fixer fix --dry-run --diff
 run "PHPStan (level 9)" php vendor/bin/phpstan analyse --no-progress
 run "PHPUnit" php vendor/bin/phpunit
+# Dogfooding : l'outil s'audite lui-même en mode cliquet. Les trois dépassements
+# hérités figurent dans baseline.json et passent ; toute régression échoue.
+run "phpx-complexity (cliquet)" php bin/phpx-complexity src/ --baseline=baseline.json --fail-on-new
 
 printf '\n'
 [ "$status" -eq 0 ] && printf '\033[32mQA OK\033[0m\n' || printf '\033[31mQA en échec\033[0m\n'

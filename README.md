@@ -60,6 +60,54 @@ il ne la calcule pas. `--coverage` produit donc deux blocs honnêtes et distinct
 bin/phpx-complexity /chemin/vers/projet --coverage
 ```
 
+## Baseline & deltas (`--baseline`)
+
+Sur un projet existant, `--fail-on-violations` échoue dès le premier run : des
+violations héritées que personne ne corrigera d'un coup, donc on désactive le
+gate et il ne sert plus à rien. La baseline **accepte l'existant** et ne fait
+échouer que ce qui **empire** — le modèle de PHPStan ou Psalm.
+
+C'est aussi la réponse à la limite philosophique de l'outil : l'entropie
+essentielle étant irréductible, on n'exige pas zéro complexité, on exige qu'elle
+ne régresse pas.
+
+```bash
+# 1. Figer l'instantané de référence (une fois, committé dans le dépôt)
+bin/phpx-complexity src/ --json > baseline.json
+
+# 2. Comparer l'état courant à la référence
+bin/phpx-complexity src/ --baseline=baseline.json
+
+# 3. Gate CI : n'échouer que sur les régressions
+bin/phpx-complexity src/ --baseline=baseline.json --fail-on-new
+```
+
+Un instantané **est une sortie `--json` figée** : aucun format n'est inventé pour
+la baseline. Le rapport distingue quatre faits :
+
+| Catégorie | Sens |
+|---|---|
+| **Nouvelles violations** | dépasse le seuil maintenant, pas dans la référence (méthode neuve incluse) |
+| **Violations aggravées** | déjà au-dessus, valeur en hausse |
+| **Violations résolues** | était au-dessus, ne l'est plus |
+| **Apparues / disparues** | méthodes ajoutées ou supprimées, pour le contexte |
+
+Une violation héritée **inchangée** n'apparaît nulle part : seul le mouvement est
+montré. `--fail-on-new` sort en 1 sur les seules nouvelles et aggravées.
+
+Points de méthode :
+
+- **L'identité d'une méthode est `fichier::méthode`**, jamais la ligne — celle-ci
+  se décale au moindre ajout en amont et ferait passer un fichier entier pour
+  réécrit. Les homonymes d'un même fichier sont départagés par un rang dans
+  l'ordre des lignes. Un renommage apparaît en disparue + apparue (pas de
+  détection de rename, comme `git` sans heuristique).
+- **Le classement se fait sur les seuils courants**, ceux que le gate doit
+  imposer. Si un seuil a bougé depuis l'instantané, le rapport le signale : les
+  valeurs brutes, elles, restent comparables.
+- **`baseline.json` se committe et se régénère volontairement**, jamais
+  automatiquement — sans quoi le cliquet ne retient plus rien.
+
 ## Installation
 
 ```bash
@@ -123,10 +171,12 @@ composer qa      # idem
 Garde-fou local à lancer avant chaque commit : un code de sortie non nul signale
 un commit à corriger. Comme le reste de l'outil, tout est hors-ligne.
 
-État actuel : **PHPStan level 9 sans erreur**, PSR-12 respecté, tests verts.
-Quelques méthodes dépassent encore les seuils de complexité de l'outil lui-même
-(dont `Cli\Application::run`) : dette assumée et visible, que la future baseline
-(`--baseline`) figera pour n'échouer que sur les régressions.
+Le script inclut l'outil **appliqué à son propre code, en mode cliquet** : les
+quelques dépassements hérités sont figés dans `baseline.json` et passent, toute
+régression échoue.
+
+État actuel : **PHPStan level 9 sans erreur**, PSR-12 respecté, tests verts,
+trois dépassements hérités figés.
 
 ## Build PHAR
 

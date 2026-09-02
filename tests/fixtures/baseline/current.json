@@ -1,0 +1,14 @@
+{
+    "tool": "phpx-complexity",
+    "lenses": {
+        "cognitive": { "threshold": 15 }
+    },
+    "methods": [
+        { "file": "src/A.php", "name": "stable",   "line": 11, "metrics": { "cognitive": 20 } },
+        { "file": "src/A.php", "name": "worse",    "line": 21, "metrics": { "cognitive": 22 } },
+        { "file": "src/A.php", "name": "fixed",    "line": 31, "metrics": { "cognitive": 4 } },
+        { "file": "src/A.php", "name": "crossing", "line": 41, "metrics": { "cognitive": 16 } },
+        { "file": "src/B.php", "name": "fresh",    "line": 50, "metrics": { "cognitive": 19 } },
+        { "file": "src/B.php", "name": "clean",    "line": 60, "metrics": { "cognitive": 2 } }
+    ]
+}

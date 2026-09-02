@@ -26,6 +26,8 @@ final class Options
     public readonly bool $failOnViolations;
     public readonly bool $showDivergence;
     public readonly ?string $configFile;
+    public readonly ?string $baselineFile;
+    public readonly bool $failOnNew;
     public readonly ?int $top;
 
     /**
@@ -46,11 +48,48 @@ final class Options
         $this->failOnViolations = isset($raw['fail-on-violations']);
         $this->showDivergence = !isset($raw['no-divergence']);
         $this->configFile = self::text($raw, 'config');
+        $this->baselineFile = self::text($raw, 'baseline');
+        $this->failOnNew = isset($raw['fail-on-new']);
         $this->top = null === $top ? null : (int) $top;
         $this->exclude = self::texts($raw, 'exclude');
     }
 
     /**
+     * Drapeaux sans valeur : libellé accepté => clé interne.
+     */
+    private const FLAGS = [
+        '-h' => 'help',
+        '--help' => 'help',
+        '--json' => 'json',
+        '--html' => 'html',
+        '--no-divergence' => 'no-divergence',
+        '--qa' => 'qa',
+        '--coverage' => 'coverage',
+        '--fail-on-violations' => 'fail-on-violations',
+        '--fail-on-new' => 'fail-on-new',
+    ];
+
+    /**
+     * Options à valeur : préfixe => clé interne.
+     */
+    private const VALUED = [
+        '--html=' => 'html',
+        '--exclude=' => 'exclude',
+        '--config=' => 'config',
+        '--baseline=' => 'baseline',
+        '--top=' => 'top',
+    ];
+
+    /**
+     * Clés dont chaque occurrence s'ajoute aux précédentes.
+     */
+    private const REPEATABLE = ['exclude'];
+
+    /**
+     * Une table plutôt qu'une chaîne de conditions : ajouter une option devient
+     * une ligne de constante, et le coût de lecture ne croît plus avec le nombre
+     * d'options acceptées.
+     *
      * @param list<string> $args
      *
      * @return array<string,string|bool|list<string>>
@@ -58,35 +97,46 @@ final class Options
     private static function parse(array $args): array
     {
         $options = [];
+        $repeated = [];
         foreach ($args as $arg) {
-            if ('-h' === $arg || '--help' === $arg) {
-                $options['help'] = true;
-            } elseif ('--json' === $arg) {
-                $options['json'] = true;
-            } elseif ('--html' === $arg) {
-                $options['html'] = true;
-            } elseif (str_starts_with($arg, '--html=')) {
-                $options['html'] = substr($arg, 7);
-            } elseif ('--no-divergence' === $arg) {
-                $options['no-divergence'] = true;
-            } elseif ('--qa' === $arg) {
-                $options['qa'] = true;
-            } elseif ('--coverage' === $arg) {
-                $options['coverage'] = true;
-            } elseif ('--fail-on-violations' === $arg) {
-                $options['fail-on-violations'] = true;
-            } elseif (str_starts_with($arg, '--exclude=')) {
-                $options['exclude'][] = substr($arg, 10);
-            } elseif (str_starts_with($arg, '--config=')) {
-                $options['config'] = substr($arg, 9);
-            } elseif (str_starts_with($arg, '--top=')) {
-                $options['top'] = substr($arg, 6);
-            } elseif (!str_starts_with($arg, '-')) {
-                $options['path'] = $arg;
+            if (isset(self::FLAGS[$arg])) {
+                $options[self::FLAGS[$arg]] = true;
+                continue;
+            }
+
+            $valued = self::valued($arg);
+            if (null === $valued) {
+                // Tout ce qui ne commence pas par un tiret est le chemin audité.
+                if (!str_starts_with($arg, '-')) {
+                    $options['path'] = $arg;
+                }
+                continue;
+            }
+
+            [$key, $value] = $valued;
+            if (in_array($key, self::REPEATABLE, true)) {
+                $repeated[$key][] = $value;
+                continue;
+            }
+
+            $options[$key] = $value;
+        }
+
+        return $options + $repeated;
+    }
+
+    /**
+     * @return array{0:string,1:string}|null
+     */
+    private static function valued(string $arg): ?array
+    {
+        foreach (self::VALUED as $prefix => $key) {
+            if (str_starts_with($arg, $prefix)) {
+                return [$key, substr($arg, strlen($prefix))];
             }
         }
 
-        return $options;
+        return null;
     }
 
     /**
