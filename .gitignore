@@ -5,3 +5,4 @@
 *.phar
 /tmp/
 /.php-cs-fixer.cache
+/var/

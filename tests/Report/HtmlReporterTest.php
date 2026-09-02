@@ -6,6 +6,7 @@ namespace PhpxComplexity\Tests\Report;
 
 use PHPUnit\Framework\TestCase;
 use PhpxComplexity\Analyzer\MethodResult;
+use PhpxComplexity\Audit\AuditResult;
 use PhpxComplexity\Config\Config;
 use PhpxComplexity\Lens\CognitiveComplexityLens;
 use PhpxComplexity\Lens\EntanglementLens;
@@ -73,7 +74,7 @@ final class HtmlReporterTest extends TestCase
     private function render(array $results): string
     {
         return (new HtmlReporter($this->lenses(), Config::defaults()))
-            ->render($results, files: 3, parseErrors: []);
+            ->render(new AuditResult($results, files: 3, parseErrors: []));
     }
 
     /**

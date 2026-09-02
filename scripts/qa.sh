@@ -10,7 +10,6 @@ if [ ! -d vendor ]; then
     exit 2
 fi
 
-export PHP_CS_FIXER_IGNORE_ENV=1
 status=0
 
 run() {

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhpxComplexity\Report;
 
 use PhpxComplexity\Analyzer\MethodResult;
+use PhpxComplexity\Audit\AuditResult;
 use PhpxComplexity\Config\Config;
 use PhpxComplexity\Coverage\CoverageReport;
 use PhpxComplexity\Coverage\TestPresence;
@@ -25,13 +26,9 @@ final class JsonReporter
     ) {
     }
 
-    /**
-     * @param list<MethodResult> $results
-     * @param list<string>       $parseErrors
-     * @param list<QaToolResult> $qaResults
-     */
-    public function render(array $results, int $files, array $parseErrors, array $qaResults = [], ?CoverageReport $coverage = null, ?TestPresence $presence = null): string
+    public function render(AuditResult $audit): string
     {
+        $results = $audit->results;
         usort($results, static fn (MethodResult $a, MethodResult $b) => $b->divergence <=> $a->divergence);
 
         $lenses = [];
@@ -74,22 +71,22 @@ final class JsonReporter
         $payload = [
             'tool' => 'phpx-complexity',
             'summary' => [
-                'files' => $files,
+                'files' => $audit->files,
                 'methods' => count($results),
                 'methodsInViolation' => $methodsInViolation,
                 'totalViolations' => $totalViolations,
-                'parseErrors' => $parseErrors,
+                'parseErrors' => $audit->parseErrors,
             ],
             'lenses' => $lenses,
             'methods' => $methods,
         ];
 
-        if ([] !== $qaResults) {
-            $payload['qa'] = $this->qaPayload($qaResults);
+        if ([] !== $audit->qaResults) {
+            $payload['qa'] = $this->qaPayload($audit->qaResults);
         }
 
-        if (null !== $coverage || null !== $presence) {
-            $payload['coverage'] = $this->coveragePayload($coverage, $presence);
+        if (null !== $audit->coverage || null !== $audit->presence) {
+            $payload['coverage'] = $this->coveragePayload($audit->coverage, $audit->presence);
         }
 
         return (string) json_encode($payload, \JSON_PRETTY_PRINT | \JSON_UNESCAPED_SLASHES | \JSON_UNESCAPED_UNICODE);

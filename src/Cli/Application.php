@@ -4,18 +4,11 @@ declare(strict_types=1);
 
 namespace PhpxComplexity\Cli;
 
-use PhpxComplexity\Analyzer\ProjectAnalyzer;
+use PhpxComplexity\Audit\AuditResult;
+use PhpxComplexity\Audit\AuditRunner;
 use PhpxComplexity\Config\Config;
-use PhpxComplexity\Coverage\CoverageReportReader;
-use PhpxComplexity\Coverage\TestPresenceAnalyzer;
-use PhpxComplexity\Lens\CognitiveComplexityLens;
-use PhpxComplexity\Lens\EntanglementLens;
 use PhpxComplexity\Lens\Lens;
-use PhpxComplexity\Lens\LiveVariablePeakLens;
-use PhpxComplexity\Lens\ParameterCountLens;
-use PhpxComplexity\Lens\ReturnCountLens;
-use PhpxComplexity\Qa\QaPresenceChecker;
-use PhpxComplexity\Qa\QaToolRegistry;
+use PhpxComplexity\Lens\LensRegistry;
 use PhpxComplexity\Report\ConsoleReporter;
 use PhpxComplexity\Report\CoverageReporter;
 use PhpxComplexity\Report\HtmlReporter;
@@ -23,8 +16,10 @@ use PhpxComplexity\Report\JsonReporter;
 use PhpxComplexity\Report\QaReporter;
 
 /**
- * Point d'entrée CLI. Codes de sortie : 0 = OK, 1 = violations (mode gate),
- * 2 = erreur d'usage / d'E-S.
+ * Point d'entrée CLI : résout les options et le chemin, délègue l'audit, choisit
+ * un rapport, calcule le code de sortie. Aucune logique de mesure ici.
+ *
+ * Codes de sortie : 0 = OK, 1 = violations (mode gate), 2 = erreur d'usage ou d'E-S.
  */
 final class Application
 {
@@ -35,8 +30,8 @@ final class Application
      */
     public function run(array $argv): int
     {
-        $options = $this->parse(array_slice($argv, 1));
-        if (isset($options['help'])) {
+        $options = new Options(array_slice($argv, 1));
+        if ($options->help) {
             $this->stdout($this->usage());
 
             return 0;
@@ -50,76 +45,119 @@ final class Application
         }
 
         $config = $this->loadConfig($path, $options);
-        $lenses = $this->buildLenses($config);
-        $analyzer = new ProjectAnalyzer($lenses, $config);
+        $lenses = LensRegistry::defaults($config);
+        $audit = (new AuditRunner($lenses, $config))->run($path, $options->qa, $options->coverage);
+        $emitted = $this->emit($audit, $options, $config, $lenses);
 
-        $analysis = $analyzer->analyze($path);
-        /** @var list<\PhpxComplexity\Analyzer\MethodResult> $results */
-        $results = $analysis['results'];
+        return 0 === $emitted ? $this->exitCode($audit, $options, $config, $lenses) : $emitted;
+    }
 
-        $qaReporter = new QaReporter();
-        $qaResults = isset($options['qa'])
-            ? (new QaPresenceChecker(QaToolRegistry::defaults(), $config->qaRequired))->check($path)
-            : [];
+    /**
+     * Rend le rapport demandé. Renvoie 0, ou 2 si une écriture a échoué.
+     *
+     * @param list<Lens> $lenses
+     */
+    private function emit(AuditResult $audit, Options $options, Config $config, array $lenses): int
+    {
+        if ($options->json) {
+            $this->stdout((new JsonReporter($lenses, $config))->render($audit));
 
-        $withCoverage = isset($options['coverage']);
-        $coverage = $withCoverage ? (new CoverageReportReader())->read($path, $config->coveragePath) : null;
-        $presence = $withCoverage ? (new TestPresenceAnalyzer())->analyze($path) : null;
+            return 0;
+        }
 
-        if (isset($options['json'])) {
-            $this->stdout((new JsonReporter($lenses, $config))->render($results, $analysis['files'], $analysis['parseErrors'], $qaResults, $coverage, $presence));
-        } elseif (isset($options['html'])) {
-            $html = (new HtmlReporter($lenses, $config))->render($results, $analysis['files'], $analysis['parseErrors'], $qaResults, $coverage, $presence);
+        if ($options->html) {
             // Précédence : --html=FICHIER (CLI) > html.path (config) > stdout.
-            $target = is_string($options['html']) ? $options['html'] : $config->htmlPath;
-            if (is_string($target)) {
-                $dir = \dirname($target);
-                if (!is_dir($dir) && !@mkdir($dir, 0o777, true) && !is_dir($dir)) {
-                    $this->stderr(sprintf('Répertoire de sortie introuvable et non créable : %s', $dir));
+            $target = $options->htmlTarget ?? $config->htmlPath;
 
-                    return 2;
-                }
-                if (false === @file_put_contents($target, $html)) {
-                    $this->stderr(sprintf('Écriture impossible : %s', $target));
-
-                    return 2;
-                }
-                $this->stderr(sprintf('Rapport HTML écrit : %s', $target));
-            } else {
-                $this->stdout($html);
-            }
-        } else {
-            $reporter = new ConsoleReporter($lenses, $config);
-            $this->stdout($reporter->render($results, $analysis['files'], !isset($options['no-divergence'])));
-            if (isset($options['qa'])) {
-                $this->stdout("\n" . $qaReporter->render($qaResults));
-            }
-            if (null !== $coverage && null !== $presence) {
-                $this->stdout("\n" . (new CoverageReporter())->render($coverage, $presence));
-            }
-            foreach ($analysis['parseErrors'] as $error) {
-                $this->stderr('parse: ' . $error);
-            }
+            return $this->emitHtml((new HtmlReporter($lenses, $config))->render($audit), $target);
         }
 
-        if (isset($options['fail-on-violations'])) {
-            $violations = $this->countViolations($results, $lenses, $config)
-                + count($qaReporter->missingRequired($qaResults));
+        $this->emitConsole($audit, $options, $config, $lenses);
 
-            return $violations > 0 ? 1 : 0;
+        return 0;
+    }
+
+    private function emitHtml(string $html, ?string $target): int
+    {
+        if (null === $target) {
+            $this->stdout($html);
+
+            return 0;
         }
+
+        $error = $this->writeFile($target, $html);
+        if (null !== $error) {
+            $this->stderr($error);
+
+            return 2;
+        }
+
+        $this->stderr(sprintf('Rapport HTML écrit : %s', $target));
 
         return 0;
     }
 
     /**
-     * @param list<Lens> $lenses
-     * @param list<\PhpxComplexity\Analyzer\MethodResult> $results
+     * @return string|null message d'erreur, ou null si l'écriture a réussi
      */
-    private function countViolations(array $results, array $lenses, Config $config): int
+    private function writeFile(string $target, string $contents): ?string
+    {
+        $directory = \dirname($target);
+        if (!is_dir($directory) && !@mkdir($directory, 0o777, true) && !is_dir($directory)) {
+            return sprintf('Répertoire de sortie introuvable et non créable : %s', $directory);
+        }
+
+        if (false === @file_put_contents($target, $contents)) {
+            return sprintf('Écriture impossible : %s', $target);
+        }
+
+        return null;
+    }
+
+    /**
+     * @param list<Lens> $lenses
+     */
+    private function emitConsole(AuditResult $audit, Options $options, Config $config, array $lenses): void
+    {
+        $this->stdout((new ConsoleReporter($lenses, $config))->render($audit, $options->showDivergence));
+
+        if ([] !== $audit->qaResults) {
+            $this->stdout("\n" . (new QaReporter())->render($audit->qaResults));
+        }
+
+        if (null !== $audit->coverage && null !== $audit->presence) {
+            $this->stdout("\n" . (new CoverageReporter())->render($audit->coverage, $audit->presence));
+        }
+
+        foreach ($audit->parseErrors as $error) {
+            $this->stderr('parse: ' . $error);
+        }
+    }
+
+    /**
+     * Mode gate : 1 dès qu'un seuil est dépassé ou qu'un outil QA requis manque.
+     *
+     * @param list<Lens> $lenses
+     */
+    private function exitCode(AuditResult $audit, Options $options, Config $config, array $lenses): int
+    {
+        if (!$options->failOnViolations) {
+            return 0;
+        }
+
+        $violations = $this->countViolations($audit, $lenses, $config)
+            + count((new QaReporter())->missingRequired($audit->qaResults));
+
+        return $violations > 0 ? 1 : 0;
+    }
+
+    /**
+     * @param list<Lens> $lenses
+     */
+    private function countViolations(AuditResult $audit, array $lenses, Config $config): int
     {
         $count = 0;
-        foreach ($results as $result) {
+        foreach ($audit->results as $result) {
             foreach ($lenses as $lens) {
                 if ($result->metric($lens->key()) > $config->threshold($lens->key())) {
                     ++$count;
@@ -130,54 +168,35 @@ final class Application
         return $count;
     }
 
-    /**
-     * @return list<Lens>
-     */
-    private function buildLenses(Config $config): array
-    {
-        return [
-            new CognitiveComplexityLens($config->threshold('cognitive')),
-            new ParameterCountLens($config->threshold('params')),
-            new ReturnCountLens($config->threshold('returns')),
-            new LiveVariablePeakLens($config->threshold('live_peak')),
-            new EntanglementLens($config->threshold('entangle')),
-        ];
-    }
-
-    /**
-     * @param array<string,string|bool|list<string>> $options
-     */
-    private function loadConfig(string $path, array $options): Config
+    private function loadConfig(string $path, Options $options): Config
     {
         $config = Config::defaults();
 
-        $file = $options['config'] ?? $this->autoDetectConfig($path);
-        if (is_string($file) && is_file($file)) {
+        $file = $options->configFile ?? $this->autoDetectConfig($path);
+        if (null !== $file && is_file($file)) {
             $config = $config->withOverrides($this->decodeConfigFile($file));
         }
 
-        $cliOverrides = [];
-        if (isset($options['top']) && is_string($options['top'])) {
-            $cliOverrides['top'] = (int) $options['top'];
+        $overrides = [];
+        if (null !== $options->top) {
+            $overrides['top'] = $options->top;
         }
-        if (isset($options['exclude']) && is_array($options['exclude'])) {
-            $cliOverrides['exclude'] = array_merge($config->exclude, $options['exclude']);
+        if ([] !== $options->exclude) {
+            $overrides['exclude'] = array_merge($config->exclude, $options->exclude);
         }
 
-        return [] === $cliOverrides ? $config : $config->withOverrides($cliOverrides);
+        return [] === $overrides ? $config : $config->withOverrides($overrides);
     }
 
     /**
      * Chemin audité : l'argument s'il est fourni, sinon le répertoire courant.
-     *
-     * @param array<string,string|bool|list<string>> $options
      */
-    private function resolvePath(array $options): string
+    private function resolvePath(Options $options): string
     {
-        $requested = $options['path'] ?? null;
-        if (is_string($requested)) {
-            return $requested;
+        if (null !== $options->path) {
+            return $options->path;
         }
+
         $cwd = getcwd();
 
         return is_string($cwd) ? $cwd : '.';
@@ -217,45 +236,6 @@ final class Application
         }
 
         return null;
-    }
-
-    /**
-     * @param list<string> $args
-     *
-     * @return array<string,string|bool|list<string>>
-     */
-    private function parse(array $args): array
-    {
-        $options = [];
-        foreach ($args as $arg) {
-            if ('-h' === $arg || '--help' === $arg) {
-                $options['help'] = true;
-            } elseif ('--json' === $arg) {
-                $options['json'] = true;
-            } elseif ('--html' === $arg) {
-                $options['html'] = true;
-            } elseif (str_starts_with($arg, '--html=')) {
-                $options['html'] = substr($arg, 7);
-            } elseif ('--no-divergence' === $arg) {
-                $options['no-divergence'] = true;
-            } elseif ('--qa' === $arg) {
-                $options['qa'] = true;
-            } elseif ('--coverage' === $arg) {
-                $options['coverage'] = true;
-            } elseif ('--fail-on-violations' === $arg) {
-                $options['fail-on-violations'] = true;
-            } elseif (str_starts_with($arg, '--exclude=')) {
-                $options['exclude'][] = substr($arg, 10);
-            } elseif (str_starts_with($arg, '--config=')) {
-                $options['config'] = substr($arg, 9);
-            } elseif (str_starts_with($arg, '--top=')) {
-                $options['top'] = substr($arg, 6);
-            } elseif (!str_starts_with($arg, '-')) {
-                $options['path'] = $arg;
-            }
-        }
-
-        return $options;
     }
 
     private function usage(): string

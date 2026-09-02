@@ -2,4 +2,4 @@ parameters:
     level: 9
     paths:
         - src
-    tmpDir: tmp/phpstan
+    tmpDir: var/phpstan

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhpxComplexity\Report;
 
 use PhpxComplexity\Analyzer\MethodResult;
+use PhpxComplexity\Audit\AuditResult;
 use PhpxComplexity\Config\Config;
 use PhpxComplexity\Coverage\CoverageReport;
 use PhpxComplexity\Coverage\TestPresence;
@@ -34,14 +35,9 @@ final class HtmlReporter
     ) {
     }
 
-    /**
-     * @param list<MethodResult> $results
-     * @param list<string>       $parseErrors
-     * @param list<QaToolResult> $qaResults
-     */
-    public function render(array $results, int $files, array $parseErrors, array $qaResults = [], ?CoverageReport $coverage = null, ?TestPresence $presence = null): string
+    public function render(AuditResult $audit): string
     {
-        $data = $this->buildData($results, $files, $parseErrors, $qaResults, $coverage, $presence);
+        $data = $this->buildData($audit);
         $json = (string) json_encode(
             $data,
             \JSON_HEX_TAG | \JSON_HEX_AMP | \JSON_UNESCAPED_SLASHES | \JSON_UNESCAPED_UNICODE,
@@ -50,9 +46,9 @@ final class HtmlReporter
         $css = $this->css();
         $script = $this->script();
         $summary = $data['summary'];
-        $generated = $this->headerHtml($summary, $parseErrors);
-        $qaSection = [] !== $qaResults ? $this->qaHtml($qaResults) : '';
-        $coverageSection = (null !== $coverage || null !== $presence) ? $this->coverageHtml($coverage, $presence) : '';
+        $generated = $this->headerHtml($summary, $audit->parseErrors);
+        $qaSection = [] !== $audit->qaResults ? $this->qaHtml($audit->qaResults) : '';
+        $coverageSection = (null !== $audit->coverage || null !== $audit->presence) ? $this->coverageHtml($audit->coverage, $audit->presence) : '';
 
         return <<<HTML
             <!DOCTYPE html>
@@ -213,26 +209,12 @@ final class HtmlReporter
     }
 
     /**
-     * @param list<MethodResult> $results
-     * @param list<string>       $parseErrors
-     * @param list<QaToolResult> $qaResults
-     *
      * @return array{summary: Summary, lenses: list<array<string,mixed>>, methods: list<array<string,mixed>>}
      */
-    private function buildData(array $results, int $files, array $parseErrors, array $qaResults, ?CoverageReport $coverage, ?TestPresence $presence): array
+    private function buildData(AuditResult $audit): array
     {
+        $results = $audit->results;
         usort($results, static fn (MethodResult $a, MethodResult $b) => $b->divergence <=> $a->divergence);
-
-        $lenses = [];
-        foreach ($this->lenses as $lens) {
-            $lenses[] = [
-                'key' => $lens->key(),
-                'label' => $lens->label(),
-                'reference' => $lens->reference(),
-                'description' => $lens->description(),
-                'threshold' => $this->config->threshold($lens->key()),
-            ];
-        }
 
         $methods = [];
         $methodsInViolation = 0;
@@ -259,15 +241,34 @@ final class HtmlReporter
 
         return [
             'summary' => [
-                'files' => $files,
+                'files' => $audit->files,
                 'methods' => count($results),
                 'methodsInViolation' => $methodsInViolation,
                 'totalViolations' => $totalViolations,
-                'parseErrors' => count($parseErrors),
+                'parseErrors' => count($audit->parseErrors),
             ],
-            'lenses' => $lenses,
+            'lenses' => $this->lensesPayload(),
             'methods' => $methods,
         ];
+    }
+
+    /**
+     * @return list<array<string,mixed>>
+     */
+    private function lensesPayload(): array
+    {
+        $payload = [];
+        foreach ($this->lenses as $lens) {
+            $payload[] = [
+                'key' => $lens->key(),
+                'label' => $lens->label(),
+                'reference' => $lens->reference(),
+                'description' => $lens->description(),
+                'threshold' => $this->config->threshold($lens->key()),
+            ];
+        }
+
+        return $payload;
     }
 
     private function e(string $value): string

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhpxComplexity\Report;
 
 use PhpxComplexity\Analyzer\MethodResult;
+use PhpxComplexity\Audit\AuditResult;
 use PhpxComplexity\Config\Config;
 use PhpxComplexity\Lens\Lens;
 
@@ -24,13 +25,11 @@ final class ConsoleReporter
     ) {
     }
 
-    /**
-     * @param list<MethodResult> $results
-     */
-    public function render(array $results, int $files, bool $showDivergence): string
+    public function render(AuditResult $audit, bool $showDivergence): string
     {
+        $results = $audit->results;
         $out = [];
-        $out[] = sprintf('phpx-complexity — %d méthodes / %d fichiers', count($results), $files);
+        $out[] = sprintf('phpx-complexity — %d méthodes / %d fichiers', count($results), $audit->files);
         $out[] = str_repeat('=', 60);
         $out[] = '';
         $out[] = $this->topTable($results);
