@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhpxComplexity\Tests\Cli;
 
 use PHPUnit\Framework\TestCase;
+use PhpxComplexity\Cli\Command;
 use PhpxComplexity\Cli\Options;
 
 /**
@@ -17,7 +18,9 @@ final class OptionsTest extends TestCase
     {
         $options = new Options([]);
 
-        self::assertNull($options->path);
+        self::assertNull($options->target);
+        self::assertSame(Command::Audit, $options->command);
+        self::assertFalse($options->keep);
         self::assertFalse($options->help);
         self::assertFalse($options->json);
         self::assertFalse($options->html);
@@ -41,7 +44,7 @@ final class OptionsTest extends TestCase
         self::assertTrue($options->coverage);
         self::assertTrue($options->failOnViolations);
         self::assertFalse($options->showDivergence);
-        self::assertSame('src/', $options->path);
+        self::assertSame('src/', $options->target);
     }
 
     public function testHelpAliases(): void
@@ -95,6 +98,22 @@ final class OptionsTest extends TestCase
     {
         $options = new Options(['--inconnu', 'src/']);
 
-        self::assertSame('src/', $options->path);
+        self::assertSame('src/', $options->target);
+    }
+
+    public function testFetchVerbConsumesTheFirstPositional(): void
+    {
+        $options = new Options(['fetch', 'https://example.org/depot.git', '--keep']);
+
+        self::assertSame(Command::Fetch, $options->command);
+        self::assertSame('https://example.org/depot.git', $options->target);
+        self::assertTrue($options->keep);
+    }
+
+    public function testAuditVerbIsOptional(): void
+    {
+        // Les deux formes doivent désigner la même cible.
+        self::assertSame('src/', (new Options(['src/']))->target);
+        self::assertSame('src/', (new Options(['audit', 'src/']))->target);
     }
 }

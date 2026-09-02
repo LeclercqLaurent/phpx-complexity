@@ -16,7 +16,10 @@ final class Options
     /** @var list<string> */
     public readonly array $exclude;
 
-    public readonly ?string $path;
+    public readonly Command $command;
+    /** Chemin local à auditer, ou URL du dépôt en sous-commande « fetch ». */
+    public readonly ?string $target;
+    public readonly bool $keep;
     public readonly bool $help;
     public readonly bool $json;
     public readonly bool $html;
@@ -37,8 +40,13 @@ final class Options
     {
         $raw = self::parse($args);
         $top = self::text($raw, 'top');
+        $positionals = self::texts($raw, 'positionals');
+        $verb = isset($positionals[0]) ? Command::tryFrom($positionals[0]) : null;
 
-        $this->path = self::text($raw, 'path');
+        $this->command = $verb ?? Command::Audit;
+        // Le verbe, s'il est présent, consomme le premier argument positionnel.
+        $this->target = $positionals[null === $verb ? 0 : 1] ?? null;
+        $this->keep = isset($raw['keep']);
         $this->help = isset($raw['help']);
         $this->json = isset($raw['json']);
         $this->html = isset($raw['html']);
@@ -67,6 +75,7 @@ final class Options
         '--coverage' => 'coverage',
         '--fail-on-violations' => 'fail-on-violations',
         '--fail-on-new' => 'fail-on-new',
+        '--keep' => 'keep',
     ];
 
     /**
@@ -106,9 +115,10 @@ final class Options
 
             $valued = self::valued($arg);
             if (null === $valued) {
-                // Tout ce qui ne commence pas par un tiret est le chemin audité.
+                // Tout ce qui ne commence pas par un tiret est positionnel :
+                // un verbe éventuel, puis la cible.
                 if (!str_starts_with($arg, '-')) {
-                    $options['path'] = $arg;
+                    $repeated['positionals'][] = $arg;
                 }
                 continue;
             }

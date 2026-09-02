@@ -19,6 +19,10 @@ use PhpxComplexity\Report\DeltaReporter;
 use PhpxComplexity\Report\HtmlReporter;
 use PhpxComplexity\Report\JsonReporter;
 use PhpxComplexity\Report\QaReporter;
+use PhpxComplexity\Vcs\Checkout;
+use PhpxComplexity\Vcs\Exception\GitException;
+use PhpxComplexity\Vcs\GitCloner;
+use PhpxComplexity\Vcs\RepositoryUrl;
 
 /**
  * Point d'entrée CLI : résout les options et le chemin, délègue l'audit, choisit
@@ -29,6 +33,10 @@ use PhpxComplexity\Report\QaReporter;
 final class Application
 {
     public const VERSION = '0.1.0';
+
+    public function __construct(private readonly GitCloner $cloner = new GitCloner())
+    {
+    }
 
     /**
      * @param list<string> $argv
@@ -42,32 +50,66 @@ final class Application
             return 0;
         }
 
-        $path = $this->resolvePath($options);
-        $error = $this->usageError($options, $path);
+        $error = $this->usageError($options);
         if (null !== $error) {
             $this->stderr($error);
 
             return 2;
         }
 
-        return $this->audit($path, $options);
+        return Command::Fetch === $options->command
+            ? $this->fetch($options)
+            : $this->audit($this->resolvePath($options), $options);
     }
 
     /**
-     * Options incohérentes entre elles ou chemin inutilisable : message d'erreur,
-     * ou null si l'invocation tient debout.
+     * Invocation incohérente : message d'erreur, ou null si elle tient debout.
      */
-    private function usageError(Options $options, string $path): ?string
+    private function usageError(Options $options): ?string
     {
-        if (!file_exists($path)) {
-            return sprintf('Chemin introuvable : %s', $path);
-        }
-
         if ($options->failOnNew && null === $options->baselineFile) {
             return '--fail-on-new attend une référence : ajouter --baseline=FICHIER.';
         }
 
-        return null;
+        if (Command::Fetch === $options->command) {
+            return null === $options->target ? 'La sous-commande « fetch » attend une URL de dépôt.' : null;
+        }
+
+        $path = $this->resolvePath($options);
+
+        return file_exists($path) ? null : sprintf('Chemin introuvable : %s', $path);
+    }
+
+    /**
+     * Récupère un dépôt distant puis lui applique l'audit local ordinaire. Le
+     * temporaire est retiré quoi qu'il arrive, y compris si l'analyse échoue.
+     */
+    private function fetch(Options $options): int
+    {
+        try {
+            $checkout = $this->cloner->fetch(RepositoryUrl::fromString((string) $options->target));
+        } catch (GitException $e) {
+            $this->stderr($e->getMessage());
+
+            return 2;
+        }
+
+        try {
+            return $this->audit($checkout->path, $options);
+        } finally {
+            $this->discard($checkout, $options->keep);
+        }
+    }
+
+    private function discard(Checkout $checkout, bool $keep): void
+    {
+        if ($keep) {
+            $this->stderr(sprintf('Copie conservée : %s', $checkout->path));
+
+            return;
+        }
+
+        $checkout->remove();
     }
 
     private function audit(string $path, Options $options): int
@@ -257,8 +299,8 @@ final class Application
      */
     private function resolvePath(Options $options): string
     {
-        if (null !== $options->path) {
-            return $options->path;
+        if (null !== $options->target) {
+            return $options->target;
         }
 
         $cwd = getcwd();
@@ -311,6 +353,7 @@ final class Application
 
             USAGE
               phpx-complexity [CHEMIN] [options]
+              phpx-complexity fetch URL [options]
 
             LENTILLES
               cognitive  S3776 complexité cognitive (branches + imbrication)
@@ -336,7 +379,16 @@ final class Application
               --top=N                Nombre de lignes du classement
               --exclude=FRAGMENT     Exclut les chemins contenant FRAGMENT (répétable)
               --no-divergence        Masque le rapport de divergence
+              --keep                 (fetch) Conserve la copie temporaire du dépôt
               -h, --help             Cette aide
+
+            SOUS-COMMANDE FETCH
+              Clone un dépôt distant en superficiel dans un dossier temporaire, lui
+              applique l'audit, puis nettoie. Schémas acceptés : https://, ssh:// et
+              git@hote:chemin. C'est la SEULE partie de l'outil qui accède au réseau ;
+              l'analyse, elle, ne voit jamais qu'un chemin local. L'authentification
+              est celle de git (agent SSH, credential helper) — aucune invite n'est
+              posée, un dépôt privé inaccessible échoue immédiatement.
 
             Le rapport de DIVERGENCE met en avant les méthodes où les lentilles se
             contredisent — l'angle mort des métriques de complexité isolées.

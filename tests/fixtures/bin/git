@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# Faux « git » pour les tests : reproduit un clone sans réseau, et consigne les
+# arguments reçus afin que le durcissement de la commande soit vérifiable.
+set -u
+
+target="${@: -1}"
+url="${@: -2:1}"
+root="$(dirname "$target")"
+
+printf '%s\n' "$@" > "$root/args.txt"
+
+if [ "$url" = "https://example.org/echec.git" ]; then
+    echo "fatal: repository 'https://example.org/echec.git' not found" >&2
+    exit 128
+fi
+
+mkdir -p "$target/src"
+cat > "$target/src/Cloned.php" <<'PHPEOF'
+<?php
+
+declare(strict_types=1);
+
+final class Cloned
+{
+    public function run(int $a): int
+    {
+        return $a;
+    }
+}
+PHPEOF
+exit 0

@@ -60,6 +60,42 @@ il ne la calcule pas. `--coverage` produit donc deux blocs honnêtes et distinct
 bin/phpx-complexity /chemin/vers/projet --coverage
 ```
 
+## Auditer un dépôt distant (`fetch`)
+
+```bash
+bin/phpx-complexity fetch https://github.com/vendor/projet.git
+bin/phpx-complexity fetch git@github.com:vendor/projet.git --qa --keep
+```
+
+Clone le dépôt en superficiel dans un dossier temporaire, lui applique l'audit
+ordinaire, puis **nettoie — y compris si l'analyse échoue**. `--keep` conserve la
+copie et affiche son chemin.
+
+> **C'est la seule partie de l'outil qui accède au réseau.** Le cœur d'analyse
+> (`ProjectAnalyzer` et les lentilles) ne connaît qu'un **chemin local** : la
+> garantie hors-ligne de l'analyse elle-même reste entière. Le réseau est confiné
+> à un wrapper explicitement opt-in, qu'aucune option de l'audit ne peut
+> déclencher.
+
+**Ce qui est accepté** : `https://`, `ssh://` et la forme `git@hote:chemin`. Sont
+refusés `git://` (ni chiffré ni authentifié), `file://` et les chemins locaux (un
+dossier local s'analyse directement), le transport `ext::` (exécution de commande
+arbitraire) et tout ce qui commence par un tiret, que git prendrait pour une
+option. La commande est passée en tableau — aucun shell, donc aucune
+interpolation — avec `--` avant l'URL, hooks neutralisés et clone superficiel.
+
+**Dépôts privés** : l'authentification est celle de git (agent SSH, credential
+helper). Rien n'est réinventé et **aucune invite n'est posée** : un dépôt
+inaccessible échoue immédiatement au lieu de faire attendre. Une clé protégée par
+phrase de passe sans agent chargé échouera donc aussi.
+
+**Ce que le clone ne fournit pas** : `--coverage` a besoin d'un rapport de
+couverture **déjà généré** par le projet ; un clone seul ne l'apporte pas, le
+module ne verra donc que la présence statique de tests. `--qa`, lui, fonctionne
+pleinement (il lit des fichiers de configuration présents dans le dépôt).
+
+Nécessite le binaire `git` sur la machine ; son absence est signalée clairement.
+
 ## Baseline & deltas (`--baseline`)
 
 Sur un projet existant, `--fail-on-violations` échoue dès le premier run : des
@@ -119,6 +155,9 @@ composer install
 ```bash
 # Audit lisible d'un projet
 bin/phpx-complexity /chemin/vers/projet
+
+# Auditer un dépôt distant (clone superficiel temporaire, puis nettoyage)
+bin/phpx-complexity fetch https://github.com/vendor/projet.git
 
 # Sortie JSON pour la CI
 bin/phpx-complexity /chemin/vers/projet --json > complexity.json
