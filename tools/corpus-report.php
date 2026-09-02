@@ -15,7 +15,7 @@ declare(strict_types=1);
  */
 
 const LENSES = ['cognitive', 'params', 'returns', 'live_peak', 'entangle'];
-const THRESHOLDS = ['cognitive' => 15.0, 'params' => 7.0, 'returns' => 3.0, 'live_peak' => 8.0, 'entangle' => 4.0];
+const THRESHOLDS = ['cognitive' => 15.0, 'params' => 7.0, 'returns' => 3.0, 'live_peak' => 8.0, 'entangle' => 3.0];
 
 $directory = dirname(__DIR__) . '/var/corpus';
 $files = glob($directory . '/*.json') ?: [];

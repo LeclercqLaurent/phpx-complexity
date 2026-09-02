@@ -186,7 +186,7 @@ Place un `phpx-complexity.json` à la racine du projet audité (voir
 
 ```json
 {
-    "thresholds": { "cognitive": 15, "params": 7, "returns": 3, "live_peak": 8, "entangle": 4 },
+    "thresholds": { "cognitive": 15, "params": 7, "returns": 3, "live_peak": 8, "entangle": 3 },
     "exclude": ["/vendor/", "/tests/"],
     "top": 25,
     "html": { "path": "build/phpx-complexity.html" }

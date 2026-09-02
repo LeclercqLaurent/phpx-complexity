@@ -33,7 +33,7 @@ final class Config
                 'returns' => 3.0,
                 'params' => 7.0,
                 'live_peak' => 8.0,
-                'entangle' => 4.0,
+                'entangle' => 3.0,
             ],
             exclude: ['/vendor/', '/node_modules/', '/var/', '/.git/'],
             top: 25,

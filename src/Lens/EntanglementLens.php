@@ -24,7 +24,7 @@ use PhpxComplexity\Ast\AstHelper;
  */
 final class EntanglementLens implements Lens
 {
-    public function __construct(private readonly float $threshold = 4.0)
+    public function __construct(private readonly float $threshold = 3.0)
     {
     }
 

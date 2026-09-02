@@ -4,7 +4,7 @@
         "params": 7,
         "returns": 3,
         "live_peak": 8,
-        "entangle": 4
+        "entangle": 3
     },
     "exclude": ["/vendor/", "/node_modules/", "/var/", "/.git/", "/tests/"],
     "top": 25,

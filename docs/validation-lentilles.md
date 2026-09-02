@@ -12,6 +12,11 @@ Corpus de **40 594 méthodes** issues de **10 projets PHP publics**, récupéré
 la sous-commande `fetch` et audités avec les seuils par défaut. Code de test
 exclu (non représentatif).
 
+> Les distributions et corrélations ci-dessous sont indépendantes des seuils.
+> Seules les sections « seuils » et « rendement marginal » en dépendent ; elles
+> reflètent l'état **après** l'abaissement d'`entangle` de 4 à 3 décidé au vu de
+> cette étude.
+
 ```bash
 tools/corpus-study.sh     # récupère le corpus, fige un --json par projet
 php tools/corpus-report.php
@@ -33,7 +38,7 @@ php tools/corpus-report.php
 | `params` | 1 | 2 | 3 | 4 | 7 | 7 | 0,60 % |
 | `returns` | 1 | 1 | 2 | 3 | 6 | 3 | 3,37 % |
 | `live_peak` | 1 | 2 | 4 | 5 | 9 | 8 | **1,31 %** |
-| `entangle` | 0 | 0 | 1,33 | 2 | 3,06 | 4 | **0,21 %** |
+| `entangle` | 0 | 0 | 1,33 | 2 | 3,06 | 3 | **1,02 %** |
 
 La médiane de `cognitive` est **0** : la majorité des méthodes PHP publiées sont
 triviales (accesseurs, délégations). Tous les seuils vivent donc loin dans la
@@ -82,18 +87,26 @@ formulation « ≠ S107 » de la lentille mériterait d'être nuancée en ce sen
 | lentille | seuil | position empirique | verdict |
 |---|---:|---|---|
 | `live_peak` | 8 | ≈ p98,7 (p99 = 9) | **défendable** — cohérent avec les autres lentilles (0,6 à 3,4 % signalés) et avec la justification 7±2, qui tombe juste |
-| `entangle` | 4 | **au-delà de p99,8** (p99 = 3,06) | **indéfendable en l'état** |
+| `entangle` | ~~4~~ → **3** | ≈ p99 après correction | **corrigé** — voir ci-dessous |
 
-`entangle > 4` ne signale que **85 méthodes sur 40 594** (0,21 %), soit un ordre
-de grandeur de plus que les autres lentilles. La lentille est **quasi inerte**.
+Le seuil d'origine, 4, se situait **au-delà du 99,8ᵉ centile** (p99 = 3,06) et ne
+signalait que **85 méthodes sur 40 594** (0,21 %), soit un ordre de grandeur de
+plus que les autres lentilles. La lentille était **quasi inerte**.
 
-La sonde le montre concrètement : `tangled`, méthode écrite exprès pour entremêler
-six paramètres par des flux de données, plafonne à **2,67** — donc sous le seuil.
-Une lentille qui ne se déclenche pas sur son propre cas d'école a un seuil mal
-placé, pas une mesure fausse.
+La sonde le montrait concrètement : `tangled`, méthode écrite exprès pour
+entremêler six paramètres par des flux de données, plafonnait à **2,67** — donc
+sous le seuil. Une lentille qui ne se déclenche pas sur son propre cas d'école a
+un seuil mal placé, pas une mesure fausse.
 
-**Recommandation : abaisser le seuil de `entangle` à 3** (≈ p99), ce qui le
-ramènerait autour de 1 % de méthodes signalées, en ligne avec les autres.
+**Le seuil est passé à 3** (≈ p99). Mesure refaite sur le même corpus :
+
+| | seuil 4 | seuil 3 |
+|---|---:|---:|
+| méthodes signalées | 85 (0,21 %) | **415 (1,02 %)** |
+| dont hors radar S3776 | 17 (20,0 %) | **161 (38,8 %)** |
+
+Le rendement marginal **double**, et la part de méthodes signalées rejoint celle
+des autres lentilles (0,6 à 3,4 %). C'était donc bien le seuil, pas la mesure.
 
 ## 3. Rendement marginal — l'inconfort
 
@@ -104,17 +117,28 @@ c'est-à-dire ce qu'un linter mono-métrique laisserait passer :
 |---|---:|---:|---:|
 | `params` (S107) | 245 | 200 | **81,6 %** |
 | `returns` (S1142) | 1 370 | 922 | **67,3 %** |
+| `entangle` (seuil 3) | 415 | 161 | 38,8 % |
 | `live_peak` | 530 | 114 | 21,5 % |
-| `entangle` | 85 | 17 | 20,0 % |
 
-**Les deux lentilles maison apportent moins de découvertes marginales que les
-deux règles SonarQube qu'elles étaient censées compléter.** Près de 80 % de ce
-que signale `live_peak` est déjà signalé par S3776.
+**`live_peak` reste la lentille au plus faible rendement marginal** : près de 80 %
+de ce qu'elle signale est déjà signalé par S3776. C'est cohérent avec sa
+corrélation à `params` relevée plus haut — elle capte en partie ce que S107
+mesure déjà, et le reste recoupe largement S3776.
 
-À nuancer : ce rendement dépend directement des seuils, et celui d'`entangle` est
-justement trop haut — le chiffre de 20 % porte sur 85 méthodes seulement. Une
-reprise de la mesure après ajustement du seuil est nécessaire avant de conclure
-sur la valeur réelle de la lentille.
+`entangle`, une fois son seuil corrigé, se place **devant `live_peak`** et
+apporte 161 découvertes qu'un linter mono-métrique laisserait passer. Illustration
+sur le code de l'outil lui-même, où le nouveau seuil surface trois méthodes :
+
+```
+Cli/Application::audit                    entangle=4.00  cognitive=2
+Baseline/BaselineComparator::categorize   entangle=3.60  cognitive=7
+Report/ConsoleReporter::divergenceHint    entangle=3.20  cognitive=8
+```
+
+Les trois ont une complexité cognitive **basse** : ce sont exactement les angles
+morts de S3776 que la lentille existe pour révéler. Elles sont figées dans la
+baseline plutôt que réécrites — les découper ne ferait que **déplacer**
+l'intrication, ce que le garde-fou n°3 interdit de récompenser.
 
 ## Ce qu'il faut en retenir
 
@@ -122,7 +146,13 @@ sur la valeur réelle de la lentille.
    est validé.
 2. `live_peak` **passe** la non-redondance mais **recoupe S107 plus que S3776** :
    sa documentation surestime son orthogonalité.
-3. `entangle` **discrimine bien** le plat de l'enchevêtré, mais son **seuil de 4
-   le rend inerte** ; à corriger avant tout jugement sur son utilité.
-4. Aucune nouvelle lentille ne devrait être ajoutée avant que ces deux-là soient
-   réglées : le garde-fou de non-redondance leur est déjà sévère.
+3. `entangle` **discrimine bien** le plat de l'enchevêtré ; son seuil d'origine
+   le rendait inerte, **ramené à 3** il devient la plus utile des deux lentilles
+   maison (38,8 % de découvertes propres contre 21,5 %).
+4. **La question ouverte est désormais `live_peak`**, pas `entangle` : faible
+   rendement marginal, et une corrélation à S107 que sa documentation nie. Deux
+   pistes à trancher — exclure les paramètres du calcul de vivacité pour coller à
+   l'intention affichée (« la pression interne, pas la signature »), ou assumer
+   qu'il ne vaut qu'en paire avec `entangle` et le documenter ainsi.
+5. Aucune nouvelle lentille ne devrait être ajoutée avant que ce point soit
+   réglé : le garde-fou de non-redondance est déjà sévère pour l'existant.
