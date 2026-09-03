@@ -89,8 +89,68 @@ final class HtmlReporterSectionsTest extends TestCase
 
         self::assertStringStartsWith('<!DOCTYPE html>', $html);
         self::assertStringNotContainsString('src=', $html);
-        self::assertStringNotContainsString('href=', $html);
         self::assertStringNotContainsStringIgnoringCase('score', $html);
+        // Les href du menu ne sortent jamais du document.
+        preg_match_all('/href="([^"]*)"/', $html, $hrefs);
+        foreach ($hrefs[1] as $href) {
+            self::assertStringStartsWith('#', $href);
+        }
+    }
+
+    public function testSectionsFollowTheReadingOrder(): void
+    {
+        $html = $this->render(withQa: true, withCoverage: true, comparison: true);
+
+        // Le contexte (baseline, outillage, tests) précède les données brutes,
+        // qui précèdent l'analyse croisée.
+        $order = ['id="lentilles"', 'id="baseline"', 'id="qa"', 'id="couverture"', 'id="methodes"', 'id="divergence"'];
+        $positions = array_map(static fn (string $needle): int => (int) strpos($html, $needle), $order);
+
+        $sorted = $positions;
+        sort($sorted);
+        self::assertSame($sorted, $positions, implode(' puis ', $order));
+    }
+
+    public function testMenuOnlyLinksToRenderedSections(): void
+    {
+        $withoutModules = $this->render();
+
+        self::assertStringContainsString('href="#methodes"', $withoutModules);
+        self::assertStringContainsString('href="#divergence"', $withoutModules);
+        self::assertStringNotContainsString('href="#qa"', $withoutModules, 'module non lancé');
+        self::assertStringNotContainsString('href="#baseline"', $withoutModules);
+
+        $withModules = $this->render(withQa: true, withCoverage: true, comparison: true);
+        self::assertStringContainsString('href="#qa"', $withModules);
+        self::assertStringContainsString('href="#couverture"', $withModules);
+        self::assertStringContainsString('href="#baseline"', $withModules);
+    }
+
+    /**
+     * Le filtre s'ouvre sur ce qui demande une action ; le reste est à un clic.
+     */
+    public function testMethodFilterDefaultsToBreachedThresholds(): void
+    {
+        $html = $this->render();
+
+        self::assertMatchesRegularExpression(
+            '/<option value="viol" selected>/',
+            $html,
+        );
+        self::assertStringContainsString('value="ok"', $html);
+        self::assertStringContainsString('value="all"', $html);
+    }
+
+    public function testDivergenceIsRenderedAsAGridOfLensPairs(): void
+    {
+        $html = $this->render();
+
+        // Une grille à remplir côté client, plus de sélecteurs d'axes.
+        self::assertStringContainsString('<div class="pairs" id="pairs">', $html);
+        self::assertStringNotContainsString('id="axisX"', $html);
+        self::assertStringNotContainsString('id="axisY"', $html);
+        // Cinq lentilles : dix couples attendus, construits par le script.
+        self::assertStringContainsString('for(var j=i+1;j<L.length;j++)', $html);
     }
 
     private function render(bool $withQa = false, bool $withCoverage = false, bool $comparison = false): string

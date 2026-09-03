@@ -52,6 +52,7 @@ final class HtmlReporter
         $qaSection = [] !== $audit->qaResults ? $this->qaHtml($audit->qaResults) : '';
         $coverageSection = (null !== $audit->coverage || null !== $audit->presence) ? $this->coverageHtml($audit->coverage, $audit->presence) : '';
         $baselineSection = null !== $comparison ? $this->baselineHtml($comparison) : '';
+        $nav = $this->navHtml('' !== $baselineSection, '' !== $qaSection, '' !== $coverageSection);
 
         return <<<HTML
             <!DOCTYPE html>
@@ -67,31 +68,68 @@ final class HtmlReporter
               <h1>phpx-complexity</h1>
               <p class="sub">Audit de complexité multi-lentilles — rapport factuel, hors-ligne.</p>
             </header>
+            {$nav}
             {$generated}
-            <section class="card">
-              <h2>Divergence — lentille contre lentille</h2>
-              <p class="hint">Axes = rangs centiles [0,1]. Un point loin de la diagonale diverge :
-              élevé sur un axe, bas sur l'autre — l'angle mort d'une métrique isolée.</p>
-              <div class="axes">
-                <label>X <select id="axisX"></select></label>
-                <label>Y <select id="axisY"></select></label>
-                <label class="ck"><input type="checkbox" id="onlyViol"> Violations seules</label>
-              </div>
-              <div id="scatter"></div>
-            </section>
-            <section class="card">
-              <h2>Méthodes</h2>
-              <p class="hint">Cliquez un en-tête pour trier. <span class="viol-key">!</span> = seuil dépassé.</p>
-              <div class="tablewrap"><table id="methods"></table></div>
-            </section>
             {$baselineSection}
             {$qaSection}
             {$coverageSection}
+            <section class="card" id="methodes">
+              <h2>Méthodes</h2>
+              <p class="hint">Cliquez un en-tête pour trier. <span class="viol-key">!</span> = seuil dépassé.</p>
+              <div class="axes">
+                <label>Afficher
+                  <select id="methodFilter">
+                    <option value="viol" selected>les méthodes en dépassement</option>
+                    <option value="ok">les méthodes sans dépassement</option>
+                    <option value="all">toutes les méthodes</option>
+                  </select>
+                </label>
+                <span class="ck" id="methodCount"></span>
+              </div>
+              <div class="tablewrap"><table id="methods"></table></div>
+            </section>
+            <section class="card" id="divergence">
+              <h2>Divergence — lentille contre lentille</h2>
+              <p class="hint">Un nuage par couple de lentilles. Axes = rangs centiles [0,1].
+              Un point loin de la diagonale diverge : élevé sur un axe, bas sur l'autre —
+              l'angle mort d'une métrique isolée.</p>
+              <div class="axes">
+                <label class="ck"><input type="checkbox" id="onlyViol"> Violations seules</label>
+              </div>
+              <div class="pairs" id="pairs"></div>
+            </section>
             <script type="application/json" id="data">{$json}</script>
             <script>{$script}</script>
             </body>
             </html>
             HTML;
+    }
+
+    /**
+     * Menu d'accès direct. Les entrées ne sont proposées que pour les sections
+     * réellement rendues, sinon le menu mentirait sur le contenu de la page.
+     */
+    private function navHtml(bool $withBaseline, bool $withQa, bool $withCoverage): string
+    {
+        $entries = ['#lentilles' => 'Lentilles'];
+        if ($withBaseline) {
+            $entries['#baseline'] = 'Baseline';
+        }
+        if ($withQa) {
+            $entries['#qa'] = 'Outils de QA';
+        }
+        if ($withCoverage) {
+            $entries['#couverture'] = 'Tests & couverture';
+        }
+        $entries['#methodes'] = 'Méthodes';
+        $entries['#divergence'] = 'Divergence';
+
+        $links = '';
+        foreach ($entries as $anchor => $label) {
+            $links .= sprintf('<a href="%s">%s</a>', $this->e($anchor), $this->e($label));
+        }
+
+        return sprintf('<nav class="nav">%s</nav>', $links);
     }
 
     /**
@@ -135,7 +173,7 @@ final class HtmlReporter
 
         return <<<HTML
             <section class="stats">{$cells}</section>
-            <section class="card">
+            <section class="card" id="lentilles">
               <h2>Lentilles</h2>
               <ul class="legend">{$legend}</ul>
             </section>
@@ -172,7 +210,7 @@ final class HtmlReporter
             : '';
 
         return <<<HTML
-            <section class="card">
+            <section class="card" id="qa">
               <h2>Outils de QA — {$present}/{$total} présents</h2>
               {$missingNote}
               <div class="tablewrap"><table class="static"><tr><th>Outil</th><th>Catégorie</th><th>État</th><th>Preuves</th></tr>{$rows}</table></div>
@@ -199,7 +237,7 @@ final class HtmlReporter
         }
 
         return <<<HTML
-            <section class="card">
+            <section class="card" id="couverture">
               <h2>Tests &amp; couverture</h2>
               <p class="hint">Faits statiques : la présence d'un outil ne garantit ni des tests, ni leur couverture.</p>
               <div class="stats inner">{$cards}</div>
@@ -290,7 +328,7 @@ final class HtmlReporter
         $disappeared = count($comparison->disappeared);
 
         return <<<HTML
-            <section class="card">
+            <section class="card" id="baseline">
               <h2>Baseline — écarts par rapport à {$source}</h2>
               <p class="hint">{$regressions} régression(s) · {$appeared} méthode(s) apparue(s) · {$disappeared} disparue(s).
               Les violations héritées et inchangées ne figurent pas : seul le mouvement est montré.</p>
@@ -357,7 +395,16 @@ final class HtmlReporter
             .axes{display:flex;gap:18px;align-items:center;margin-bottom:12px;flex-wrap:wrap}
             .axes select{background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:4px 8px;font:inherit}
             .axes .ck{color:var(--mut)}
-            #scatter svg{width:100%;height:auto;display:block}
+            .nav{position:sticky;top:0;z-index:5;display:flex;gap:4px;flex-wrap:wrap;padding:10px 24px;background:var(--bg);border-bottom:1px solid var(--line)}
+            .nav a{color:var(--mut);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:4px 12px;font-size:12px}
+            .nav a:hover{color:var(--fg);border-color:var(--accent)}
+            .pairs{display:grid;gap:12px;grid-template-columns:1fr}
+            @media(min-width:760px){.pairs{grid-template-columns:repeat(2,1fr)}}
+            @media(min-width:1100px){.pairs{grid-template-columns:repeat(3,1fr)}}
+            .pair{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px}
+            .pair h3{margin:0 0 6px;font-size:12px;font-weight:600;color:var(--fg)}
+            .pair h3 .vs{color:var(--mut);font-weight:400}
+            .pair svg{width:100%;height:auto;display:block}
             .pt{fill:var(--mut);opacity:.7}
             .pt.v{fill:var(--viol);opacity:.95}
             .diag{stroke:var(--line);stroke-dasharray:4 4}
@@ -394,8 +441,15 @@ final class HtmlReporter
               function val(m,k){return (m.metrics&&m.metrics[k]!=null)?m.metrics[k]:0;}
               function isViol(m){return m.violations&&m.violations.length>0;}
 
-              // ---- table (sortable) ----
+              // ---- table (triable et filtrable) ----
               var tbl=document.getElementById('methods');
+              var fsel=document.getElementById('methodFilter');
+              var fcount=document.getElementById('methodCount');
+              function visible(){
+                var f=fsel.value;
+                if(f==='all')return M;
+                return M.filter(function(m){return f==='viol'?isViol(m):!isViol(m);});
+              }
               var sortKey='divergence',asc=false;
               function head(){
                 var tr=document.createElement('tr');
@@ -421,7 +475,9 @@ final class HtmlReporter
                 Array.prototype.slice.call(h.children).forEach(function(c){
                   if(c.dataset.k===sortKey){c.classList.add('sorted');if(asc)c.classList.add('asc');}
                 });
-                M.slice().sort(cmp).forEach(function(m){
+                var rows=visible();
+                fcount.textContent=rows.length+' / '+M.length+' méthodes';
+                rows.slice().sort(cmp).forEach(function(m){
                   var tr=document.createElement('tr');
                   L.forEach(function(l){
                     var td=document.createElement('td');var over=val(m,l.key)>thr[l.key];
@@ -437,37 +493,47 @@ final class HtmlReporter
                 });
               }
 
-              // ---- scatter (percentiles) ----
-              var sx=document.getElementById('axisX'),sy=document.getElementById('axisY');
-              L.forEach(function(l,i){
-                [sx,sy].forEach(function(s){var o=document.createElement('option');o.value=l.key;o.textContent=l.label;s.appendChild(o);});
-              });
-              sx.selectedIndex=0;sy.selectedIndex=Math.min(3,L.length-1);
+              // ---- un nuage par couple de lentilles ----
               var only=document.getElementById('onlyViol');
-              [sx,sy,only].forEach(function(el){el.addEventListener('change',scatter);});
               var NS='http://www.w3.org/2000/svg';
               function el(n,a){var e=document.createElementNS(NS,n);for(var k in a)e.setAttribute(k,a[k]);return e;}
-              function scatter(){
-                var W=720,H=420,pad=48,kx=sx.value,ky=sy.value;
+              function plot(kx,ky){
+                var W=300,H=260,pad=30;
                 var svg=el('svg',{viewBox:'0 0 '+W+' '+H});
-                var x0=pad,x1=W-pad,y0=H-pad,y1=pad;
+                var x0=pad,x1=W-10,y0=H-pad,y1=10;
                 svg.appendChild(el('line',{class:'diag',x1:x0,y1:y0,x2:x1,y2:y1}));
                 svg.appendChild(el('line',{class:'ax',x1:x0,y1:y0,x2:x1,y2:y0}));
                 svg.appendChild(el('line',{class:'ax',x1:x0,y1:y0,x2:x0,y2:y1}));
-                var lx=el('text',{class:'axlbl',x:(x0+x1)/2,y:H-12});lx.textContent=labelOf(kx)+' (rang)';svg.appendChild(lx);
-                var ly=el('text',{class:'axlbl',x:14,y:(y0+y1)/2,transform:'rotate(-90 14 '+(y0+y1)/2+')'});ly.textContent=labelOf(ky)+' (rang)';svg.appendChild(ly);
+                var lx=el('text',{class:'axlbl',x:(x0+x1)/2,y:H-8});lx.textContent=labelOf(kx);svg.appendChild(lx);
+                var ly=el('text',{class:'axlbl',x:11,y:(y0+y1)/2,transform:'rotate(-90 11 '+(y0+y1)/2+')'});ly.textContent=labelOf(ky);svg.appendChild(ly);
                 M.forEach(function(m){
                   if(only.checked&&!isViol(m))return;
                   var px=x0+pc(m,kx)*(x1-x0),py=y0-pc(m,ky)*(y0-y1);
-                  var c=el('circle',{class:'pt'+(isViol(m)?' v':''),cx:px.toFixed(1),cy:py.toFixed(1),r:4});
+                  var c=el('circle',{class:'pt'+(isViol(m)?' v':''),cx:px.toFixed(1),cy:py.toFixed(1),r:2.5});
                   var t=el('title',{});t.textContent=m.file+'::'+m.name+'  '+labelOf(kx)+'='+num(val(m,kx))+', '+labelOf(ky)+'='+num(val(m,ky));
                   c.appendChild(t);svg.appendChild(c);
                 });
-                var box=document.getElementById('scatter');box.innerHTML='';box.appendChild(svg);
+                return svg;
+              }
+              function pairs(){
+                var box=document.getElementById('pairs');box.innerHTML='';
+                for(var i=0;i<L.length;i++){
+                  for(var j=i+1;j<L.length;j++){
+                    var card=document.createElement('div');card.className='pair';
+                    var h=document.createElement('h3');
+                    h.appendChild(document.createTextNode(L[i].label));
+                    var vs=document.createElement('span');vs.className='vs';vs.textContent=' × ';
+                    h.appendChild(vs);h.appendChild(document.createTextNode(L[j].label));
+                    card.appendChild(h);card.appendChild(plot(L[i].key,L[j].key));
+                    box.appendChild(card);
+                  }
+                }
               }
               function labelOf(k){for(var i=0;i<L.length;i++)if(L[i].key===k)return L[i].label;return k;}
 
-              draw();scatter();
+              fsel.addEventListener('change',draw);
+              only.addEventListener('change',pairs);
+              draw();pairs();
             })();
             JS;
     }

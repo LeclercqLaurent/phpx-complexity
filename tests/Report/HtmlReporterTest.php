@@ -24,7 +24,7 @@ final class HtmlReporterTest extends TestCase
 
         self::assertStringStartsWith('<!DOCTYPE html>', $html);
         self::assertStringContainsString('<table id="methods">', $html);
-        self::assertStringContainsString('id="scatter"', $html);
+        self::assertStringContainsString('id="pairs"', $html);
         self::assertStringContainsString('<h2>Lentilles</h2>', $html);
         // Chaque KPI est défini dans la légende.
         self::assertStringContainsString('ldesc', $html);
@@ -39,12 +39,18 @@ final class HtmlReporterTest extends TestCase
         $html = $this->render($this->sampleResults());
 
         // Aucune ressource réseau : pas de http(s) hormis l'URI de namespace SVG,
-        // ni src=/href= externes.
+        // ni src= externe.
         $withoutSvgNs = str_replace('http://www.w3.org/2000/svg', '', $html);
         self::assertStringNotContainsString('http://', $withoutSvgNs);
         self::assertStringNotContainsString('https://', $withoutSvgNs);
         self::assertStringNotContainsString('src=', $html);
-        self::assertStringNotContainsString('href=', $html);
+
+        // Les seuls href sont ceux du menu, qui pointent vers des ancres internes.
+        preg_match_all('/href="([^"]*)"/', $html, $hrefs);
+        self::assertNotSame([], $hrefs[1], 'le menu doit exister');
+        foreach ($hrefs[1] as $href) {
+            self::assertStringStartsWith('#', $href, 'aucun href ne sort du document');
+        }
     }
 
     public function testEscapesCodeDerivedContent(): void

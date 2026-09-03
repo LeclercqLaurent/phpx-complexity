@@ -2121,7 +2121,7 @@
         {
             "file": "Report/HtmlReporter.php",
             "name": "baselineHtml",
-            "line": 278,
+            "line": 316,
             "metrics": {
                 "cognitive": 1,
                 "params": 1,
@@ -2133,7 +2133,7 @@
         {
             "file": "Report/HtmlReporter.php",
             "name": "buildData",
-            "line": 218,
+            "line": 256,
             "metrics": {
                 "cognitive": 8,
                 "params": 1,
@@ -2145,7 +2145,7 @@
         {
             "file": "Report/HtmlReporter.php",
             "name": "coverageHtml",
-            "line": 183,
+            "line": 221,
             "metrics": {
                 "cognitive": 8,
                 "params": 2,
@@ -2157,7 +2157,7 @@
         {
             "file": "Report/HtmlReporter.php",
             "name": "css",
-            "line": 332,
+            "line": 370,
             "metrics": {
                 "cognitive": 0,
                 "params": 0,
@@ -2169,7 +2169,7 @@
         {
             "file": "Report/HtmlReporter.php",
             "name": "deltaRows",
-            "line": 302,
+            "line": 340,
             "metrics": {
                 "cognitive": 4,
                 "params": 3,
@@ -2181,7 +2181,7 @@
         {
             "file": "Report/HtmlReporter.php",
             "name": "e",
-            "line": 322,
+            "line": 360,
             "metrics": {
                 "cognitive": 0,
                 "params": 1,
@@ -2193,7 +2193,7 @@
         {
             "file": "Report/HtmlReporter.php",
             "name": "headerHtml",
-            "line": 101,
+            "line": 139,
             "metrics": {
                 "cognitive": 7,
                 "params": 2,
@@ -2205,7 +2205,7 @@
         {
             "file": "Report/HtmlReporter.php",
             "name": "lensesPayload",
-            "line": 262,
+            "line": 300,
             "metrics": {
                 "cognitive": 1,
                 "params": 0,
@@ -2216,8 +2216,20 @@
         },
         {
             "file": "Report/HtmlReporter.php",
+            "name": "navHtml",
+            "line": 112,
+            "metrics": {
+                "cognitive": 4,
+                "params": 3,
+                "returns": 1,
+                "live_peak": 4,
+                "entangle": 0.5714285714285714
+            }
+        },
+        {
+            "file": "Report/HtmlReporter.php",
             "name": "num",
-            "line": 327,
+            "line": 365,
             "metrics": {
                 "cognitive": 1,
                 "params": 1,
@@ -2229,7 +2241,7 @@
         {
             "file": "Report/HtmlReporter.php",
             "name": "qaHtml",
-            "line": 149,
+            "line": 187,
             "metrics": {
                 "cognitive": 13,
                 "params": 1,
@@ -2247,13 +2259,13 @@
                 "params": 2,
                 "returns": 1,
                 "live_peak": 8,
-                "entangle": 1.4545454545454546
+                "entangle": 1.8333333333333333
             }
         },
         {
             "file": "Report/HtmlReporter.php",
             "name": "script",
-            "line": 385,
+            "line": 432,
             "metrics": {
                 "cognitive": 0,
                 "params": 0,
@@ -2265,7 +2277,7 @@
         {
             "file": "Report/HtmlReporter.php",
             "name": "statCard",
-            "line": 210,
+            "line": 248,
             "metrics": {
                 "cognitive": 0,
                 "params": 2,
