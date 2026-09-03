@@ -218,6 +218,14 @@ composer qa      # idem
 Garde-fou local à lancer avant chaque commit : un code de sortie non nul signale
 un commit à corriger. Comme le reste de l'outil, tout est hors-ligne.
 
+**`composer.lock` est versionné** et les deux outils qui peuvent faire échouer le
+gate sont contraints au patch (`~3.95.0`, `~2.2.0`). Sans cela, une version
+mineure de PHPStan apportant de nouvelles règles casse la CI sans qu'une ligne de
+code ait bougé. Pour une bibliothèque, ce verrou n'engage que le développement :
+le `composer.lock` d'un paquet est ignoré par ses consommateurs. Absorber une
+montée de version est donc un **geste délibéré** — `composer update`, relancer
+`scripts/qa.sh`, traiter les nouveaux signalements, committer le lock.
+
 Le script inclut l'outil **appliqué à son propre code, en mode cliquet** : les
 quelques dépassements hérités sont figés dans `baseline.json` et passent, toute
 régression échoue.

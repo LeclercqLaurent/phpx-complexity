@@ -12,7 +12,7 @@ cd "$(dirname "$0")/.." || exit 2
 
 BOX="var/box/vendor/bin/box"
 if [ ! -x "$BOX" ]; then
-    echo "box absent : composer require --working-dir=var/box humbug/box" >&2
+    echo "box absent : composer require --working-dir=var/box humbug/box:^4.7" >&2
     exit 2
 fi
 
