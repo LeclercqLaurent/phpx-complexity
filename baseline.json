@@ -2,7 +2,7 @@
     "tool": "phpx-complexity",
     "summary": {
         "files": 43,
-        "methods": 208,
+        "methods": 211,
         "methodsInViolation": 6,
         "totalViolations": 6,
         "parseErrors": []
@@ -29,7 +29,7 @@
         "live_peak": {
             "label": "Pic vivantes",
             "reference": "",
-            "description": "Nombre maximal de variables locales « vivantes » en même temps (durée de vie = de la première à la dernière utilisation, recouvrant une même ligne). Proxy de la charge en mémoire de travail du lecteur (7±2). Mesure la pression interne, pas la signature (≠ S107).",
+            "description": "Nombre maximal de variables locales « vivantes » en même temps (durée de vie = de la première à la dernière utilisation, recouvrant une même ligne). Proxy de la charge en mémoire de travail du lecteur (7±2). Les paramètres utilisés comptent : à lire en regard de l'intrication, qui seule sépare une signature large d'un enchevêtrement réel.",
             "threshold": 8
         },
         "entangle": {
@@ -74,12 +74,12 @@
             },
             "percentile": {
                 "cognitive": 0,
-                "params": 0.9758454106280193,
+                "params": 0.9761904761904762,
                 "returns": 0,
                 "live_peak": 0,
                 "entangle": 0
             },
-            "divergence": 0.9758,
+            "divergence": 0.9762,
             "violations": []
         },
         {
@@ -95,12 +95,12 @@
             },
             "percentile": {
                 "cognitive": 0,
-                "params": 0.9758454106280193,
+                "params": 0.9761904761904762,
                 "returns": 0,
                 "live_peak": 0,
                 "entangle": 0
             },
-            "divergence": 0.9758,
+            "divergence": 0.9762,
             "violations": []
         },
         {
@@ -116,12 +116,12 @@
             },
             "percentile": {
                 "cognitive": 0,
-                "params": 0.9758454106280193,
+                "params": 0.9761904761904762,
                 "returns": 0,
                 "live_peak": 0,
                 "entangle": 0
             },
-            "divergence": 0.9758,
+            "divergence": 0.9762,
             "violations": []
         },
         {
@@ -137,12 +137,12 @@
             },
             "percentile": {
                 "cognitive": 0,
-                "params": 0.9758454106280193,
+                "params": 0.9761904761904762,
                 "returns": 0,
                 "live_peak": 0,
                 "entangle": 0
             },
-            "divergence": 0.9758,
+            "divergence": 0.9762,
             "violations": []
         },
         {
@@ -158,12 +158,12 @@
             },
             "percentile": {
                 "cognitive": 0,
-                "params": 0.9758454106280193,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.9227053140096618,
+                "params": 0.9761904761904762,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.9238095238095239,
                 "entangle": 0
             },
-            "divergence": 0.9758,
+            "divergence": 0.9762,
             "violations": []
         },
         {
@@ -178,34 +178,13 @@
                 "entangle": 0.4
             },
             "percentile": {
-                "cognitive": 0.9565217391304348,
-                "params": 0.6328502415458938,
+                "cognitive": 0.9571428571428572,
+                "params": 0.6333333333333333,
                 "returns": 0,
-                "live_peak": 0.5893719806763285,
-                "entangle": 0.5217391304347826
+                "live_peak": 0.5904761904761905,
+                "entangle": 0.5238095238095238
             },
-            "divergence": 0.9565,
-            "violations": []
-        },
-        {
-            "file": "Cli/Application.php",
-            "name": "usageError",
-            "line": 68,
-            "metrics": {
-                "cognitive": 3,
-                "params": 1,
-                "returns": 3,
-                "live_peak": 1,
-                "entangle": 0
-            },
-            "percentile": {
-                "cognitive": 0.642512077294686,
-                "params": 0.18357487922705315,
-                "returns": 0.9516908212560387,
-                "live_peak": 0.2946859903381642,
-                "entangle": 0
-            },
-            "divergence": 0.9517,
+            "divergence": 0.9571,
             "violations": []
         },
         {
@@ -220,13 +199,34 @@
                 "entangle": 0
             },
             "percentile": {
-                "cognitive": 0.9516908212560387,
-                "params": 0.18357487922705315,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.4492753623188406,
+                "cognitive": 0.9523809523809523,
+                "params": 0.18095238095238095,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.4523809523809524,
                 "entangle": 0
             },
-            "divergence": 0.9517,
+            "divergence": 0.9524,
+            "violations": []
+        },
+        {
+            "file": "Cli/Application.php",
+            "name": "usageError",
+            "line": 68,
+            "metrics": {
+                "cognitive": 3,
+                "params": 1,
+                "returns": 3,
+                "live_peak": 1,
+                "entangle": 0
+            },
+            "percentile": {
+                "cognitive": 0.6428571428571429,
+                "params": 0.18095238095238095,
+                "returns": 0.9476190476190476,
+                "live_peak": 0.2904761904761905,
+                "entangle": 0
+            },
+            "divergence": 0.9476,
             "violations": []
         },
         {
@@ -241,13 +241,13 @@
                 "entangle": 0
             },
             "percentile": {
-                "cognitive": 0.8115942028985508,
-                "params": 0.9468599033816425,
+                "cognitive": 0.8142857142857143,
+                "params": 0.9476190476190476,
                 "returns": 0,
-                "live_peak": 0.7246376811594203,
+                "live_peak": 0.7285714285714285,
                 "entangle": 0
             },
-            "divergence": 0.9469,
+            "divergence": 0.9476,
             "violations": []
         },
         {
@@ -263,12 +263,12 @@
             },
             "percentile": {
                 "cognitive": 0,
-                "params": 0.9468599033816425,
+                "params": 0.9476190476190476,
                 "returns": 0,
                 "live_peak": 0,
                 "entangle": 0
             },
-            "divergence": 0.9469,
+            "divergence": 0.9476,
             "violations": []
         },
         {
@@ -284,12 +284,12 @@
             },
             "percentile": {
                 "cognitive": 0,
-                "params": 0.9468599033816425,
+                "params": 0.9476190476190476,
                 "returns": 0,
                 "live_peak": 0,
                 "entangle": 0
             },
-            "divergence": 0.9469,
+            "divergence": 0.9476,
             "violations": []
         },
         {
@@ -305,12 +305,12 @@
             },
             "percentile": {
                 "cognitive": 0,
-                "params": 0.9468599033816425,
+                "params": 0.9476190476190476,
                 "returns": 0,
                 "live_peak": 0,
                 "entangle": 0
             },
-            "divergence": 0.9469,
+            "divergence": 0.9476,
             "violations": []
         },
         {
@@ -325,13 +325,13 @@
                 "entangle": 0
             },
             "percentile": {
-                "cognitive": 0.4106280193236715,
-                "params": 0.9323671497584541,
-                "returns": 0.8067632850241546,
-                "live_peak": 0.7246376811594203,
+                "cognitive": 0.4095238095238095,
+                "params": 0.9333333333333333,
+                "returns": 0.8047619047619048,
+                "live_peak": 0.7285714285714285,
                 "entangle": 0
             },
-            "divergence": 0.9324,
+            "divergence": 0.9333,
             "violations": []
         },
         {
@@ -347,12 +347,12 @@
             },
             "percentile": {
                 "cognitive": 0,
-                "params": 0.9323671497584541,
+                "params": 0.9333333333333333,
                 "returns": 0,
                 "live_peak": 0,
                 "entangle": 0
             },
-            "divergence": 0.9324,
+            "divergence": 0.9333,
             "violations": []
         },
         {
@@ -368,12 +368,12 @@
             },
             "percentile": {
                 "cognitive": 0,
-                "params": 0.9323671497584541,
+                "params": 0.9333333333333333,
                 "returns": 0,
                 "live_peak": 0,
                 "entangle": 0
             },
-            "divergence": 0.9324,
+            "divergence": 0.9333,
             "violations": []
         },
         {
@@ -388,19 +388,19 @@
                 "entangle": 0
             },
             "percentile": {
-                "cognitive": 0.8985507246376812,
+                "cognitive": 0.9,
                 "params": 0,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.4492753623188406,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.4523809523809524,
                 "entangle": 0
             },
-            "divergence": 0.8986,
+            "divergence": 0.9,
             "violations": []
         },
         {
             "file": "Lens/CognitiveComplexityLens.php",
             "name": "walk",
-            "line": 78,
+            "line": 91,
             "metrics": {
                 "cognitive": 1,
                 "params": 3,
@@ -409,13 +409,13 @@
                 "entangle": 0
             },
             "percentile": {
-                "cognitive": 0.4106280193236715,
-                "params": 0.8599033816425121,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.5893719806763285,
+                "cognitive": 0.4095238095238095,
+                "params": 0.861904761904762,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.5904761904761905,
                 "entangle": 0
             },
-            "divergence": 0.8599,
+            "divergence": 0.8619,
             "violations": []
         },
         {
@@ -430,13 +430,13 @@
                 "entangle": 0
             },
             "percentile": {
-                "cognitive": 0.8599033816425121,
-                "params": 0.18357487922705315,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.4492753623188406,
+                "cognitive": 0.861904761904762,
+                "params": 0.18095238095238095,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.4523809523809524,
                 "entangle": 0
             },
-            "divergence": 0.8599,
+            "divergence": 0.8619,
             "violations": []
         },
         {
@@ -451,13 +451,13 @@
                 "entangle": 0
             },
             "percentile": {
-                "cognitive": 0.8599033816425121,
-                "params": 0.18357487922705315,
-                "returns": 0.8067632850241546,
-                "live_peak": 0.4492753623188406,
+                "cognitive": 0.861904761904762,
+                "params": 0.18095238095238095,
+                "returns": 0.8047619047619048,
+                "live_peak": 0.4523809523809524,
                 "entangle": 0
             },
-            "divergence": 0.8599,
+            "divergence": 0.8619,
             "violations": []
         },
         {
@@ -472,13 +472,13 @@
                 "entangle": 0.6666666666666666
             },
             "percentile": {
-                "cognitive": 0.8599033816425121,
-                "params": 0.18357487922705315,
+                "cognitive": 0.861904761904762,
+                "params": 0.18095238095238095,
                 "returns": 0,
-                "live_peak": 0.5893719806763285,
-                "entangle": 0.5314009661835749
+                "live_peak": 0.5904761904761905,
+                "entangle": 0.5333333333333333
             },
-            "divergence": 0.8599,
+            "divergence": 0.8619,
             "violations": []
         },
         {
@@ -493,13 +493,13 @@
                 "entangle": 1.6
             },
             "percentile": {
-                "cognitive": 0.642512077294686,
-                "params": 0.18357487922705315,
+                "cognitive": 0.6428571428571429,
+                "params": 0.18095238095238095,
                 "returns": 0,
-                "live_peak": 0.7246376811594203,
-                "entangle": 0.8502415458937198
+                "live_peak": 0.7285714285714285,
+                "entangle": 0.8476190476190476
             },
-            "divergence": 0.8502,
+            "divergence": 0.8476,
             "violations": []
         },
         {
@@ -514,13 +514,13 @@
                 "entangle": 2.6666666666666665
             },
             "percentile": {
-                "cognitive": 0.9951690821256038,
-                "params": 0.18357487922705315,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.9855072463768116,
-                "entangle": 0.961352657004831
+                "cognitive": 0.9952380952380953,
+                "params": 0.18095238095238095,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.9857142857142858,
+                "entangle": 0.9619047619047619
             },
-            "divergence": 0.8261,
+            "divergence": 0.8286,
             "violations": [
                 "cognitive"
             ]
@@ -537,13 +537,13 @@
                 "entangle": 3.2
             },
             "percentile": {
-                "cognitive": 0.9323671497584541,
-                "params": 0.18357487922705315,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.8743961352657005,
-                "entangle": 0.9903381642512077
+                "cognitive": 0.9333333333333333,
+                "params": 0.18095238095238095,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.8761904761904762,
+                "entangle": 0.9904761904761905
             },
-            "divergence": 0.8213,
+            "divergence": 0.8238,
             "violations": [
                 "entangle"
             ]
@@ -560,13 +560,13 @@
                 "entangle": 2.6666666666666665
             },
             "percentile": {
-                "cognitive": 0.9903381642512077,
-                "params": 0.6328502415458938,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.9855072463768116,
-                "entangle": 0.961352657004831
+                "cognitive": 0.9904761904761905,
+                "params": 0.6333333333333333,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.9857142857142858,
+                "entangle": 0.9619047619047619
             },
-            "divergence": 0.8213,
+            "divergence": 0.8238,
             "violations": []
         },
         {
@@ -581,13 +581,13 @@
                 "entangle": 1.4545454545454546
             },
             "percentile": {
-                "cognitive": 0.748792270531401,
-                "params": 0.6328502415458938,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.9855072463768116,
-                "entangle": 0.7777777777777778
+                "cognitive": 0.7523809523809524,
+                "params": 0.6333333333333333,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.9857142857142858,
+                "entangle": 0.780952380952381
             },
-            "divergence": 0.8164,
+            "divergence": 0.819,
             "violations": []
         },
         {
@@ -602,13 +602,13 @@
                 "entangle": 1.75
             },
             "percentile": {
-                "cognitive": 0.9855072463768116,
-                "params": 0.18357487922705315,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.9227053140096618,
-                "entangle": 0.8695652173913043
+                "cognitive": 0.9857142857142858,
+                "params": 0.18095238095238095,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.9238095238095239,
+                "entangle": 0.8666666666666667
             },
-            "divergence": 0.8164,
+            "divergence": 0.819,
             "violations": []
         },
         {
@@ -623,13 +623,13 @@
                 "entangle": 1.75
             },
             "percentile": {
-                "cognitive": 0.9323671497584541,
-                "params": 0.18357487922705315,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.9855072463768116,
-                "entangle": 0.8695652173913043
+                "cognitive": 0.9333333333333333,
+                "params": 0.18095238095238095,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.9857142857142858,
+                "entangle": 0.8666666666666667
             },
-            "divergence": 0.8164,
+            "divergence": 0.819,
             "violations": []
         },
         {
@@ -644,13 +644,13 @@
                 "entangle": 0.6666666666666666
             },
             "percentile": {
-                "cognitive": 0.8115942028985508,
-                "params": 0.18357487922705315,
+                "cognitive": 0.8142857142857143,
+                "params": 0.18095238095238095,
                 "returns": 1,
-                "live_peak": 0.5893719806763285,
-                "entangle": 0.5314009661835749
+                "live_peak": 0.5904761904761905,
+                "entangle": 0.5333333333333333
             },
-            "divergence": 0.8164,
+            "divergence": 0.819,
             "violations": [
                 "returns"
             ]
@@ -667,13 +667,13 @@
                 "entangle": 3
             },
             "percentile": {
-                "cognitive": 0.642512077294686,
-                "params": 0.18357487922705315,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.7246376811594203,
-                "entangle": 0.9806763285024155
+                "cognitive": 0.6428571428571429,
+                "params": 0.18095238095238095,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.7285714285714285,
+                "entangle": 0.9809523809523809
             },
-            "divergence": 0.8116,
+            "divergence": 0.8143,
             "violations": []
         },
         {
@@ -688,13 +688,13 @@
                 "entangle": 1.5555555555555556
             },
             "percentile": {
-                "cognitive": 0.9806763285024155,
-                "params": 0.18357487922705315,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.961352657004831,
-                "entangle": 0.8405797101449275
+                "cognitive": 0.9809523809523809,
+                "params": 0.18095238095238095,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.9619047619047619,
+                "entangle": 0.8380952380952381
             },
-            "divergence": 0.8116,
+            "divergence": 0.8143,
             "violations": []
         },
         {
@@ -709,13 +709,13 @@
                 "entangle": 0
             },
             "percentile": {
-                "cognitive": 0.8115942028985508,
-                "params": 0.18357487922705315,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.5893719806763285,
+                "cognitive": 0.8142857142857143,
+                "params": 0.18095238095238095,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.5904761904761905,
                 "entangle": 0
             },
-            "divergence": 0.8116,
+            "divergence": 0.8143,
             "violations": []
         },
         {
@@ -730,97 +730,13 @@
                 "entangle": 3
             },
             "percentile": {
-                "cognitive": 0.642512077294686,
-                "params": 0.18357487922705315,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.7246376811594203,
-                "entangle": 0.9806763285024155
+                "cognitive": 0.6428571428571429,
+                "params": 0.18095238095238095,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.7285714285714285,
+                "entangle": 0.9809523809523809
             },
-            "divergence": 0.8116,
-            "violations": []
-        },
-        {
-            "file": "Analyzer/ProjectAnalyzer.php",
-            "name": "functionName",
-            "line": 190,
-            "metrics": {
-                "cognitive": 2,
-                "params": 1,
-                "returns": 2,
-                "live_peak": 1,
-                "entangle": 0
-            },
-            "percentile": {
-                "cognitive": 0.5555555555555556,
-                "params": 0.18357487922705315,
-                "returns": 0.8067632850241546,
-                "live_peak": 0.2946859903381642,
-                "entangle": 0
-            },
-            "divergence": 0.8068,
-            "violations": []
-        },
-        {
-            "file": "Cli/Application.php",
-            "name": "resolvePath",
-            "line": 316,
-            "metrics": {
-                "cognitive": 2,
-                "params": 1,
-                "returns": 2,
-                "live_peak": 1,
-                "entangle": 0
-            },
-            "percentile": {
-                "cognitive": 0.5555555555555556,
-                "params": 0.18357487922705315,
-                "returns": 0.8067632850241546,
-                "live_peak": 0.2946859903381642,
-                "entangle": 0
-            },
-            "divergence": 0.8068,
-            "violations": []
-        },
-        {
-            "file": "Cli/Options.php",
-            "name": "valued",
-            "line": 149,
-            "metrics": {
-                "cognitive": 3,
-                "params": 1,
-                "returns": 2,
-                "live_peak": 3,
-                "entangle": 0
-            },
-            "percentile": {
-                "cognitive": 0.642512077294686,
-                "params": 0.18357487922705315,
-                "returns": 0.8067632850241546,
-                "live_peak": 0.5893719806763285,
-                "entangle": 0
-            },
-            "divergence": 0.8068,
-            "violations": []
-        },
-        {
-            "file": "Report/CoverageReporter.php",
-            "name": "num",
-            "line": 63,
-            "metrics": {
-                "cognitive": 2,
-                "params": 1,
-                "returns": 2,
-                "live_peak": 1,
-                "entangle": 0
-            },
-            "percentile": {
-                "cognitive": 0.5555555555555556,
-                "params": 0.18357487922705315,
-                "returns": 0.8067632850241546,
-                "live_peak": 0.2946859903381642,
-                "entangle": 0
-            },
-            "divergence": 0.8068,
+            "divergence": 0.8143,
             "violations": []
         },
         {
@@ -835,13 +751,97 @@
                 "entangle": 2.8
             },
             "percentile": {
-                "cognitive": 0.642512077294686,
-                "params": 0.18357487922705315,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.8743961352657005,
-                "entangle": 0.9758454106280193
+                "cognitive": 0.6428571428571429,
+                "params": 0.18095238095238095,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.8761904761904762,
+                "entangle": 0.9761904761904762
             },
-            "divergence": 0.8068,
+            "divergence": 0.8095,
+            "violations": []
+        },
+        {
+            "file": "Analyzer/ProjectAnalyzer.php",
+            "name": "functionName",
+            "line": 190,
+            "metrics": {
+                "cognitive": 2,
+                "params": 1,
+                "returns": 2,
+                "live_peak": 1,
+                "entangle": 0
+            },
+            "percentile": {
+                "cognitive": 0.5523809523809524,
+                "params": 0.18095238095238095,
+                "returns": 0.8047619047619048,
+                "live_peak": 0.2904761904761905,
+                "entangle": 0
+            },
+            "divergence": 0.8048,
+            "violations": []
+        },
+        {
+            "file": "Cli/Application.php",
+            "name": "resolvePath",
+            "line": 316,
+            "metrics": {
+                "cognitive": 2,
+                "params": 1,
+                "returns": 2,
+                "live_peak": 1,
+                "entangle": 0
+            },
+            "percentile": {
+                "cognitive": 0.5523809523809524,
+                "params": 0.18095238095238095,
+                "returns": 0.8047619047619048,
+                "live_peak": 0.2904761904761905,
+                "entangle": 0
+            },
+            "divergence": 0.8048,
+            "violations": []
+        },
+        {
+            "file": "Cli/Options.php",
+            "name": "valued",
+            "line": 149,
+            "metrics": {
+                "cognitive": 3,
+                "params": 1,
+                "returns": 2,
+                "live_peak": 3,
+                "entangle": 0
+            },
+            "percentile": {
+                "cognitive": 0.6428571428571429,
+                "params": 0.18095238095238095,
+                "returns": 0.8047619047619048,
+                "live_peak": 0.5904761904761905,
+                "entangle": 0
+            },
+            "divergence": 0.8048,
+            "violations": []
+        },
+        {
+            "file": "Report/CoverageReporter.php",
+            "name": "num",
+            "line": 63,
+            "metrics": {
+                "cognitive": 2,
+                "params": 1,
+                "returns": 2,
+                "live_peak": 1,
+                "entangle": 0
+            },
+            "percentile": {
+                "cognitive": 0.5523809523809524,
+                "params": 0.18095238095238095,
+                "returns": 0.8047619047619048,
+                "live_peak": 0.2904761904761905,
+                "entangle": 0
+            },
+            "divergence": 0.8048,
             "violations": []
         },
         {
@@ -856,13 +856,13 @@
                 "entangle": 0
             },
             "percentile": {
-                "cognitive": 0.5555555555555556,
-                "params": 0.18357487922705315,
-                "returns": 0.8067632850241546,
-                "live_peak": 0.2946859903381642,
+                "cognitive": 0.5523809523809524,
+                "params": 0.18095238095238095,
+                "returns": 0.8047619047619048,
+                "live_peak": 0.2904761904761905,
                 "entangle": 0
             },
-            "divergence": 0.8068,
+            "divergence": 0.8048,
             "violations": []
         },
         {
@@ -877,13 +877,13 @@
                 "entangle": 0
             },
             "percentile": {
-                "cognitive": 0.748792270531401,
-                "params": 0.18357487922705315,
-                "returns": 0.8067632850241546,
-                "live_peak": 0.2946859903381642,
+                "cognitive": 0.7523809523809524,
+                "params": 0.18095238095238095,
+                "returns": 0.8047619047619048,
+                "live_peak": 0.2904761904761905,
                 "entangle": 0
             },
-            "divergence": 0.8068,
+            "divergence": 0.8048,
             "violations": []
         },
         {
@@ -898,13 +898,13 @@
                 "entangle": 1.6
             },
             "percentile": {
-                "cognitive": 0.9710144927536232,
-                "params": 0.18357487922705315,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.7246376811594203,
-                "entangle": 0.8502415458937198
+                "cognitive": 0.9714285714285714,
+                "params": 0.18095238095238095,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.7285714285714285,
+                "entangle": 0.8476190476190476
             },
-            "divergence": 0.8019,
+            "divergence": 0.8048,
             "violations": []
         },
         {
@@ -919,13 +919,13 @@
                 "entangle": 1.75
             },
             "percentile": {
-                "cognitive": 0.9710144927536232,
-                "params": 0.18357487922705315,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.9227053140096618,
-                "entangle": 0.8695652173913043
+                "cognitive": 0.9714285714285714,
+                "params": 0.18095238095238095,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.9238095238095239,
+                "entangle": 0.8666666666666667
             },
-            "divergence": 0.8019,
+            "divergence": 0.8048,
             "violations": []
         },
         {
@@ -940,13 +940,13 @@
                 "entangle": 1.5555555555555556
             },
             "percentile": {
-                "cognitive": 0.9565217391304348,
-                "params": 0.18357487922705315,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.961352657004831,
-                "entangle": 0.8405797101449275
+                "cognitive": 0.9571428571428572,
+                "params": 0.18095238095238095,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.9619047619047619,
+                "entangle": 0.8380952380952381
             },
-            "divergence": 0.7923,
+            "divergence": 0.7952,
             "violations": []
         },
         {
@@ -961,13 +961,13 @@
                 "entangle": 2.6666666666666665
             },
             "percentile": {
-                "cognitive": 0.748792270531401,
-                "params": 0.18357487922705315,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.961352657004831,
-                "entangle": 0.961352657004831
+                "cognitive": 0.7523809523809524,
+                "params": 0.18095238095238095,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.9619047619047619,
+                "entangle": 0.9619047619047619
             },
-            "divergence": 0.7923,
+            "divergence": 0.7952,
             "violations": []
         },
         {
@@ -982,13 +982,13 @@
                 "entangle": 1.3333333333333333
             },
             "percentile": {
-                "cognitive": 0.8599033816425121,
-                "params": 0.8599033816425121,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.961352657004831,
-                "entangle": 0.7101449275362319
+                "cognitive": 0.861904761904762,
+                "params": 0.861904761904762,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.9619047619047619,
+                "entangle": 0.7095238095238096
             },
-            "divergence": 0.7923,
+            "divergence": 0.7952,
             "violations": []
         },
         {
@@ -1003,13 +1003,13 @@
                 "entangle": 1.0909090909090908
             },
             "percentile": {
-                "cognitive": 0.8985507246376812,
-                "params": 0.18357487922705315,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.961352657004831,
-                "entangle": 0.6763285024154589
+                "cognitive": 0.9,
+                "params": 0.18095238095238095,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.9619047619047619,
+                "entangle": 0.6761904761904762
             },
-            "divergence": 0.7923,
+            "divergence": 0.7952,
             "violations": []
         },
         {
@@ -1024,13 +1024,13 @@
                 "entangle": 2.2857142857142856
             },
             "percentile": {
-                "cognitive": 0.9565217391304348,
-                "params": 0.18357487922705315,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.8743961352657005,
-                "entangle": 0.9227053140096618
+                "cognitive": 0.9571428571428572,
+                "params": 0.18095238095238095,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.8761904761904762,
+                "entangle": 0.9238095238095239
             },
-            "divergence": 0.7874,
+            "divergence": 0.7905,
             "violations": []
         },
         {
@@ -1045,13 +1045,13 @@
                 "entangle": 2.5714285714285716
             },
             "percentile": {
-                "cognitive": 0.4106280193236715,
-                "params": 0.8599033816425121,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.8743961352657005,
-                "entangle": 0.9565217391304348
+                "cognitive": 0.4095238095238095,
+                "params": 0.861904761904762,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.8761904761904762,
+                "entangle": 0.9571428571428572
             },
-            "divergence": 0.7874,
+            "divergence": 0.7905,
             "violations": []
         },
         {
@@ -1066,19 +1066,19 @@
                 "entangle": 2.4
             },
             "percentile": {
-                "cognitive": 0.8115942028985508,
-                "params": 0.6328502415458938,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.7246376811594203,
-                "entangle": 0.9371980676328503
+                "cognitive": 0.8142857142857143,
+                "params": 0.6333333333333333,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.7285714285714285,
+                "entangle": 0.9380952380952381
             },
-            "divergence": 0.7681,
+            "divergence": 0.7714,
             "violations": []
         },
         {
             "file": "Lens/CognitiveComplexityLens.php",
             "name": "walkLoop",
-            "line": 117,
+            "line": 172,
             "metrics": {
                 "cognitive": 3,
                 "params": 2,
@@ -1087,19 +1087,19 @@
                 "entangle": 2.4
             },
             "percentile": {
-                "cognitive": 0.642512077294686,
-                "params": 0.6328502415458938,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.8743961352657005,
-                "entangle": 0.9371980676328503
+                "cognitive": 0.6428571428571429,
+                "params": 0.6333333333333333,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.8761904761904762,
+                "entangle": 0.9380952380952381
             },
-            "divergence": 0.7681,
+            "divergence": 0.7714,
             "violations": []
         },
         {
             "file": "Lens/CognitiveComplexityLens.php",
             "name": "walkLogical",
-            "line": 160,
+            "line": 215,
             "metrics": {
                 "cognitive": 1,
                 "params": 3,
@@ -1108,13 +1108,13 @@
                 "entangle": 2.4
             },
             "percentile": {
-                "cognitive": 0.4106280193236715,
-                "params": 0.8599033816425121,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.7246376811594203,
-                "entangle": 0.9371980676328503
+                "cognitive": 0.4095238095238095,
+                "params": 0.861904761904762,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.7285714285714285,
+                "entangle": 0.9380952380952381
             },
-            "divergence": 0.7681,
+            "divergence": 0.7714,
             "violations": []
         },
         {
@@ -1129,118 +1129,13 @@
                 "entangle": 2.4
             },
             "percentile": {
-                "cognitive": 0.5555555555555556,
-                "params": 0.6328502415458938,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.7246376811594203,
-                "entangle": 0.9371980676328503
+                "cognitive": 0.5523809523809524,
+                "params": 0.6333333333333333,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.7285714285714285,
+                "entangle": 0.9380952380952381
             },
-            "divergence": 0.7681,
-            "violations": []
-        },
-        {
-            "file": "Cli/Application.php",
-            "name": "run",
-            "line": 44,
-            "metrics": {
-                "cognitive": 3,
-                "params": 1,
-                "returns": 3,
-                "live_peak": 2,
-                "entangle": 1.3333333333333333
-            },
-            "percentile": {
-                "cognitive": 0.642512077294686,
-                "params": 0.18357487922705315,
-                "returns": 0.9516908212560387,
-                "live_peak": 0.4492753623188406,
-                "entangle": 0.7101449275362319
-            },
-            "divergence": 0.7681,
-            "violations": []
-        },
-        {
-            "file": "Baseline/Snapshot.php",
-            "name": "row",
-            "line": 109,
-            "metrics": {
-                "cognitive": 4,
-                "params": 1,
-                "returns": 3,
-                "live_peak": 4,
-                "entangle": 2
-            },
-            "percentile": {
-                "cognitive": 0.748792270531401,
-                "params": 0.18357487922705315,
-                "returns": 0.9516908212560387,
-                "live_peak": 0.7246376811594203,
-                "entangle": 0.8840579710144928
-            },
-            "divergence": 0.7681,
-            "violations": []
-        },
-        {
-            "file": "Coverage/TestPresenceAnalyzer.php",
-            "name": "classesIn",
-            "line": 73,
-            "metrics": {
-                "cognitive": 3,
-                "params": 1,
-                "returns": 3,
-                "live_peak": 2,
-                "entangle": 1.3333333333333333
-            },
-            "percentile": {
-                "cognitive": 0.642512077294686,
-                "params": 0.18357487922705315,
-                "returns": 0.9516908212560387,
-                "live_peak": 0.4492753623188406,
-                "entangle": 0.7101449275362319
-            },
-            "divergence": 0.7681,
-            "violations": []
-        },
-        {
-            "file": "Vcs/RepositoryUrl.php",
-            "name": "isAccepted",
-            "line": 58,
-            "metrics": {
-                "cognitive": 5,
-                "params": 1,
-                "returns": 3,
-                "live_peak": 2,
-                "entangle": 1
-            },
-            "percentile": {
-                "cognitive": 0.8115942028985508,
-                "params": 0.18357487922705315,
-                "returns": 0.9516908212560387,
-                "live_peak": 0.4492753623188406,
-                "entangle": 0.5893719806763285
-            },
-            "divergence": 0.7681,
-            "violations": []
-        },
-        {
-            "file": "Qa/QaPresenceChecker.php",
-            "name": "composerPackages",
-            "line": 60,
-            "metrics": {
-                "cognitive": 8,
-                "params": 1,
-                "returns": 3,
-                "live_peak": 4,
-                "entangle": 1
-            },
-            "percentile": {
-                "cognitive": 0.9323671497584541,
-                "params": 0.18357487922705315,
-                "returns": 0.9516908212560387,
-                "live_peak": 0.7246376811594203,
-                "entangle": 0.5893719806763285
-            },
-            "divergence": 0.7681,
+            "divergence": 0.7714,
             "violations": []
         },
         {
@@ -1255,13 +1150,13 @@
                 "entangle": 2
             },
             "percentile": {
-                "cognitive": 0.9323671497584541,
-                "params": 0.6328502415458938,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.5893719806763285,
-                "entangle": 0.8840579710144928
+                "cognitive": 0.9333333333333333,
+                "params": 0.6333333333333333,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.5904761904761905,
+                "entangle": 0.8809523809523809
             },
-            "divergence": 0.7633,
+            "divergence": 0.7667,
             "violations": []
         },
         {
@@ -1276,13 +1171,118 @@
                 "entangle": 2.3333333333333335
             },
             "percentile": {
-                "cognitive": 0.748792270531401,
-                "params": 0.18357487922705315,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.7246376811594203,
-                "entangle": 0.9323671497584541
+                "cognitive": 0.7523809523809524,
+                "params": 0.18095238095238095,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.7285714285714285,
+                "entangle": 0.9333333333333333
             },
-            "divergence": 0.7633,
+            "divergence": 0.7667,
+            "violations": []
+        },
+        {
+            "file": "Cli/Application.php",
+            "name": "run",
+            "line": 44,
+            "metrics": {
+                "cognitive": 3,
+                "params": 1,
+                "returns": 3,
+                "live_peak": 2,
+                "entangle": 1.3333333333333333
+            },
+            "percentile": {
+                "cognitive": 0.6428571428571429,
+                "params": 0.18095238095238095,
+                "returns": 0.9476190476190476,
+                "live_peak": 0.4523809523809524,
+                "entangle": 0.7095238095238096
+            },
+            "divergence": 0.7667,
+            "violations": []
+        },
+        {
+            "file": "Baseline/Snapshot.php",
+            "name": "row",
+            "line": 109,
+            "metrics": {
+                "cognitive": 4,
+                "params": 1,
+                "returns": 3,
+                "live_peak": 4,
+                "entangle": 2
+            },
+            "percentile": {
+                "cognitive": 0.7523809523809524,
+                "params": 0.18095238095238095,
+                "returns": 0.9476190476190476,
+                "live_peak": 0.7285714285714285,
+                "entangle": 0.8809523809523809
+            },
+            "divergence": 0.7667,
+            "violations": []
+        },
+        {
+            "file": "Coverage/TestPresenceAnalyzer.php",
+            "name": "classesIn",
+            "line": 73,
+            "metrics": {
+                "cognitive": 3,
+                "params": 1,
+                "returns": 3,
+                "live_peak": 2,
+                "entangle": 1.3333333333333333
+            },
+            "percentile": {
+                "cognitive": 0.6428571428571429,
+                "params": 0.18095238095238095,
+                "returns": 0.9476190476190476,
+                "live_peak": 0.4523809523809524,
+                "entangle": 0.7095238095238096
+            },
+            "divergence": 0.7667,
+            "violations": []
+        },
+        {
+            "file": "Vcs/RepositoryUrl.php",
+            "name": "isAccepted",
+            "line": 58,
+            "metrics": {
+                "cognitive": 5,
+                "params": 1,
+                "returns": 3,
+                "live_peak": 2,
+                "entangle": 1
+            },
+            "percentile": {
+                "cognitive": 0.8142857142857143,
+                "params": 0.18095238095238095,
+                "returns": 0.9476190476190476,
+                "live_peak": 0.4523809523809524,
+                "entangle": 0.5904761904761905
+            },
+            "divergence": 0.7667,
+            "violations": []
+        },
+        {
+            "file": "Qa/QaPresenceChecker.php",
+            "name": "composerPackages",
+            "line": 60,
+            "metrics": {
+                "cognitive": 8,
+                "params": 1,
+                "returns": 3,
+                "live_peak": 4,
+                "entangle": 1
+            },
+            "percentile": {
+                "cognitive": 0.9333333333333333,
+                "params": 0.18095238095238095,
+                "returns": 0.9476190476190476,
+                "live_peak": 0.7285714285714285,
+                "entangle": 0.5904761904761905
+            },
+            "divergence": 0.7667,
             "violations": []
         },
         {
@@ -1297,13 +1297,13 @@
                 "entangle": 2
             },
             "percentile": {
-                "cognitive": 0.8985507246376812,
-                "params": 0.18357487922705315,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.9227053140096618,
-                "entangle": 0.8840579710144928
+                "cognitive": 0.9,
+                "params": 0.18095238095238095,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.9238095238095239,
+                "entangle": 0.8809523809523809
             },
-            "divergence": 0.7536,
+            "divergence": 0.7571,
             "violations": []
         },
         {
@@ -1318,13 +1318,13 @@
                 "entangle": 1.5
             },
             "percentile": {
-                "cognitive": 0.8985507246376812,
-                "params": 0.6328502415458938,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.9227053140096618,
-                "entangle": 0.782608695652174
+                "cognitive": 0.9,
+                "params": 0.6333333333333333,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.9238095238095239,
+                "entangle": 0.7857142857142857
             },
-            "divergence": 0.7536,
+            "divergence": 0.7571,
             "violations": []
         },
         {
@@ -1339,13 +1339,13 @@
                 "entangle": 1.6666666666666667
             },
             "percentile": {
-                "cognitive": 0.4106280193236715,
-                "params": 0.18357487922705315,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.9227053140096618,
-                "entangle": 0.8599033816425121
+                "cognitive": 0.4095238095238095,
+                "params": 0.18095238095238095,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.9238095238095239,
+                "entangle": 0.8571428571428571
             },
-            "divergence": 0.7536,
+            "divergence": 0.7571,
             "violations": []
         },
         {
@@ -1360,13 +1360,13 @@
                 "entangle": 2.2857142857142856
             },
             "percentile": {
-                "cognitive": 0.642512077294686,
-                "params": 0.18357487922705315,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.8743961352657005,
-                "entangle": 0.9227053140096618
+                "cognitive": 0.6428571428571429,
+                "params": 0.18095238095238095,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.8761904761904762,
+                "entangle": 0.9238095238095239
             },
-            "divergence": 0.7536,
+            "divergence": 0.7571,
             "violations": []
         },
         {
@@ -1381,13 +1381,13 @@
                 "entangle": 0
             },
             "percentile": {
-                "cognitive": 0.748792270531401,
-                "params": 0.6328502415458938,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.4492753623188406,
+                "cognitive": 0.7523809523809524,
+                "params": 0.6333333333333333,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.4523809523809524,
                 "entangle": 0
             },
-            "divergence": 0.7488,
+            "divergence": 0.7524,
             "violations": []
         },
         {
@@ -1402,55 +1402,13 @@
                 "entangle": 1
             },
             "percentile": {
-                "cognitive": 0.8985507246376812,
-                "params": 0.18357487922705315,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.5893719806763285,
-                "entangle": 0.5893719806763285
+                "cognitive": 0.9,
+                "params": 0.18095238095238095,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.5904761904761905,
+                "entangle": 0.5904761904761905
             },
-            "divergence": 0.7295,
-            "violations": []
-        },
-        {
-            "file": "Lens/CognitiveComplexityLens.php",
-            "name": "walkTry",
-            "line": 142,
-            "metrics": {
-                "cognitive": 2,
-                "params": 2,
-                "returns": 1,
-                "live_peak": 4,
-                "entangle": 2
-            },
-            "percentile": {
-                "cognitive": 0.5555555555555556,
-                "params": 0.6328502415458938,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.7246376811594203,
-                "entangle": 0.8840579710144928
-            },
-            "divergence": 0.715,
-            "violations": []
-        },
-        {
-            "file": "Coverage/CoverageReportReader.php",
-            "name": "candidatePaths",
-            "line": 49,
-            "metrics": {
-                "cognitive": 3,
-                "params": 2,
-                "returns": 1,
-                "live_peak": 3,
-                "entangle": 2
-            },
-            "percentile": {
-                "cognitive": 0.642512077294686,
-                "params": 0.6328502415458938,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.5893719806763285,
-                "entangle": 0.8840579710144928
-            },
-            "divergence": 0.715,
+            "divergence": 0.7333,
             "violations": []
         },
         {
@@ -1465,34 +1423,55 @@
                 "entangle": 1.2
             },
             "percentile": {
-                "cognitive": 0.8985507246376812,
-                "params": 0.18357487922705315,
-                "returns": 0.8067632850241546,
-                "live_peak": 0.7246376811594203,
-                "entangle": 0.6859903381642513
+                "cognitive": 0.9,
+                "params": 0.18095238095238095,
+                "returns": 0.8047619047619048,
+                "live_peak": 0.7285714285714285,
+                "entangle": 0.6857142857142857
             },
-            "divergence": 0.715,
+            "divergence": 0.719,
             "violations": []
         },
         {
-            "file": "Vcs/RepositoryUrl.php",
-            "name": "name",
-            "line": 49,
+            "file": "Lens/CognitiveComplexityLens.php",
+            "name": "walkTry",
+            "line": 197,
             "metrics": {
-                "cognitive": 1,
-                "params": 0,
+                "cognitive": 2,
+                "params": 2,
                 "returns": 1,
-                "live_peak": 2,
-                "entangle": 1.3333333333333333
+                "live_peak": 4,
+                "entangle": 2
             },
             "percentile": {
-                "cognitive": 0.4106280193236715,
-                "params": 0,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.4492753623188406,
-                "entangle": 0.7101449275362319
+                "cognitive": 0.5523809523809524,
+                "params": 0.6333333333333333,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.7285714285714285,
+                "entangle": 0.8809523809523809
             },
-            "divergence": 0.7101,
+            "divergence": 0.7143,
+            "violations": []
+        },
+        {
+            "file": "Coverage/CoverageReportReader.php",
+            "name": "candidatePaths",
+            "line": 49,
+            "metrics": {
+                "cognitive": 3,
+                "params": 2,
+                "returns": 1,
+                "live_peak": 3,
+                "entangle": 2
+            },
+            "percentile": {
+                "cognitive": 0.6428571428571429,
+                "params": 0.6333333333333333,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.5904761904761905,
+                "entangle": 0.8809523809523809
+            },
+            "divergence": 0.7143,
             "violations": []
         },
         {
@@ -1507,13 +1486,13 @@
                 "entangle": 1.3333333333333333
             },
             "percentile": {
-                "cognitive": 0.748792270531401,
-                "params": 0.8599033816425121,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.8743961352657005,
-                "entangle": 0.7101449275362319
+                "cognitive": 0.7523809523809524,
+                "params": 0.861904761904762,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.8761904761904762,
+                "entangle": 0.7095238095238096
             },
-            "divergence": 0.7053,
+            "divergence": 0.7095,
             "violations": []
         },
         {
@@ -1528,13 +1507,55 @@
                 "entangle": 1.6666666666666667
             },
             "percentile": {
-                "cognitive": 0.8115942028985508,
-                "params": 0.18357487922705315,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.8743961352657005,
-                "entangle": 0.8599033816425121
+                "cognitive": 0.8142857142857143,
+                "params": 0.18095238095238095,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.8761904761904762,
+                "entangle": 0.8571428571428571
             },
-            "divergence": 0.7053,
+            "divergence": 0.7095,
+            "violations": []
+        },
+        {
+            "file": "Lens/CognitiveComplexityLens.php",
+            "name": "walkIf",
+            "line": 115,
+            "metrics": {
+                "cognitive": 0,
+                "params": 2,
+                "returns": 1,
+                "live_peak": 3,
+                "entangle": 1.3333333333333333
+            },
+            "percentile": {
+                "cognitive": 0,
+                "params": 0.6333333333333333,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.5904761904761905,
+                "entangle": 0.7095238095238096
+            },
+            "divergence": 0.7095,
+            "violations": []
+        },
+        {
+            "file": "Vcs/RepositoryUrl.php",
+            "name": "name",
+            "line": 49,
+            "metrics": {
+                "cognitive": 1,
+                "params": 0,
+                "returns": 1,
+                "live_peak": 2,
+                "entangle": 1.3333333333333333
+            },
+            "percentile": {
+                "cognitive": 0.4095238095238095,
+                "params": 0,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.4523809523809524,
+                "entangle": 0.7095238095238096
+            },
+            "divergence": 0.7095,
             "violations": []
         },
         {
@@ -1549,13 +1570,13 @@
                 "entangle": 2
             },
             "percentile": {
-                "cognitive": 0.748792270531401,
-                "params": 0.18357487922705315,
-                "returns": 0.8067632850241546,
-                "live_peak": 0.5893719806763285,
-                "entangle": 0.8840579710144928
+                "cognitive": 0.7523809523809524,
+                "params": 0.18095238095238095,
+                "returns": 0.8047619047619048,
+                "live_peak": 0.5904761904761905,
+                "entangle": 0.8809523809523809
             },
-            "divergence": 0.7005,
+            "divergence": 0.7,
             "violations": []
         },
         {
@@ -1570,13 +1591,13 @@
                 "entangle": 0.8
             },
             "percentile": {
-                "cognitive": 0.8115942028985508,
-                "params": 0.8599033816425121,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.5893719806763285,
-                "entangle": 0.5797101449275363
+                "cognitive": 0.8142857142857143,
+                "params": 0.861904761904762,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.5904761904761905,
+                "entangle": 0.580952380952381
             },
-            "divergence": 0.6908,
+            "divergence": 0.6952,
             "violations": []
         },
         {
@@ -1591,13 +1612,13 @@
                 "entangle": 1
             },
             "percentile": {
-                "cognitive": 0.8599033816425121,
-                "params": 0.8599033816425121,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.7246376811594203,
-                "entangle": 0.5893719806763285
+                "cognitive": 0.861904761904762,
+                "params": 0.861904761904762,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.7285714285714285,
+                "entangle": 0.5904761904761905
             },
-            "divergence": 0.6908,
+            "divergence": 0.6952,
             "violations": []
         },
         {
@@ -1612,13 +1633,13 @@
                 "entangle": 1.5
             },
             "percentile": {
-                "cognitive": 0.4106280193236715,
-                "params": 0.8599033816425121,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.7246376811594203,
-                "entangle": 0.782608695652174
+                "cognitive": 0.4095238095238095,
+                "params": 0.861904761904762,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.7285714285714285,
+                "entangle": 0.7857142857142857
             },
-            "divergence": 0.6908,
+            "divergence": 0.6952,
             "violations": []
         },
         {
@@ -1633,13 +1654,13 @@
                 "entangle": 1.5
             },
             "percentile": {
-                "cognitive": 0.4106280193236715,
-                "params": 0.8599033816425121,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.7246376811594203,
-                "entangle": 0.782608695652174
+                "cognitive": 0.4095238095238095,
+                "params": 0.861904761904762,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.7285714285714285,
+                "entangle": 0.7857142857142857
             },
-            "divergence": 0.6908,
+            "divergence": 0.6952,
             "violations": []
         },
         {
@@ -1654,19 +1675,19 @@
                 "entangle": 1.5
             },
             "percentile": {
-                "cognitive": 0.4106280193236715,
-                "params": 0.8599033816425121,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.5893719806763285,
-                "entangle": 0.782608695652174
+                "cognitive": 0.4095238095238095,
+                "params": 0.861904761904762,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.5904761904761905,
+                "entangle": 0.7857142857142857
             },
-            "divergence": 0.6908,
+            "divergence": 0.6952,
             "violations": []
         },
         {
             "file": "Lens/CognitiveComplexityLens.php",
             "name": "walkList",
-            "line": 68,
+            "line": 81,
             "metrics": {
                 "cognitive": 1,
                 "params": 3,
@@ -1675,13 +1696,13 @@
                 "entangle": 1.2
             },
             "percentile": {
-                "cognitive": 0.4106280193236715,
-                "params": 0.8599033816425121,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.7246376811594203,
-                "entangle": 0.6859903381642513
+                "cognitive": 0.4095238095238095,
+                "params": 0.861904761904762,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.7285714285714285,
+                "entangle": 0.6857142857142857
             },
-            "divergence": 0.6908,
+            "divergence": 0.6952,
             "violations": []
         },
         {
@@ -1696,13 +1717,13 @@
                 "entangle": 1.3333333333333333
             },
             "percentile": {
-                "cognitive": 0.8599033816425121,
-                "params": 0.18357487922705315,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.7246376811594203,
-                "entangle": 0.7101449275362319
+                "cognitive": 0.861904761904762,
+                "params": 0.18095238095238095,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.7285714285714285,
+                "entangle": 0.7095238095238096
             },
-            "divergence": 0.6908,
+            "divergence": 0.6952,
             "violations": []
         },
         {
@@ -1717,13 +1738,13 @@
                 "entangle": 1.1428571428571428
             },
             "percentile": {
-                "cognitive": 0.5555555555555556,
-                "params": 0.8599033816425121,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.7246376811594203,
-                "entangle": 0.6811594202898551
+                "cognitive": 0.5523809523809524,
+                "params": 0.861904761904762,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.7285714285714285,
+                "entangle": 0.680952380952381
             },
-            "divergence": 0.6908,
+            "divergence": 0.6952,
             "violations": []
         },
         {
@@ -1738,13 +1759,13 @@
                 "entangle": 1.5
             },
             "percentile": {
-                "cognitive": 0.642512077294686,
-                "params": 0.8599033816425121,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.4492753623188406,
-                "entangle": 0.782608695652174
+                "cognitive": 0.6428571428571429,
+                "params": 0.861904761904762,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.4523809523809524,
+                "entangle": 0.7857142857142857
             },
-            "divergence": 0.6908,
+            "divergence": 0.6952,
             "violations": []
         },
         {
@@ -1759,13 +1780,13 @@
                 "entangle": 1
             },
             "percentile": {
-                "cognitive": 0.8599033816425121,
-                "params": 0.18357487922705315,
-                "returns": 0.8067632850241546,
-                "live_peak": 0.4492753623188406,
-                "entangle": 0.5893719806763285
+                "cognitive": 0.861904761904762,
+                "params": 0.18095238095238095,
+                "returns": 0.8047619047619048,
+                "live_peak": 0.4523809523809524,
+                "entangle": 0.5904761904761905
             },
-            "divergence": 0.6763,
+            "divergence": 0.681,
             "violations": []
         },
         {
@@ -1780,13 +1801,13 @@
                 "entangle": 1
             },
             "percentile": {
-                "cognitive": 0.8599033816425121,
-                "params": 0.18357487922705315,
-                "returns": 0.8067632850241546,
-                "live_peak": 0.4492753623188406,
-                "entangle": 0.5893719806763285
+                "cognitive": 0.861904761904762,
+                "params": 0.18095238095238095,
+                "returns": 0.8047619047619048,
+                "live_peak": 0.4523809523809524,
+                "entangle": 0.5904761904761905
             },
-            "divergence": 0.6763,
+            "divergence": 0.681,
             "violations": []
         },
         {
@@ -1801,13 +1822,13 @@
                 "entangle": 0
             },
             "percentile": {
-                "cognitive": 0.642512077294686,
-                "params": 0.18357487922705315,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.5893719806763285,
+                "cognitive": 0.6428571428571429,
+                "params": 0.18095238095238095,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.5904761904761905,
                 "entangle": 0
             },
-            "divergence": 0.6425,
+            "divergence": 0.6429,
             "violations": []
         },
         {
@@ -1823,12 +1844,12 @@
             },
             "percentile": {
                 "cognitive": 0,
-                "params": 0.6328502415458938,
+                "params": 0.6333333333333333,
                 "returns": 0,
                 "live_peak": 0,
                 "entangle": 0
             },
-            "divergence": 0.6329,
+            "divergence": 0.6333,
             "violations": []
         },
         {
@@ -1843,13 +1864,13 @@
                 "entangle": 0
             },
             "percentile": {
-                "cognitive": 0.4106280193236715,
-                "params": 0.6328502415458938,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.2946859903381642,
+                "cognitive": 0.4095238095238095,
+                "params": 0.6333333333333333,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.2904761904761905,
                 "entangle": 0
             },
-            "divergence": 0.6329,
+            "divergence": 0.6333,
             "violations": []
         },
         {
@@ -1865,12 +1886,12 @@
             },
             "percentile": {
                 "cognitive": 0,
-                "params": 0.6328502415458938,
+                "params": 0.6333333333333333,
                 "returns": 0,
                 "live_peak": 0,
                 "entangle": 0
             },
-            "divergence": 0.6329,
+            "divergence": 0.6333,
             "violations": []
         },
         {
@@ -1886,12 +1907,12 @@
             },
             "percentile": {
                 "cognitive": 0,
-                "params": 0.6328502415458938,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.4492753623188406,
+                "params": 0.6333333333333333,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.4523809523809524,
                 "entangle": 0
             },
-            "divergence": 0.6329,
+            "divergence": 0.6333,
             "violations": []
         },
         {
@@ -1907,12 +1928,12 @@
             },
             "percentile": {
                 "cognitive": 0,
-                "params": 0.6328502415458938,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.4492753623188406,
-                "entangle": 0.5893719806763285
+                "params": 0.6333333333333333,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.4523809523809524,
+                "entangle": 0.5904761904761905
             },
-            "divergence": 0.6329,
+            "divergence": 0.6333,
             "violations": []
         },
         {
@@ -1928,12 +1949,12 @@
             },
             "percentile": {
                 "cognitive": 0,
-                "params": 0.6328502415458938,
+                "params": 0.6333333333333333,
                 "returns": 0,
                 "live_peak": 0,
                 "entangle": 0
             },
-            "divergence": 0.6329,
+            "divergence": 0.6333,
             "violations": []
         },
         {
@@ -1949,18 +1970,18 @@
             },
             "percentile": {
                 "cognitive": 0,
-                "params": 0.6328502415458938,
+                "params": 0.6333333333333333,
                 "returns": 0,
                 "live_peak": 0,
                 "entangle": 0
             },
-            "divergence": 0.6329,
+            "divergence": 0.6333,
             "violations": []
         },
         {
             "file": "Lens/CognitiveComplexityLens.php",
             "name": "measure",
-            "line": 55,
+            "line": 68,
             "metrics": {
                 "cognitive": 0,
                 "params": 2,
@@ -1970,18 +1991,18 @@
             },
             "percentile": {
                 "cognitive": 0,
-                "params": 0.6328502415458938,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.2946859903381642,
+                "params": 0.6333333333333333,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.2904761904761905,
                 "entangle": 0
             },
-            "divergence": 0.6329,
+            "divergence": 0.6333,
             "violations": []
         },
         {
             "file": "Lens/CognitiveComplexityLens.php",
             "name": "walkNesting",
-            "line": 155,
+            "line": 210,
             "metrics": {
                 "cognitive": 0,
                 "params": 2,
@@ -1991,12 +2012,12 @@
             },
             "percentile": {
                 "cognitive": 0,
-                "params": 0.6328502415458938,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.4492753623188406,
-                "entangle": 0.5893719806763285
+                "params": 0.6333333333333333,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.4523809523809524,
+                "entangle": 0.5904761904761905
             },
-            "divergence": 0.6329,
+            "divergence": 0.6333,
             "violations": []
         },
         {
@@ -2012,12 +2033,12 @@
             },
             "percentile": {
                 "cognitive": 0,
-                "params": 0.6328502415458938,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.2946859903381642,
+                "params": 0.6333333333333333,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.2904761904761905,
                 "entangle": 0
             },
-            "divergence": 0.6329,
+            "divergence": 0.6333,
             "violations": []
         },
         {
@@ -2033,12 +2054,12 @@
             },
             "percentile": {
                 "cognitive": 0,
-                "params": 0.6328502415458938,
+                "params": 0.6333333333333333,
                 "returns": 0,
-                "live_peak": 0.4492753623188406,
+                "live_peak": 0.4523809523809524,
                 "entangle": 0
             },
-            "divergence": 0.6329,
+            "divergence": 0.6333,
             "violations": []
         },
         {
@@ -2054,12 +2075,12 @@
             },
             "percentile": {
                 "cognitive": 0,
-                "params": 0.6328502415458938,
+                "params": 0.6333333333333333,
                 "returns": 0,
                 "live_peak": 0,
                 "entangle": 0
             },
-            "divergence": 0.6329,
+            "divergence": 0.6333,
             "violations": []
         },
         {
@@ -2075,12 +2096,33 @@
             },
             "percentile": {
                 "cognitive": 0,
-                "params": 0.6328502415458938,
+                "params": 0.6333333333333333,
                 "returns": 0,
                 "live_peak": 0,
                 "entangle": 0
             },
-            "divergence": 0.6329,
+            "divergence": 0.6333,
+            "violations": []
+        },
+        {
+            "file": "Baseline/Snapshot.php",
+            "name": "floats",
+            "line": 154,
+            "metrics": {
+                "cognitive": 5,
+                "params": 1,
+                "returns": 2,
+                "live_peak": 4,
+                "entangle": 1
+            },
+            "percentile": {
+                "cognitive": 0.8142857142857143,
+                "params": 0.18095238095238095,
+                "returns": 0.8047619047619048,
+                "live_peak": 0.7285714285714285,
+                "entangle": 0.5904761904761905
+            },
+            "divergence": 0.6333,
             "violations": []
         },
         {
@@ -2096,12 +2138,12 @@
             },
             "percentile": {
                 "cognitive": 0,
-                "params": 0.6328502415458938,
+                "params": 0.6333333333333333,
                 "returns": 0,
                 "live_peak": 0,
                 "entangle": 0
             },
-            "divergence": 0.6329,
+            "divergence": 0.6333,
             "violations": []
         },
         {
@@ -2117,12 +2159,12 @@
             },
             "percentile": {
                 "cognitive": 0,
-                "params": 0.6328502415458938,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.4492753623188406,
+                "params": 0.6333333333333333,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.4523809523809524,
                 "entangle": 0
             },
-            "divergence": 0.6329,
+            "divergence": 0.6333,
             "violations": []
         },
         {
@@ -2138,12 +2180,12 @@
             },
             "percentile": {
                 "cognitive": 0,
-                "params": 0.6328502415458938,
+                "params": 0.6333333333333333,
                 "returns": 0,
                 "live_peak": 0,
                 "entangle": 0
             },
-            "divergence": 0.6329,
+            "divergence": 0.6333,
             "violations": []
         },
         {
@@ -2159,12 +2201,12 @@
             },
             "percentile": {
                 "cognitive": 0,
-                "params": 0.6328502415458938,
+                "params": 0.6333333333333333,
                 "returns": 0,
                 "live_peak": 0,
                 "entangle": 0
             },
-            "divergence": 0.6329,
+            "divergence": 0.6333,
             "violations": []
         },
         {
@@ -2180,33 +2222,12 @@
             },
             "percentile": {
                 "cognitive": 0,
-                "params": 0.6328502415458938,
+                "params": 0.6333333333333333,
                 "returns": 0,
                 "live_peak": 0,
                 "entangle": 0
             },
-            "divergence": 0.6329,
-            "violations": []
-        },
-        {
-            "file": "Baseline/Snapshot.php",
-            "name": "floats",
-            "line": 154,
-            "metrics": {
-                "cognitive": 5,
-                "params": 1,
-                "returns": 2,
-                "live_peak": 4,
-                "entangle": 1
-            },
-            "percentile": {
-                "cognitive": 0.8115942028985508,
-                "params": 0.18357487922705315,
-                "returns": 0.8067632850241546,
-                "live_peak": 0.7246376811594203,
-                "entangle": 0.5893719806763285
-            },
-            "divergence": 0.628,
+            "divergence": 0.6333,
             "violations": []
         },
         {
@@ -2221,13 +2242,13 @@
                 "entangle": 1.3333333333333333
             },
             "percentile": {
-                "cognitive": 0.8115942028985508,
-                "params": 0.18357487922705315,
-                "returns": 0.8067632850241546,
-                "live_peak": 0.4492753623188406,
-                "entangle": 0.7101449275362319
+                "cognitive": 0.8142857142857143,
+                "params": 0.18095238095238095,
+                "returns": 0.8047619047619048,
+                "live_peak": 0.4523809523809524,
+                "entangle": 0.7095238095238096
             },
-            "divergence": 0.628,
+            "divergence": 0.6333,
             "violations": []
         },
         {
@@ -2242,13 +2263,13 @@
                 "entangle": 1
             },
             "percentile": {
-                "cognitive": 0.748792270531401,
-                "params": 0.18357487922705315,
-                "returns": 0.8067632850241546,
-                "live_peak": 0.4492753623188406,
-                "entangle": 0.5893719806763285
+                "cognitive": 0.7523809523809524,
+                "params": 0.18095238095238095,
+                "returns": 0.8047619047619048,
+                "live_peak": 0.4523809523809524,
+                "entangle": 0.5904761904761905
             },
-            "divergence": 0.6232,
+            "divergence": 0.6238,
             "violations": []
         },
         {
@@ -2263,13 +2284,13 @@
                 "entangle": 0.6666666666666666
             },
             "percentile": {
-                "cognitive": 0.4106280193236715,
-                "params": 0.18357487922705315,
-                "returns": 0.8067632850241546,
-                "live_peak": 0.5893719806763285,
-                "entangle": 0.5314009661835749
+                "cognitive": 0.4095238095238095,
+                "params": 0.18095238095238095,
+                "returns": 0.8047619047619048,
+                "live_peak": 0.5904761904761905,
+                "entangle": 0.5333333333333333
             },
-            "divergence": 0.6232,
+            "divergence": 0.6238,
             "violations": []
         },
         {
@@ -2284,13 +2305,13 @@
                 "entangle": 1.2
             },
             "percentile": {
-                "cognitive": 0.748792270531401,
-                "params": 0.18357487922705315,
-                "returns": 0.8067632850241546,
-                "live_peak": 0.7246376811594203,
-                "entangle": 0.6859903381642513
+                "cognitive": 0.7523809523809524,
+                "params": 0.18095238095238095,
+                "returns": 0.8047619047619048,
+                "live_peak": 0.7285714285714285,
+                "entangle": 0.6857142857142857
             },
-            "divergence": 0.6232,
+            "divergence": 0.6238,
             "violations": []
         },
         {
@@ -2305,13 +2326,13 @@
                 "entangle": 1
             },
             "percentile": {
-                "cognitive": 0.642512077294686,
-                "params": 0.18357487922705315,
-                "returns": 0.8067632850241546,
-                "live_peak": 0.4492753623188406,
-                "entangle": 0.5893719806763285
+                "cognitive": 0.6428571428571429,
+                "params": 0.18095238095238095,
+                "returns": 0.8047619047619048,
+                "live_peak": 0.4523809523809524,
+                "entangle": 0.5904761904761905
             },
-            "divergence": 0.6232,
+            "divergence": 0.6238,
             "violations": []
         },
         {
@@ -2326,13 +2347,13 @@
                 "entangle": 1
             },
             "percentile": {
-                "cognitive": 0.642512077294686,
-                "params": 0.18357487922705315,
-                "returns": 0.8067632850241546,
-                "live_peak": 0.5893719806763285,
-                "entangle": 0.5893719806763285
+                "cognitive": 0.6428571428571429,
+                "params": 0.18095238095238095,
+                "returns": 0.8047619047619048,
+                "live_peak": 0.5904761904761905,
+                "entangle": 0.5904761904761905
             },
-            "divergence": 0.6232,
+            "divergence": 0.6238,
             "violations": []
         },
         {
@@ -2347,13 +2368,13 @@
                 "entangle": 0.6666666666666666
             },
             "percentile": {
-                "cognitive": 0.642512077294686,
-                "params": 0.18357487922705315,
-                "returns": 0.8067632850241546,
-                "live_peak": 0.4492753623188406,
-                "entangle": 0.5314009661835749
+                "cognitive": 0.6428571428571429,
+                "params": 0.18095238095238095,
+                "returns": 0.8047619047619048,
+                "live_peak": 0.4523809523809524,
+                "entangle": 0.5333333333333333
             },
-            "divergence": 0.6232,
+            "divergence": 0.6238,
             "violations": []
         },
         {
@@ -2368,13 +2389,13 @@
                 "entangle": 0.6666666666666666
             },
             "percentile": {
-                "cognitive": 0.642512077294686,
-                "params": 0.18357487922705315,
-                "returns": 0.8067632850241546,
-                "live_peak": 0.4492753623188406,
-                "entangle": 0.5314009661835749
+                "cognitive": 0.6428571428571429,
+                "params": 0.18095238095238095,
+                "returns": 0.8047619047619048,
+                "live_peak": 0.4523809523809524,
+                "entangle": 0.5333333333333333
             },
-            "divergence": 0.6232,
+            "divergence": 0.6238,
             "violations": []
         },
         {
@@ -2389,13 +2410,13 @@
                 "entangle": 1.3333333333333333
             },
             "percentile": {
-                "cognitive": 0.5555555555555556,
-                "params": 0.18357487922705315,
-                "returns": 0.8067632850241546,
-                "live_peak": 0.7246376811594203,
-                "entangle": 0.7101449275362319
+                "cognitive": 0.5523809523809524,
+                "params": 0.18095238095238095,
+                "returns": 0.8047619047619048,
+                "live_peak": 0.7285714285714285,
+                "entangle": 0.7095238095238096
             },
-            "divergence": 0.6232,
+            "divergence": 0.6238,
             "violations": []
         },
         {
@@ -2410,13 +2431,13 @@
                 "entangle": 1.5
             },
             "percentile": {
-                "cognitive": 0.4106280193236715,
-                "params": 0.18357487922705315,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.7246376811594203,
-                "entangle": 0.782608695652174
+                "cognitive": 0.4095238095238095,
+                "params": 0.18095238095238095,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.7285714285714285,
+                "entangle": 0.7857142857142857
             },
-            "divergence": 0.6135,
+            "divergence": 0.619,
             "violations": []
         },
         {
@@ -2431,13 +2452,13 @@
                 "entangle": 1.5
             },
             "percentile": {
-                "cognitive": 0.4106280193236715,
-                "params": 0.6328502415458938,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.5893719806763285,
-                "entangle": 0.782608695652174
+                "cognitive": 0.4095238095238095,
+                "params": 0.6333333333333333,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.5904761904761905,
+                "entangle": 0.7857142857142857
             },
-            "divergence": 0.6135,
+            "divergence": 0.619,
             "violations": []
         },
         {
@@ -2452,40 +2473,19 @@
                 "entangle": 1.5
             },
             "percentile": {
-                "cognitive": 0.4106280193236715,
-                "params": 0.18357487922705315,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.5893719806763285,
-                "entangle": 0.782608695652174
+                "cognitive": 0.4095238095238095,
+                "params": 0.18095238095238095,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.5904761904761905,
+                "entangle": 0.7857142857142857
             },
-            "divergence": 0.6135,
-            "violations": []
-        },
-        {
-            "file": "Lens/CognitiveComplexityLens.php",
-            "name": "walkIf",
-            "line": 99,
-            "metrics": {
-                "cognitive": 2,
-                "params": 2,
-                "returns": 1,
-                "live_peak": 4,
-                "entangle": 1.5
-            },
-            "percentile": {
-                "cognitive": 0.5555555555555556,
-                "params": 0.6328502415458938,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.7246376811594203,
-                "entangle": 0.782608695652174
-            },
-            "divergence": 0.6135,
+            "divergence": 0.619,
             "violations": []
         },
         {
             "file": "Lens/CognitiveComplexityLens.php",
             "name": "walkSwitch",
-            "line": 128,
+            "line": 183,
             "metrics": {
                 "cognitive": 3,
                 "params": 2,
@@ -2494,13 +2494,13 @@
                 "entangle": 1.5
             },
             "percentile": {
-                "cognitive": 0.642512077294686,
-                "params": 0.6328502415458938,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.7246376811594203,
-                "entangle": 0.782608695652174
+                "cognitive": 0.6428571428571429,
+                "params": 0.6333333333333333,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.7285714285714285,
+                "entangle": 0.7857142857142857
             },
-            "divergence": 0.6135,
+            "divergence": 0.619,
             "violations": []
         },
         {
@@ -2515,13 +2515,13 @@
                 "entangle": 1.5
             },
             "percentile": {
-                "cognitive": 0.5555555555555556,
-                "params": 0.6328502415458938,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.5893719806763285,
-                "entangle": 0.782608695652174
+                "cognitive": 0.5523809523809524,
+                "params": 0.6333333333333333,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.5904761904761905,
+                "entangle": 0.7857142857142857
             },
-            "divergence": 0.6135,
+            "divergence": 0.619,
             "violations": []
         },
         {
@@ -2536,13 +2536,13 @@
                 "entangle": 1
             },
             "percentile": {
-                "cognitive": 0.4106280193236715,
+                "cognitive": 0.4095238095238095,
                 "params": 0,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.4492753623188406,
-                "entangle": 0.5893719806763285
+                "returns": 0.16666666666666666,
+                "live_peak": 0.4523809523809524,
+                "entangle": 0.5904761904761905
             },
-            "divergence": 0.5894,
+            "divergence": 0.5905,
             "violations": []
         },
         {
@@ -2557,13 +2557,13 @@
                 "entangle": 1
             },
             "percentile": {
-                "cognitive": 0.4106280193236715,
+                "cognitive": 0.4095238095238095,
                 "params": 0,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.4492753623188406,
-                "entangle": 0.5893719806763285
+                "returns": 0.16666666666666666,
+                "live_peak": 0.4523809523809524,
+                "entangle": 0.5904761904761905
             },
-            "divergence": 0.5894,
+            "divergence": 0.5905,
             "violations": []
         },
         {
@@ -2578,34 +2578,13 @@
                 "entangle": 0.6666666666666666
             },
             "percentile": {
-                "cognitive": 0.748792270531401,
-                "params": 0.18357487922705315,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.5893719806763285,
-                "entangle": 0.5314009661835749
+                "cognitive": 0.7523809523809524,
+                "params": 0.18095238095238095,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.5904761904761905,
+                "entangle": 0.5333333333333333
             },
-            "divergence": 0.5797,
-            "violations": []
-        },
-        {
-            "file": "Analyzer/ProjectAnalyzer.php",
-            "name": "enterNode",
-            "line": 103,
-            "metrics": {
-                "cognitive": 2,
-                "params": 1,
-                "returns": 1,
-                "live_peak": 1,
-                "entangle": 0
-            },
-            "percentile": {
-                "cognitive": 0.5555555555555556,
-                "params": 0.18357487922705315,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.2946859903381642,
-                "entangle": 0
-            },
-            "divergence": 0.5556,
+            "divergence": 0.5857,
             "violations": []
         },
         {
@@ -2620,13 +2599,76 @@
                 "entangle": 1.2
             },
             "percentile": {
-                "cognitive": 0.5555555555555556,
-                "params": 0.6328502415458938,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.7246376811594203,
-                "entangle": 0.6859903381642513
+                "cognitive": 0.5523809523809524,
+                "params": 0.6333333333333333,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.7285714285714285,
+                "entangle": 0.6857142857142857
             },
-            "divergence": 0.5556,
+            "divergence": 0.5619,
+            "violations": []
+        },
+        {
+            "file": "Analyzer/ProjectAnalyzer.php",
+            "name": "enterNode",
+            "line": 103,
+            "metrics": {
+                "cognitive": 2,
+                "params": 1,
+                "returns": 1,
+                "live_peak": 1,
+                "entangle": 0
+            },
+            "percentile": {
+                "cognitive": 0.5523809523809524,
+                "params": 0.18095238095238095,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.2904761904761905,
+                "entangle": 0
+            },
+            "divergence": 0.5524,
+            "violations": []
+        },
+        {
+            "file": "Lens/CognitiveComplexityLens.php",
+            "name": "chainedIf",
+            "line": 156,
+            "metrics": {
+                "cognitive": 2,
+                "params": 1,
+                "returns": 1,
+                "live_peak": 1,
+                "entangle": 0
+            },
+            "percentile": {
+                "cognitive": 0.5523809523809524,
+                "params": 0.18095238095238095,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.2904761904761905,
+                "entangle": 0
+            },
+            "divergence": 0.5524,
+            "violations": []
+        },
+        {
+            "file": "Lens/CognitiveComplexityLens.php",
+            "name": "walkJump",
+            "line": 167,
+            "metrics": {
+                "cognitive": 2,
+                "params": 1,
+                "returns": 1,
+                "live_peak": 1,
+                "entangle": 0
+            },
+            "percentile": {
+                "cognitive": 0.5523809523809524,
+                "params": 0.18095238095238095,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.2904761904761905,
+                "entangle": 0
+            },
+            "divergence": 0.5524,
             "violations": []
         },
         {
@@ -2641,13 +2683,13 @@
                 "entangle": 1.3333333333333333
             },
             "percentile": {
-                "cognitive": 0.4106280193236715,
-                "params": 0.6328502415458938,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.5893719806763285,
-                "entangle": 0.7101449275362319
+                "cognitive": 0.4095238095238095,
+                "params": 0.6333333333333333,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.5904761904761905,
+                "entangle": 0.7095238095238096
             },
-            "divergence": 0.5411,
+            "divergence": 0.5429,
             "violations": []
         },
         {
@@ -2662,13 +2704,13 @@
                 "entangle": 1.3333333333333333
             },
             "percentile": {
-                "cognitive": 0.4106280193236715,
-                "params": 0.6328502415458938,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.5893719806763285,
-                "entangle": 0.7101449275362319
+                "cognitive": 0.4095238095238095,
+                "params": 0.6333333333333333,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.5904761904761905,
+                "entangle": 0.7095238095238096
             },
-            "divergence": 0.5411,
+            "divergence": 0.5429,
             "violations": []
         },
         {
@@ -2683,13 +2725,13 @@
                 "entangle": 1.3333333333333333
             },
             "percentile": {
-                "cognitive": 0.5555555555555556,
-                "params": 0.6328502415458938,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.4492753623188406,
-                "entangle": 0.7101449275362319
+                "cognitive": 0.5523809523809524,
+                "params": 0.6333333333333333,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.4523809523809524,
+                "entangle": 0.7095238095238096
             },
-            "divergence": 0.5411,
+            "divergence": 0.5429,
             "violations": []
         },
         {
@@ -2704,13 +2746,13 @@
                 "entangle": 1.3333333333333333
             },
             "percentile": {
-                "cognitive": 0.5555555555555556,
-                "params": 0.18357487922705315,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.5893719806763285,
-                "entangle": 0.7101449275362319
+                "cognitive": 0.5523809523809524,
+                "params": 0.18095238095238095,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.5904761904761905,
+                "entangle": 0.7095238095238096
             },
-            "divergence": 0.5411,
+            "divergence": 0.5429,
             "violations": []
         },
         {
@@ -2725,13 +2767,55 @@
                 "entangle": 0.6666666666666666
             },
             "percentile": {
-                "cognitive": 0.642512077294686,
-                "params": 0.6328502415458938,
-                "returns": 0.9516908212560387,
-                "live_peak": 0.4492753623188406,
-                "entangle": 0.5314009661835749
+                "cognitive": 0.6428571428571429,
+                "params": 0.6333333333333333,
+                "returns": 0.9476190476190476,
+                "live_peak": 0.4523809523809524,
+                "entangle": 0.5333333333333333
             },
-            "divergence": 0.5024,
+            "divergence": 0.4952,
+            "violations": []
+        },
+        {
+            "file": "Report/ConsoleReporter.php",
+            "name": "violationCount",
+            "line": 153,
+            "metrics": {
+                "cognitive": 3,
+                "params": 1,
+                "returns": 1,
+                "live_peak": 3,
+                "entangle": 0.6666666666666666
+            },
+            "percentile": {
+                "cognitive": 0.6428571428571429,
+                "params": 0.18095238095238095,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.5904761904761905,
+                "entangle": 0.5333333333333333
+            },
+            "divergence": 0.4762,
+            "violations": []
+        },
+        {
+            "file": "Report/JsonReporter.php",
+            "name": "violationCount",
+            "line": 175,
+            "metrics": {
+                "cognitive": 3,
+                "params": 1,
+                "returns": 1,
+                "live_peak": 3,
+                "entangle": 0.6666666666666666
+            },
+            "percentile": {
+                "cognitive": 0.6428571428571429,
+                "params": 0.18095238095238095,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.5904761904761905,
+                "entangle": 0.5333333333333333
+            },
+            "divergence": 0.4762,
             "violations": []
         },
         {
@@ -2747,57 +2831,15 @@
             },
             "percentile": {
                 "cognitive": 1,
-                "params": 0.6328502415458938,
-                "returns": 0.8067632850241546,
-                "live_peak": 0.7246376811594203,
-                "entangle": 0.5217391304347826
+                "params": 0.6333333333333333,
+                "returns": 0.8047619047619048,
+                "live_peak": 0.7285714285714285,
+                "entangle": 0.5238095238095238
             },
-            "divergence": 0.4783,
+            "divergence": 0.4762,
             "violations": [
                 "cognitive"
             ]
-        },
-        {
-            "file": "Report/ConsoleReporter.php",
-            "name": "violationCount",
-            "line": 153,
-            "metrics": {
-                "cognitive": 3,
-                "params": 1,
-                "returns": 1,
-                "live_peak": 3,
-                "entangle": 0.6666666666666666
-            },
-            "percentile": {
-                "cognitive": 0.642512077294686,
-                "params": 0.18357487922705315,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.5893719806763285,
-                "entangle": 0.5314009661835749
-            },
-            "divergence": 0.4734,
-            "violations": []
-        },
-        {
-            "file": "Report/JsonReporter.php",
-            "name": "violationCount",
-            "line": 175,
-            "metrics": {
-                "cognitive": 3,
-                "params": 1,
-                "returns": 1,
-                "live_peak": 3,
-                "entangle": 0.6666666666666666
-            },
-            "percentile": {
-                "cognitive": 0.642512077294686,
-                "params": 0.18357487922705315,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.5893719806763285,
-                "entangle": 0.5314009661835749
-            },
-            "divergence": 0.4734,
-            "violations": []
         },
         {
             "file": "Coverage/CoverageReportReader.php",
@@ -2811,34 +2853,13 @@
                 "entangle": 1
             },
             "percentile": {
-                "cognitive": 0.4106280193236715,
-                "params": 0.6328502415458938,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.4492753623188406,
-                "entangle": 0.5893719806763285
+                "cognitive": 0.4095238095238095,
+                "params": 0.6333333333333333,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.4523809523809524,
+                "entangle": 0.5904761904761905
             },
-            "divergence": 0.4638,
-            "violations": []
-        },
-        {
-            "file": "Coverage/CoverageReportReader.php",
-            "name": "percent",
-            "line": 124,
-            "metrics": {
-                "cognitive": 1,
-                "params": 2,
-                "returns": 1,
-                "live_peak": 2,
-                "entangle": 1
-            },
-            "percentile": {
-                "cognitive": 0.4106280193236715,
-                "params": 0.6328502415458938,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.4492753623188406,
-                "entangle": 0.5893719806763285
-            },
-            "divergence": 0.4638,
+            "divergence": 0.4667,
             "violations": []
         },
         {
@@ -2853,13 +2874,34 @@
                 "entangle": 1.4285714285714286
             },
             "percentile": {
-                "cognitive": 0.4106280193236715,
-                "params": 0.6328502415458938,
-                "returns": 0.8067632850241546,
-                "live_peak": 0.8743961352657005,
-                "entangle": 0.7729468599033816
+                "cognitive": 0.4095238095238095,
+                "params": 0.6333333333333333,
+                "returns": 0.8047619047619048,
+                "live_peak": 0.8761904761904762,
+                "entangle": 0.7761904761904762
             },
-            "divergence": 0.4638,
+            "divergence": 0.4667,
+            "violations": []
+        },
+        {
+            "file": "Coverage/CoverageReportReader.php",
+            "name": "percent",
+            "line": 124,
+            "metrics": {
+                "cognitive": 1,
+                "params": 2,
+                "returns": 1,
+                "live_peak": 2,
+                "entangle": 1
+            },
+            "percentile": {
+                "cognitive": 0.4095238095238095,
+                "params": 0.6333333333333333,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.4523809523809524,
+                "entangle": 0.5904761904761905
+            },
+            "divergence": 0.4667,
             "violations": []
         },
         {
@@ -2874,13 +2916,13 @@
                 "entangle": 4
             },
             "percentile": {
-                "cognitive": 0.5555555555555556,
-                "params": 0.6328502415458938,
-                "returns": 0.8067632850241546,
-                "live_peak": 0.9227053140096618,
+                "cognitive": 0.5523809523809524,
+                "params": 0.6333333333333333,
+                "returns": 0.8047619047619048,
+                "live_peak": 0.9238095238095239,
                 "entangle": 1
             },
-            "divergence": 0.4444,
+            "divergence": 0.4476,
             "violations": [
                 "entangle"
             ]
@@ -2897,13 +2939,13 @@
                 "entangle": 0.6666666666666666
             },
             "percentile": {
-                "cognitive": 0.4106280193236715,
-                "params": 0.18357487922705315,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.5893719806763285,
-                "entangle": 0.5314009661835749
+                "cognitive": 0.4095238095238095,
+                "params": 0.18095238095238095,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.5904761904761905,
+                "entangle": 0.5333333333333333
             },
-            "divergence": 0.4203,
+            "divergence": 0.4238,
             "violations": []
         },
         {
@@ -2918,13 +2960,13 @@
                 "entangle": 1
             },
             "percentile": {
-                "cognitive": 0.4106280193236715,
-                "params": 0.18357487922705315,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.4492753623188406,
-                "entangle": 0.5893719806763285
+                "cognitive": 0.4095238095238095,
+                "params": 0.18095238095238095,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.4523809523809524,
+                "entangle": 0.5904761904761905
             },
-            "divergence": 0.4203,
+            "divergence": 0.4238,
             "violations": []
         },
         {
@@ -2939,13 +2981,13 @@
                 "entangle": 0
             },
             "percentile": {
-                "cognitive": 0.4106280193236715,
-                "params": 0.18357487922705315,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.2946859903381642,
+                "cognitive": 0.4095238095238095,
+                "params": 0.18095238095238095,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.2904761904761905,
                 "entangle": 0
             },
-            "divergence": 0.4106,
+            "divergence": 0.4095,
             "violations": []
         },
         {
@@ -2960,13 +3002,13 @@
                 "entangle": 0
             },
             "percentile": {
-                "cognitive": 0.4106280193236715,
-                "params": 0.18357487922705315,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.2946859903381642,
+                "cognitive": 0.4095238095238095,
+                "params": 0.18095238095238095,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.2904761904761905,
                 "entangle": 0
             },
-            "divergence": 0.4106,
+            "divergence": 0.4095,
             "violations": []
         },
         {
@@ -2981,13 +3023,13 @@
                 "entangle": 0
             },
             "percentile": {
-                "cognitive": 0.4106280193236715,
-                "params": 0.18357487922705315,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.2946859903381642,
+                "cognitive": 0.4095238095238095,
+                "params": 0.18095238095238095,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.2904761904761905,
                 "entangle": 0
             },
-            "divergence": 0.4106,
+            "divergence": 0.4095,
             "violations": []
         },
         {
@@ -3002,13 +3044,13 @@
                 "entangle": 0
             },
             "percentile": {
-                "cognitive": 0.4106280193236715,
-                "params": 0.18357487922705315,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.2946859903381642,
+                "cognitive": 0.4095238095238095,
+                "params": 0.18095238095238095,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.2904761904761905,
                 "entangle": 0
             },
-            "divergence": 0.4106,
+            "divergence": 0.4095,
             "violations": []
         },
         {
@@ -3023,13 +3065,13 @@
                 "entangle": 0
             },
             "percentile": {
-                "cognitive": 0.4106280193236715,
-                "params": 0.18357487922705315,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.2946859903381642,
+                "cognitive": 0.4095238095238095,
+                "params": 0.18095238095238095,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.2904761904761905,
                 "entangle": 0
             },
-            "divergence": 0.4106,
+            "divergence": 0.4095,
             "violations": []
         },
         {
@@ -3044,13 +3086,13 @@
                 "entangle": 0
             },
             "percentile": {
-                "cognitive": 0.4106280193236715,
-                "params": 0.18357487922705315,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.2946859903381642,
+                "cognitive": 0.4095238095238095,
+                "params": 0.18095238095238095,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.2904761904761905,
                 "entangle": 0
             },
-            "divergence": 0.4106,
+            "divergence": 0.4095,
             "violations": []
         },
         {
@@ -3065,13 +3107,13 @@
                 "entangle": 1
             },
             "percentile": {
-                "cognitive": 0.5555555555555556,
-                "params": 0.9468599033816425,
-                "returns": 0.9516908212560387,
-                "live_peak": 0.9227053140096618,
-                "entangle": 0.5893719806763285
+                "cognitive": 0.5523809523809524,
+                "params": 0.9476190476190476,
+                "returns": 0.9476190476190476,
+                "live_peak": 0.9238095238095239,
+                "entangle": 0.5904761904761905
             },
-            "divergence": 0.3961,
+            "divergence": 0.3952,
             "violations": []
         },
         {
@@ -3086,13 +3128,13 @@
                 "entangle": 1.3333333333333333
             },
             "percentile": {
-                "cognitive": 0.5555555555555556,
-                "params": 0.6328502415458938,
-                "returns": 0.9516908212560387,
-                "live_peak": 0.5893719806763285,
-                "entangle": 0.7101449275362319
+                "cognitive": 0.5523809523809524,
+                "params": 0.6333333333333333,
+                "returns": 0.9476190476190476,
+                "live_peak": 0.5904761904761905,
+                "entangle": 0.7095238095238096
             },
-            "divergence": 0.3961,
+            "divergence": 0.3952,
             "violations": []
         },
         {
@@ -3107,13 +3149,34 @@
                 "entangle": 2
             },
             "percentile": {
-                "cognitive": 0.5555555555555556,
-                "params": 0.8599033816425121,
-                "returns": 0.8067632850241546,
-                "live_peak": 0.7246376811594203,
-                "entangle": 0.8840579710144928
+                "cognitive": 0.5523809523809524,
+                "params": 0.861904761904762,
+                "returns": 0.8047619047619048,
+                "live_peak": 0.7285714285714285,
+                "entangle": 0.8809523809523809
             },
-            "divergence": 0.3285,
+            "divergence": 0.3286,
+            "violations": []
+        },
+        {
+            "file": "Lens/CognitiveComplexityLens.php",
+            "name": "walkElseBranches",
+            "line": 130,
+            "metrics": {
+                "cognitive": 3,
+                "params": 2,
+                "returns": 3,
+                "live_peak": 4,
+                "entangle": 2
+            },
+            "percentile": {
+                "cognitive": 0.6428571428571429,
+                "params": 0.6333333333333333,
+                "returns": 0.9476190476190476,
+                "live_peak": 0.7285714285714285,
+                "entangle": 0.8809523809523809
+            },
+            "divergence": 0.3143,
             "violations": []
         },
         {
@@ -3129,12 +3192,12 @@
             },
             "percentile": {
                 "cognitive": 0,
-                "params": 0.18357487922705315,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.2946859903381642,
+                "params": 0.18095238095238095,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.2904761904761905,
                 "entangle": 0
             },
-            "divergence": 0.2947,
+            "divergence": 0.2905,
             "violations": []
         },
         {
@@ -3151,11 +3214,11 @@
             "percentile": {
                 "cognitive": 0,
                 "params": 0,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.2946859903381642,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.2904761904761905,
                 "entangle": 0
             },
-            "divergence": 0.2947,
+            "divergence": 0.2905,
             "violations": []
         },
         {
@@ -3171,12 +3234,12 @@
             },
             "percentile": {
                 "cognitive": 0,
-                "params": 0.18357487922705315,
+                "params": 0.18095238095238095,
                 "returns": 0,
-                "live_peak": 0.2946859903381642,
+                "live_peak": 0.2904761904761905,
                 "entangle": 0
             },
-            "divergence": 0.2947,
+            "divergence": 0.2905,
             "violations": []
         },
         {
@@ -3192,12 +3255,12 @@
             },
             "percentile": {
                 "cognitive": 0,
-                "params": 0.18357487922705315,
+                "params": 0.18095238095238095,
                 "returns": 0,
-                "live_peak": 0.2946859903381642,
+                "live_peak": 0.2904761904761905,
                 "entangle": 0
             },
-            "divergence": 0.2947,
+            "divergence": 0.2905,
             "violations": []
         },
         {
@@ -3213,12 +3276,12 @@
             },
             "percentile": {
                 "cognitive": 0,
-                "params": 0.18357487922705315,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.2946859903381642,
+                "params": 0.18095238095238095,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.2904761904761905,
                 "entangle": 0
             },
-            "divergence": 0.2947,
+            "divergence": 0.2905,
             "violations": []
         },
         {
@@ -3234,12 +3297,12 @@
             },
             "percentile": {
                 "cognitive": 0,
-                "params": 0.18357487922705315,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.2946859903381642,
+                "params": 0.18095238095238095,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.2904761904761905,
                 "entangle": 0
             },
-            "divergence": 0.2947,
+            "divergence": 0.2905,
             "violations": []
         },
         {
@@ -3255,12 +3318,12 @@
             },
             "percentile": {
                 "cognitive": 0,
-                "params": 0.18357487922705315,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.2946859903381642,
+                "params": 0.18095238095238095,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.2904761904761905,
                 "entangle": 0
             },
-            "divergence": 0.2947,
+            "divergence": 0.2905,
             "violations": []
         },
         {
@@ -3276,12 +3339,12 @@
             },
             "percentile": {
                 "cognitive": 0,
-                "params": 0.18357487922705315,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.2946859903381642,
+                "params": 0.18095238095238095,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.2904761904761905,
                 "entangle": 0
             },
-            "divergence": 0.2947,
+            "divergence": 0.2905,
             "violations": []
         },
         {
@@ -3297,12 +3360,12 @@
             },
             "percentile": {
                 "cognitive": 0,
-                "params": 0.18357487922705315,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.2946859903381642,
+                "params": 0.18095238095238095,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.2904761904761905,
                 "entangle": 0
             },
-            "divergence": 0.2947,
+            "divergence": 0.2905,
             "violations": []
         },
         {
@@ -3318,12 +3381,12 @@
             },
             "percentile": {
                 "cognitive": 0,
-                "params": 0.18357487922705315,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.2946859903381642,
+                "params": 0.18095238095238095,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.2904761904761905,
                 "entangle": 0
             },
-            "divergence": 0.2947,
+            "divergence": 0.2905,
             "violations": []
         },
         {
@@ -3339,12 +3402,12 @@
             },
             "percentile": {
                 "cognitive": 0,
-                "params": 0.18357487922705315,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.2946859903381642,
+                "params": 0.18095238095238095,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.2904761904761905,
                 "entangle": 0
             },
-            "divergence": 0.2947,
+            "divergence": 0.2905,
             "violations": []
         },
         {
@@ -3360,12 +3423,12 @@
             },
             "percentile": {
                 "cognitive": 0,
-                "params": 0.18357487922705315,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.2946859903381642,
+                "params": 0.18095238095238095,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.2904761904761905,
                 "entangle": 0
             },
-            "divergence": 0.2947,
+            "divergence": 0.2905,
             "violations": []
         },
         {
@@ -3381,12 +3444,12 @@
             },
             "percentile": {
                 "cognitive": 0,
-                "params": 0.18357487922705315,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.2946859903381642,
+                "params": 0.18095238095238095,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.2904761904761905,
                 "entangle": 0
             },
-            "divergence": 0.2947,
+            "divergence": 0.2905,
             "violations": []
         },
         {
@@ -3402,12 +3465,12 @@
             },
             "percentile": {
                 "cognitive": 0,
-                "params": 0.18357487922705315,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.2946859903381642,
+                "params": 0.18095238095238095,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.2904761904761905,
                 "entangle": 0
             },
-            "divergence": 0.2947,
+            "divergence": 0.2905,
             "violations": []
         },
         {
@@ -3423,12 +3486,12 @@
             },
             "percentile": {
                 "cognitive": 0,
-                "params": 0.18357487922705315,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.2946859903381642,
+                "params": 0.18095238095238095,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.2904761904761905,
                 "entangle": 0
             },
-            "divergence": 0.2947,
+            "divergence": 0.2905,
             "violations": []
         },
         {
@@ -3444,12 +3507,12 @@
             },
             "percentile": {
                 "cognitive": 0,
-                "params": 0.18357487922705315,
-                "returns": 0.16908212560386474,
-                "live_peak": 0.2946859903381642,
+                "params": 0.18095238095238095,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.2904761904761905,
                 "entangle": 0
             },
-            "divergence": 0.2947,
+            "divergence": 0.2905,
             "violations": []
         },
         {
@@ -3464,13 +3527,13 @@
                 "entangle": 0.8
             },
             "percentile": {
-                "cognitive": 0.8115942028985508,
-                "params": 0.6328502415458938,
-                "returns": 0.8067632850241546,
-                "live_peak": 0.5893719806763285,
-                "entangle": 0.5797101449275363
+                "cognitive": 0.8142857142857143,
+                "params": 0.6333333333333333,
+                "returns": 0.8047619047619048,
+                "live_peak": 0.5904761904761905,
+                "entangle": 0.580952380952381
             },
-            "divergence": 0.2319,
+            "divergence": 0.2333,
             "violations": []
         },
         {
@@ -3485,13 +3548,13 @@
                 "entangle": 2
             },
             "percentile": {
-                "cognitive": 0.748792270531401,
-                "params": 0.9468599033816425,
-                "returns": 0.9516908212560387,
-                "live_peak": 0.7246376811594203,
-                "entangle": 0.8840579710144928
+                "cognitive": 0.7523809523809524,
+                "params": 0.9476190476190476,
+                "returns": 0.9476190476190476,
+                "live_peak": 0.7285714285714285,
+                "entangle": 0.8809523809523809
             },
-            "divergence": 0.2271,
+            "divergence": 0.219,
             "violations": []
         },
         {
@@ -3506,13 +3569,13 @@
                 "entangle": 1.5
             },
             "percentile": {
-                "cognitive": 0.748792270531401,
-                "params": 0.6328502415458938,
-                "returns": 0.8067632850241546,
-                "live_peak": 0.5893719806763285,
-                "entangle": 0.782608695652174
+                "cognitive": 0.7523809523809524,
+                "params": 0.6333333333333333,
+                "returns": 0.8047619047619048,
+                "live_peak": 0.5904761904761905,
+                "entangle": 0.7857142857142857
             },
-            "divergence": 0.2174,
+            "divergence": 0.2143,
             "violations": []
         },
         {
@@ -3527,13 +3590,13 @@
                 "entangle": 3.6
             },
             "percentile": {
-                "cognitive": 0.8985507246376812,
-                "params": 0.8599033816425121,
-                "returns": 0.8067632850241546,
-                "live_peak": 0.8743961352657005,
-                "entangle": 0.9951690821256038
+                "cognitive": 0.9,
+                "params": 0.861904761904762,
+                "returns": 0.8047619047619048,
+                "live_peak": 0.8761904761904762,
+                "entangle": 0.9952380952380953
             },
-            "divergence": 0.1884,
+            "divergence": 0.1905,
             "violations": [
                 "entangle"
             ]
@@ -3551,12 +3614,12 @@
             },
             "percentile": {
                 "cognitive": 0,
-                "params": 0.18357487922705315,
+                "params": 0.18095238095238095,
                 "returns": 0,
                 "live_peak": 0,
                 "entangle": 0
             },
-            "divergence": 0.1836,
+            "divergence": 0.181,
             "violations": []
         },
         {
@@ -3572,18 +3635,18 @@
             },
             "percentile": {
                 "cognitive": 0,
-                "params": 0.18357487922705315,
+                "params": 0.18095238095238095,
                 "returns": 0,
                 "live_peak": 0,
                 "entangle": 0
             },
-            "divergence": 0.1836,
+            "divergence": 0.181,
             "violations": []
         },
         {
             "file": "Lens/CognitiveComplexityLens.php",
             "name": "__construct",
-            "line": 28,
+            "line": 41,
             "metrics": {
                 "cognitive": 0,
                 "params": 1,
@@ -3593,12 +3656,12 @@
             },
             "percentile": {
                 "cognitive": 0,
-                "params": 0.18357487922705315,
+                "params": 0.18095238095238095,
                 "returns": 0,
                 "live_peak": 0,
                 "entangle": 0
             },
-            "divergence": 0.1836,
+            "divergence": 0.181,
             "violations": []
         },
         {
@@ -3614,18 +3677,18 @@
             },
             "percentile": {
                 "cognitive": 0,
-                "params": 0.18357487922705315,
+                "params": 0.18095238095238095,
                 "returns": 0,
                 "live_peak": 0,
                 "entangle": 0
             },
-            "divergence": 0.1836,
+            "divergence": 0.181,
             "violations": []
         },
         {
             "file": "Lens/LiveVariablePeakLens.php",
             "name": "__construct",
-            "line": 21,
+            "line": 30,
             "metrics": {
                 "cognitive": 0,
                 "params": 1,
@@ -3635,12 +3698,12 @@
             },
             "percentile": {
                 "cognitive": 0,
-                "params": 0.18357487922705315,
+                "params": 0.18095238095238095,
                 "returns": 0,
                 "live_peak": 0,
                 "entangle": 0
             },
-            "divergence": 0.1836,
+            "divergence": 0.181,
             "violations": []
         },
         {
@@ -3656,12 +3719,12 @@
             },
             "percentile": {
                 "cognitive": 0,
-                "params": 0.18357487922705315,
+                "params": 0.18095238095238095,
                 "returns": 0,
                 "live_peak": 0,
                 "entangle": 0
             },
-            "divergence": 0.1836,
+            "divergence": 0.181,
             "violations": []
         },
         {
@@ -3677,12 +3740,12 @@
             },
             "percentile": {
                 "cognitive": 0,
-                "params": 0.18357487922705315,
-                "returns": 0.16908212560386474,
+                "params": 0.18095238095238095,
+                "returns": 0.16666666666666666,
                 "live_peak": 0,
                 "entangle": 0
             },
-            "divergence": 0.1836,
+            "divergence": 0.181,
             "violations": []
         },
         {
@@ -3698,18 +3761,18 @@
             },
             "percentile": {
                 "cognitive": 0,
-                "params": 0.18357487922705315,
+                "params": 0.18095238095238095,
                 "returns": 0,
                 "live_peak": 0,
                 "entangle": 0
             },
-            "divergence": 0.1836,
+            "divergence": 0.181,
             "violations": []
         },
         {
             "file": "Lens/LiveVariablePeakLens.php",
             "name": "measure",
-            "line": 48,
+            "line": 59,
             "metrics": {
                 "cognitive": 3,
                 "params": 2,
@@ -3718,13 +3781,13 @@
                 "entangle": 1.25
             },
             "percentile": {
-                "cognitive": 0.642512077294686,
-                "params": 0.6328502415458938,
-                "returns": 0.8067632850241546,
-                "live_peak": 0.7246376811594203,
-                "entangle": 0.7053140096618358
+                "cognitive": 0.6428571428571429,
+                "params": 0.6333333333333333,
+                "returns": 0.8047619047619048,
+                "live_peak": 0.7285714285714285,
+                "entangle": 0.7047619047619048
             },
-            "divergence": 0.1739,
+            "divergence": 0.1714,
             "violations": []
         },
         {
@@ -3741,11 +3804,11 @@
             "percentile": {
                 "cognitive": 0,
                 "params": 0,
-                "returns": 0.16908212560386474,
+                "returns": 0.16666666666666666,
                 "live_peak": 0,
                 "entangle": 0
             },
-            "divergence": 0.1691,
+            "divergence": 0.1667,
             "violations": []
         },
         {
@@ -3762,11 +3825,11 @@
             "percentile": {
                 "cognitive": 0,
                 "params": 0,
-                "returns": 0.16908212560386474,
+                "returns": 0.16666666666666666,
                 "live_peak": 0,
                 "entangle": 0
             },
-            "divergence": 0.1691,
+            "divergence": 0.1667,
             "violations": []
         },
         {
@@ -3783,11 +3846,11 @@
             "percentile": {
                 "cognitive": 0,
                 "params": 0,
-                "returns": 0.16908212560386474,
+                "returns": 0.16666666666666666,
                 "live_peak": 0,
                 "entangle": 0
             },
-            "divergence": 0.1691,
+            "divergence": 0.1667,
             "violations": []
         },
         {
@@ -3804,11 +3867,11 @@
             "percentile": {
                 "cognitive": 0,
                 "params": 0,
-                "returns": 0.16908212560386474,
+                "returns": 0.16666666666666666,
                 "live_peak": 0,
                 "entangle": 0
             },
-            "divergence": 0.1691,
+            "divergence": 0.1667,
             "violations": []
         },
         {
@@ -3825,11 +3888,11 @@
             "percentile": {
                 "cognitive": 0,
                 "params": 0,
-                "returns": 0.16908212560386474,
+                "returns": 0.16666666666666666,
                 "live_peak": 0,
                 "entangle": 0
             },
-            "divergence": 0.1691,
+            "divergence": 0.1667,
             "violations": []
         },
         {
@@ -3846,11 +3909,11 @@
             "percentile": {
                 "cognitive": 0,
                 "params": 0,
-                "returns": 0.16908212560386474,
+                "returns": 0.16666666666666666,
                 "live_peak": 0,
                 "entangle": 0
             },
-            "divergence": 0.1691,
+            "divergence": 0.1667,
             "violations": []
         },
         {
@@ -3867,11 +3930,11 @@
             "percentile": {
                 "cognitive": 0,
                 "params": 0,
-                "returns": 0.16908212560386474,
+                "returns": 0.16666666666666666,
                 "live_peak": 0,
                 "entangle": 0
             },
-            "divergence": 0.1691,
+            "divergence": 0.1667,
             "violations": []
         },
         {
@@ -3888,17 +3951,17 @@
             "percentile": {
                 "cognitive": 0,
                 "params": 0,
-                "returns": 0.16908212560386474,
+                "returns": 0.16666666666666666,
                 "live_peak": 0,
                 "entangle": 0
             },
-            "divergence": 0.1691,
+            "divergence": 0.1667,
             "violations": []
         },
         {
             "file": "Lens/CognitiveComplexityLens.php",
             "name": "key",
-            "line": 32,
+            "line": 45,
             "metrics": {
                 "cognitive": 0,
                 "params": 0,
@@ -3909,17 +3972,17 @@
             "percentile": {
                 "cognitive": 0,
                 "params": 0,
-                "returns": 0.16908212560386474,
+                "returns": 0.16666666666666666,
                 "live_peak": 0,
                 "entangle": 0
             },
-            "divergence": 0.1691,
+            "divergence": 0.1667,
             "violations": []
         },
         {
             "file": "Lens/CognitiveComplexityLens.php",
             "name": "label",
-            "line": 37,
+            "line": 50,
             "metrics": {
                 "cognitive": 0,
                 "params": 0,
@@ -3930,17 +3993,17 @@
             "percentile": {
                 "cognitive": 0,
                 "params": 0,
-                "returns": 0.16908212560386474,
+                "returns": 0.16666666666666666,
                 "live_peak": 0,
                 "entangle": 0
             },
-            "divergence": 0.1691,
+            "divergence": 0.1667,
             "violations": []
         },
         {
             "file": "Lens/CognitiveComplexityLens.php",
             "name": "reference",
-            "line": 42,
+            "line": 55,
             "metrics": {
                 "cognitive": 0,
                 "params": 0,
@@ -3951,37 +4014,16 @@
             "percentile": {
                 "cognitive": 0,
                 "params": 0,
-                "returns": 0.16908212560386474,
+                "returns": 0.16666666666666666,
                 "live_peak": 0,
                 "entangle": 0
             },
-            "divergence": 0.1691,
+            "divergence": 0.1667,
             "violations": []
         },
         {
             "file": "Lens/CognitiveComplexityLens.php",
             "name": "description",
-            "line": 47,
-            "metrics": {
-                "cognitive": 0,
-                "params": 0,
-                "returns": 1,
-                "live_peak": 0,
-                "entangle": 0
-            },
-            "percentile": {
-                "cognitive": 0,
-                "params": 0,
-                "returns": 0.16908212560386474,
-                "live_peak": 0,
-                "entangle": 0
-            },
-            "divergence": 0.1691,
-            "violations": []
-        },
-        {
-            "file": "Lens/CognitiveComplexityLens.php",
-            "name": "defaultThreshold",
             "line": 60,
             "metrics": {
                 "cognitive": 0,
@@ -3993,11 +4035,32 @@
             "percentile": {
                 "cognitive": 0,
                 "params": 0,
-                "returns": 0.16908212560386474,
+                "returns": 0.16666666666666666,
                 "live_peak": 0,
                 "entangle": 0
             },
-            "divergence": 0.1691,
+            "divergence": 0.1667,
+            "violations": []
+        },
+        {
+            "file": "Lens/CognitiveComplexityLens.php",
+            "name": "defaultThreshold",
+            "line": 73,
+            "metrics": {
+                "cognitive": 0,
+                "params": 0,
+                "returns": 1,
+                "live_peak": 0,
+                "entangle": 0
+            },
+            "percentile": {
+                "cognitive": 0,
+                "params": 0,
+                "returns": 0.16666666666666666,
+                "live_peak": 0,
+                "entangle": 0
+            },
+            "divergence": 0.1667,
             "violations": []
         },
         {
@@ -4014,11 +4077,11 @@
             "percentile": {
                 "cognitive": 0,
                 "params": 0,
-                "returns": 0.16908212560386474,
+                "returns": 0.16666666666666666,
                 "live_peak": 0,
                 "entangle": 0
             },
-            "divergence": 0.1691,
+            "divergence": 0.1667,
             "violations": []
         },
         {
@@ -4035,11 +4098,11 @@
             "percentile": {
                 "cognitive": 0,
                 "params": 0,
-                "returns": 0.16908212560386474,
+                "returns": 0.16666666666666666,
                 "live_peak": 0,
                 "entangle": 0
             },
-            "divergence": 0.1691,
+            "divergence": 0.1667,
             "violations": []
         },
         {
@@ -4056,11 +4119,11 @@
             "percentile": {
                 "cognitive": 0,
                 "params": 0,
-                "returns": 0.16908212560386474,
+                "returns": 0.16666666666666666,
                 "live_peak": 0,
                 "entangle": 0
             },
-            "divergence": 0.1691,
+            "divergence": 0.1667,
             "violations": []
         },
         {
@@ -4077,11 +4140,11 @@
             "percentile": {
                 "cognitive": 0,
                 "params": 0,
-                "returns": 0.16908212560386474,
+                "returns": 0.16666666666666666,
                 "live_peak": 0,
                 "entangle": 0
             },
-            "divergence": 0.1691,
+            "divergence": 0.1667,
             "violations": []
         },
         {
@@ -4098,17 +4161,17 @@
             "percentile": {
                 "cognitive": 0,
                 "params": 0,
-                "returns": 0.16908212560386474,
+                "returns": 0.16666666666666666,
                 "live_peak": 0,
                 "entangle": 0
             },
-            "divergence": 0.1691,
+            "divergence": 0.1667,
             "violations": []
         },
         {
             "file": "Lens/LiveVariablePeakLens.php",
             "name": "key",
-            "line": 25,
+            "line": 34,
             "metrics": {
                 "cognitive": 0,
                 "params": 0,
@@ -4119,17 +4182,17 @@
             "percentile": {
                 "cognitive": 0,
                 "params": 0,
-                "returns": 0.16908212560386474,
+                "returns": 0.16666666666666666,
                 "live_peak": 0,
                 "entangle": 0
             },
-            "divergence": 0.1691,
+            "divergence": 0.1667,
             "violations": []
         },
         {
             "file": "Lens/LiveVariablePeakLens.php",
             "name": "label",
-            "line": 30,
+            "line": 39,
             "metrics": {
                 "cognitive": 0,
                 "params": 0,
@@ -4140,17 +4203,17 @@
             "percentile": {
                 "cognitive": 0,
                 "params": 0,
-                "returns": 0.16908212560386474,
+                "returns": 0.16666666666666666,
                 "live_peak": 0,
                 "entangle": 0
             },
-            "divergence": 0.1691,
+            "divergence": 0.1667,
             "violations": []
         },
         {
             "file": "Lens/LiveVariablePeakLens.php",
             "name": "reference",
-            "line": 35,
+            "line": 44,
             "metrics": {
                 "cognitive": 0,
                 "params": 0,
@@ -4161,17 +4224,17 @@
             "percentile": {
                 "cognitive": 0,
                 "params": 0,
-                "returns": 0.16908212560386474,
+                "returns": 0.16666666666666666,
                 "live_peak": 0,
                 "entangle": 0
             },
-            "divergence": 0.1691,
+            "divergence": 0.1667,
             "violations": []
         },
         {
             "file": "Lens/LiveVariablePeakLens.php",
             "name": "description",
-            "line": 40,
+            "line": 49,
             "metrics": {
                 "cognitive": 0,
                 "params": 0,
@@ -4182,17 +4245,17 @@
             "percentile": {
                 "cognitive": 0,
                 "params": 0,
-                "returns": 0.16908212560386474,
+                "returns": 0.16666666666666666,
                 "live_peak": 0,
                 "entangle": 0
             },
-            "divergence": 0.1691,
+            "divergence": 0.1667,
             "violations": []
         },
         {
             "file": "Lens/LiveVariablePeakLens.php",
             "name": "defaultThreshold",
-            "line": 72,
+            "line": 83,
             "metrics": {
                 "cognitive": 0,
                 "params": 0,
@@ -4203,11 +4266,11 @@
             "percentile": {
                 "cognitive": 0,
                 "params": 0,
-                "returns": 0.16908212560386474,
+                "returns": 0.16666666666666666,
                 "live_peak": 0,
                 "entangle": 0
             },
-            "divergence": 0.1691,
+            "divergence": 0.1667,
             "violations": []
         },
         {
@@ -4224,11 +4287,11 @@
             "percentile": {
                 "cognitive": 0,
                 "params": 0,
-                "returns": 0.16908212560386474,
+                "returns": 0.16666666666666666,
                 "live_peak": 0,
                 "entangle": 0
             },
-            "divergence": 0.1691,
+            "divergence": 0.1667,
             "violations": []
         },
         {
@@ -4245,11 +4308,11 @@
             "percentile": {
                 "cognitive": 0,
                 "params": 0,
-                "returns": 0.16908212560386474,
+                "returns": 0.16666666666666666,
                 "live_peak": 0,
                 "entangle": 0
             },
-            "divergence": 0.1691,
+            "divergence": 0.1667,
             "violations": []
         },
         {
@@ -4266,11 +4329,11 @@
             "percentile": {
                 "cognitive": 0,
                 "params": 0,
-                "returns": 0.16908212560386474,
+                "returns": 0.16666666666666666,
                 "live_peak": 0,
                 "entangle": 0
             },
-            "divergence": 0.1691,
+            "divergence": 0.1667,
             "violations": []
         },
         {
@@ -4287,11 +4350,11 @@
             "percentile": {
                 "cognitive": 0,
                 "params": 0,
-                "returns": 0.16908212560386474,
+                "returns": 0.16666666666666666,
                 "live_peak": 0,
                 "entangle": 0
             },
-            "divergence": 0.1691,
+            "divergence": 0.1667,
             "violations": []
         },
         {
@@ -4308,11 +4371,11 @@
             "percentile": {
                 "cognitive": 0,
                 "params": 0,
-                "returns": 0.16908212560386474,
+                "returns": 0.16666666666666666,
                 "live_peak": 0,
                 "entangle": 0
             },
-            "divergence": 0.1691,
+            "divergence": 0.1667,
             "violations": []
         },
         {
@@ -4329,11 +4392,11 @@
             "percentile": {
                 "cognitive": 0,
                 "params": 0,
-                "returns": 0.16908212560386474,
+                "returns": 0.16666666666666666,
                 "live_peak": 0,
                 "entangle": 0
             },
-            "divergence": 0.1691,
+            "divergence": 0.1667,
             "violations": []
         },
         {
@@ -4350,11 +4413,11 @@
             "percentile": {
                 "cognitive": 0,
                 "params": 0,
-                "returns": 0.16908212560386474,
+                "returns": 0.16666666666666666,
                 "live_peak": 0,
                 "entangle": 0
             },
-            "divergence": 0.1691,
+            "divergence": 0.1667,
             "violations": []
         },
         {
@@ -4371,11 +4434,11 @@
             "percentile": {
                 "cognitive": 0,
                 "params": 0,
-                "returns": 0.16908212560386474,
+                "returns": 0.16666666666666666,
                 "live_peak": 0,
                 "entangle": 0
             },
-            "divergence": 0.1691,
+            "divergence": 0.1667,
             "violations": []
         },
         {
@@ -4392,11 +4455,11 @@
             "percentile": {
                 "cognitive": 0,
                 "params": 0,
-                "returns": 0.16908212560386474,
+                "returns": 0.16666666666666666,
                 "live_peak": 0,
                 "entangle": 0
             },
-            "divergence": 0.1691,
+            "divergence": 0.1667,
             "violations": []
         },
         {

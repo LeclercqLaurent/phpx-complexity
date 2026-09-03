@@ -18,10 +18,23 @@ use PhpxComplexity\Ast\AstHelper;
  *     match, et chaque séquence d'opérateurs logiques (&&, ||).
  *  2. IMBRICATION : +N supplémentaire pour les structures imbriquées (if, boucles,
  *     switch, catch, ternaire, match), où N = niveau d'imbrication courant.
- *  3. Les fonctions imbriquées (closures, arrow fn) augmentent le niveau
+ *  3. SAUT ÉTIQUETÉ : +1 pour `goto`, et pour `break N` / `continue N` avec
+ *     N > 1 — PHP n'a pas d'étiquette de boucle, l'équivalent du `break LABEL`
+ *     de la spec est la sortie de plusieurs structures d'un coup. Un `break;`
+ *     simple ne compte pas.
+ *  4. Les fonctions imbriquées (closures, arrow fn) augmentent le niveau
  *     d'imbrication sans incrément structurel propre.
  *
- * Non couvert (rare, volontairement omis) : +1 sur récursion directe.
+ * Écarts assumés à la spec :
+ *  - **Récursion** : la spec ajoute +1 par méthode d'un cycle récursif ; non
+ *    implémenté (demanderait une analyse inter-procédurale).
+ *  - **`else if` en deux mots** : php-parser en produit le même AST que
+ *    `else { if ... }`, sans moyen de les distinguer sans le texte source. Les
+ *    deux sont traités comme `elseif` (+1, sans pénalité d'imbrication), ce qui
+ *    suit la sémantique de PHP pour qui `else if` et `elseif` sont identiques.
+ *    La forme rare `else { if ... }` est donc légèrement sous-comptée — préféré
+ *    à surcompter de +2 la forme courante.
+ *  - **`match`** : postérieur à la spec, traité comme un `switch`.
  */
 final class CognitiveComplexityLens implements Lens
 {
@@ -85,6 +98,9 @@ final class CognitiveComplexityLens implements Lens
             $node instanceof Stmt\Do_ => $this->walkLoop($node, $nesting),
             $node instanceof Stmt\Switch_ => $this->walkSwitch($node, $nesting),
             $node instanceof Stmt\TryCatch => $this->walkTry($node, $nesting),
+            $node instanceof Stmt\Goto_ => 1,
+            $node instanceof Stmt\Break_,
+            $node instanceof Stmt\Continue_ => $this->walkJump($node),
             $node instanceof Expr\Ternary,
             $node instanceof Expr\Match_ => $this->walkNesting($node, $nesting),
             $node instanceof Node\FunctionLike => $this->walkList(AstHelper::childNodes($node), $nesting + 1, null),
@@ -102,16 +118,55 @@ final class CognitiveComplexityLens implements Lens
         $sum += $this->walk($node->cond, $nesting, null);
         $sum += $this->walkList($node->stmts, $nesting + 1, null);
 
+        return $sum + $this->walkElseBranches($node, $nesting);
+    }
+
+    /**
+     * Les branches « sinon » coûtent +1 chacune SANS pénalité d'imbrication : la
+     * spec ne fait pas payer un `else` deux fois, le lecteur reste au même
+     * niveau. Un `else if` en deux mots est aplati dans la chaîne plutôt que
+     * traité comme un `else` contenant un `if` imbriqué.
+     */
+    private function walkElseBranches(Stmt\If_ $node, int $nesting): int
+    {
+        $sum = 0;
         foreach ($node->elseifs as $elseif) {
             $sum += 1 + $this->walk($elseif->cond, $nesting, null);
             $sum += $this->walkList($elseif->stmts, $nesting + 1, null);
         }
 
-        if (null !== $node->else) {
-            $sum += 1 + $this->walkList($node->else->stmts, $nesting + 1, null);
+        if (null === $node->else) {
+            return $sum;
         }
 
-        return $sum;
+        $chained = $this->chainedIf($node->else);
+        if (null === $chained) {
+            return $sum + 1 + $this->walkList($node->else->stmts, $nesting + 1, null);
+        }
+
+        $sum += 1 + $this->walk($chained->cond, $nesting, null);
+        $sum += $this->walkList($chained->stmts, $nesting + 1, null);
+
+        return $sum + $this->walkElseBranches($chained, $nesting);
+    }
+
+    /**
+     * Le `if` unique d'un `else`, qui forme donc un « else if ».
+     */
+    private function chainedIf(Stmt\Else_ $else): ?Stmt\If_
+    {
+        return 1 === count($else->stmts) && $else->stmts[0] instanceof Stmt\If_
+            ? $else->stmts[0]
+            : null;
+    }
+
+    /**
+     * Saut hors de plusieurs structures : l'équivalent PHP du `break LABEL` de
+     * la spec. Un `break;` ou `continue;` simple ne coûte rien.
+     */
+    private function walkJump(Stmt\Break_|Stmt\Continue_ $node): int
+    {
+        return $node->num instanceof Node\Scalar\Int_ && $node->num->value > 1 ? 1 : 0;
     }
 
     private function walkLoop(Stmt\For_|Stmt\Foreach_|Stmt\While_|Stmt\Do_ $node, int $nesting): int

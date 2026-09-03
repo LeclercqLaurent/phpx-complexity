@@ -16,6 +16,14 @@ exclu (non représentatif).
 > Seules les sections « seuils » et « rendement marginal » en dépendent ; elles
 > reflètent l'état **après** l'abaissement d'`entangle` de 4 à 3 décidé au vu de
 > cette étude.
+>
+> **Remesuré le 2026-09-03**, après correction de deux écarts de
+> `CognitiveComplexityLens` à la spec S3776 (saut étiqueté non compté, `else if`
+> en deux mots surcompté). L'étude était donc bâtie sur une implémentation
+> partiellement fautive — vérification faite, **129 méthodes sur 40 575 changent
+> de valeur (0,32 %)** et aucune conclusion ne bouge : corrélations identiques à
+> la troisième décimale, part de `cognitive` au-dessus du seuil de 3,06 % à
+> 3,05 %. Les chiffres ci-dessous sont ceux d'après correction.
 
 ```bash
 tools/corpus-study.sh     # récupère le corpus, fige un --json par projet
@@ -34,7 +42,7 @@ php tools/corpus-report.php
 
 | lentille | p50 | p75 | p90 | p95 | p99 | seuil | % > seuil |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| `cognitive` | 0 | 1 | 5 | 10 | 36 | 15 | 3,06 % |
+| `cognitive` | 0 | 1 | 5 | 10 | 36 | 15 | 3,05 % |
 | `params` | 1 | 2 | 3 | 4 | 7 | 7 | 0,60 % |
 | `returns` | 1 | 1 | 2 | 3 | 6 | 3 | 3,37 % |
 | `live_peak` | 1 | 2 | 4 | 5 | 9 | 8 | **1,31 %** |
@@ -103,7 +111,7 @@ un seuil mal placé, pas une mesure fausse.
 | | seuil 4 | seuil 3 |
 |---|---:|---:|
 | méthodes signalées | 85 (0,21 %) | **415 (1,02 %)** |
-| dont hors radar S3776 | 17 (20,0 %) | **161 (38,8 %)** |
+| dont hors radar S3776 | 17 (20,0 %) | **163 (39,3 %)** |
 
 Le rendement marginal **double**, et la part de méthodes signalées rejoint celle
 des autres lentilles (0,6 à 3,4 %). C'était donc bien le seuil, pas la mesure.
@@ -117,7 +125,7 @@ c'est-à-dire ce qu'un linter mono-métrique laisserait passer :
 |---|---:|---:|---:|
 | `params` (S107) | 245 | 200 | **81,6 %** |
 | `returns` (S1142) | 1 370 | 922 | **67,3 %** |
-| `entangle` (seuil 3) | 415 | 161 | 38,8 % |
+| `entangle` (seuil 3) | 415 | 163 | 39,3 % |
 | `live_peak` | 530 | 114 | 21,5 % |
 
 **`live_peak` reste la lentille au plus faible rendement marginal** : près de 80 %
@@ -126,7 +134,7 @@ corrélation à `params` relevée plus haut — elle capte en partie ce que S107
 mesure déjà, et le reste recoupe largement S3776.
 
 `entangle`, une fois son seuil corrigé, se place **devant `live_peak`** et
-apporte 161 découvertes qu'un linter mono-métrique laisserait passer. Illustration
+apporte 163 découvertes qu'un linter mono-métrique laisserait passer. Illustration
 sur le code de l'outil lui-même, où le nouveau seuil surface trois méthodes :
 
 ```

@@ -26,7 +26,12 @@ Sur un code propre, les lentilles convergent. Leur **divergence** est le signal.
 | `entangle` | — | Intrication : degré moyen du graphe de co-occurrence des variables |
 
 `cognitive`, `params` et `returns` sont des réimplémentations natives (php-parser
-pur, sans PHPStan). `live_peak` et `entangle` sont propres à l'outil — leur
+pur, sans PHPStan), dont la **conformité aux règles publiées est testée** cas par
+cas (`tests/Lens/*ConformanceTest.php`, valeurs attendues dérivées de la
+spécification et non de notre sortie). Écarts assumés et documentés dans
+`CognitiveComplexityLens` : la récursion n'est pas comptée, `match` est traité
+comme un `switch`, et `else { if ... }` est compté comme un `else if` faute de
+pouvoir les distinguer dans l'AST. `live_peak` et `entangle` sont propres à l'outil — leur
 non-redondance et leurs seuils sont mesurés sur 40 594 méthodes de 10 projets
 publics dans [docs/validation-lentilles.md](docs/validation-lentilles.md),
 reproductible via `tools/corpus-study.sh`.
