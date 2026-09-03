@@ -34,8 +34,10 @@ final class Application
 {
     public const VERSION = '0.1.0';
 
-    public function __construct(private readonly GitCloner $cloner = new GitCloner())
-    {
+    public function __construct(
+        private readonly GitCloner $cloner = new GitCloner(),
+        private readonly Output $output = new StreamOutput(),
+    ) {
     }
 
     /**
@@ -45,14 +47,14 @@ final class Application
     {
         $options = new Options(array_slice($argv, 1));
         if ($options->help) {
-            $this->stdout($this->usage());
+            $this->output->write($this->usage());
 
             return 0;
         }
 
         $error = $this->usageError($options);
         if (null !== $error) {
-            $this->stderr($error);
+            $this->output->error($error);
 
             return 2;
         }
@@ -105,7 +107,7 @@ final class Application
         try {
             $checkout = $this->cloner->fetch(RepositoryUrl::fromString((string) $options->target));
         } catch (GitException $e) {
-            $this->stderr($e->getMessage());
+            $this->output->error($e->getMessage());
 
             return 2;
         }
@@ -120,7 +122,7 @@ final class Application
     private function discard(Checkout $checkout, bool $keep): void
     {
         if ($keep) {
-            $this->stderr(sprintf('Copie conservée : %s', $checkout->path));
+            $this->output->error(sprintf('Copie conservée : %s', $checkout->path));
 
             return;
         }
@@ -137,7 +139,7 @@ final class Application
         try {
             $comparison = $this->compare($result, $options, $config, $lenses);
         } catch (BaselineException $e) {
-            $this->stderr($e->getMessage());
+            $this->output->error($e->getMessage());
 
             return 2;
         }
@@ -173,7 +175,7 @@ final class Application
     private function emit(AuditResult $audit, ?Comparison $comparison, Options $options, Config $config, array $lenses): int
     {
         if ($options->json) {
-            $this->stdout((new JsonReporter($lenses, $config))->render($audit, $comparison));
+            $this->output->write((new JsonReporter($lenses, $config))->render($audit, $comparison));
 
             return 0;
         }
@@ -193,19 +195,19 @@ final class Application
     private function emitHtml(string $html, ?string $target): int
     {
         if (null === $target) {
-            $this->stdout($html);
+            $this->output->write($html);
 
             return 0;
         }
 
         $error = $this->writeFile($target, $html);
         if (null !== $error) {
-            $this->stderr($error);
+            $this->output->error($error);
 
             return 2;
         }
 
-        $this->stderr(sprintf('Rapport HTML écrit : %s', $target));
+        $this->output->error(sprintf('Rapport HTML écrit : %s', $target));
 
         return 0;
     }
@@ -232,22 +234,22 @@ final class Application
      */
     private function emitConsole(AuditResult $audit, ?Comparison $comparison, Options $options, Config $config, array $lenses): void
     {
-        $this->stdout((new ConsoleReporter($lenses, $config))->render($audit, $options->showDivergence));
+        $this->output->write((new ConsoleReporter($lenses, $config))->render($audit, $options->showDivergence));
 
         if (null !== $comparison) {
-            $this->stdout("\n" . (new DeltaReporter())->render($comparison));
+            $this->output->write("\n" . (new DeltaReporter())->render($comparison));
         }
 
         if ([] !== $audit->qaResults) {
-            $this->stdout("\n" . (new QaReporter())->render($audit->qaResults));
+            $this->output->write("\n" . (new QaReporter())->render($audit->qaResults));
         }
 
         if (null !== $audit->coverage && null !== $audit->presence) {
-            $this->stdout("\n" . (new CoverageReporter())->render($audit->coverage, $audit->presence));
+            $this->output->write("\n" . (new CoverageReporter())->render($audit->coverage, $audit->presence));
         }
 
         foreach ($audit->parseErrors as $error) {
-            $this->stderr('parse: ' . $error);
+            $this->output->error('parse: ' . $error);
         }
     }
 
@@ -410,15 +412,5 @@ final class Application
             contredisent — l'angle mort des métriques de complexité isolées.
 
             TXT;
-    }
-
-    private function stdout(string $text): void
-    {
-        fwrite(\STDOUT, $text);
-    }
-
-    private function stderr(string $text): void
-    {
-        fwrite(\STDERR, $text . "\n");
     }
 }

@@ -10,6 +10,7 @@ if [ ! -d vendor ]; then
     exit 2
 fi
 
+COVERAGE_MIN=90
 status=0
 
 run() {
@@ -26,7 +27,16 @@ run() {
 
 run "PHP-CS-Fixer (PSR-12)" php vendor/bin/php-cs-fixer fix --dry-run --diff
 run "PHPStan (level 9)" php vendor/bin/phpstan analyse --no-progress
-run "PHPUnit" php vendor/bin/phpunit
+# La couverture n'est mesurable qu'avec Xdebug ou PCOV. Sans pilote, on lance les
+# tests sans elle plutôt que d'échouer : mieux vaut un garde-fou partiel qu'un
+# garde-fou contourné.
+if php -r 'exit((extension_loaded("xdebug") || extension_loaded("pcov")) ? 0 : 1);'; then
+    run "PHPUnit + couverture (plancher ${COVERAGE_MIN} %)" bash -c \
+        "XDEBUG_MODE=coverage php vendor/bin/phpunit --coverage-clover var/clover.xml \
+         && php tools/coverage-gate.php var/clover.xml ${COVERAGE_MIN}"
+else
+    run "PHPUnit (couverture non mesurée : ni Xdebug ni PCOV)" php vendor/bin/phpunit
+fi
 # Dogfooding : l'outil s'audite lui-même en mode cliquet. Les trois dépassements
 # hérités figurent dans baseline.json et passent ; toute régression échoue.
 run "phpx-complexity (cliquet)" php bin/phpx-complexity src/ --baseline=baseline.json --fail-on-new

@@ -1,7 +1,7 @@
 {
     "tool": "phpx-complexity",
     "summary": {
-        "files": 43,
+        "files": 45,
         "methods": 211,
         "methodsInViolation": 6,
         "totalViolations": 6,
@@ -179,7 +179,7 @@
             },
             "percentile": {
                 "cognitive": 0.9571428571428572,
-                "params": 0.6333333333333333,
+                "params": 0.6285714285714286,
                 "returns": 0,
                 "live_peak": 0.5904761904761905,
                 "entangle": 0.5238095238095238
@@ -211,7 +211,7 @@
         {
             "file": "Cli/Application.php",
             "name": "usageError",
-            "line": 68,
+            "line": 70,
             "metrics": {
                 "cognitive": 3,
                 "params": 1,
@@ -232,7 +232,7 @@
         {
             "file": "Cli/Application.php",
             "name": "emitConsole",
-            "line": 233,
+            "line": 235,
             "metrics": {
                 "cognitive": 5,
                 "params": 5,
@@ -316,7 +316,7 @@
         {
             "file": "Cli/Application.php",
             "name": "compare",
-            "line": 155,
+            "line": 157,
             "metrics": {
                 "cognitive": 1,
                 "params": 4,
@@ -561,7 +561,7 @@
             },
             "percentile": {
                 "cognitive": 0.9904761904761905,
-                "params": 0.6333333333333333,
+                "params": 0.6285714285714286,
                 "returns": 0.16666666666666666,
                 "live_peak": 0.9857142857142858,
                 "entangle": 0.9619047619047619
@@ -582,7 +582,7 @@
             },
             "percentile": {
                 "cognitive": 0.7523809523809524,
-                "params": 0.6333333333333333,
+                "params": 0.6285714285714286,
                 "returns": 0.16666666666666666,
                 "live_peak": 0.9857142857142858,
                 "entangle": 0.780952380952381
@@ -784,7 +784,7 @@
         {
             "file": "Cli/Application.php",
             "name": "resolvePath",
-            "line": 316,
+            "line": 318,
             "metrics": {
                 "cognitive": 2,
                 "params": 1,
@@ -1057,7 +1057,7 @@
         {
             "file": "Cli/Application.php",
             "name": "loadConfig",
-            "line": 293,
+            "line": 295,
             "metrics": {
                 "cognitive": 5,
                 "params": 2,
@@ -1067,7 +1067,7 @@
             },
             "percentile": {
                 "cognitive": 0.8142857142857143,
-                "params": 0.6333333333333333,
+                "params": 0.6285714285714286,
                 "returns": 0.16666666666666666,
                 "live_peak": 0.7285714285714285,
                 "entangle": 0.9380952380952381
@@ -1088,7 +1088,7 @@
             },
             "percentile": {
                 "cognitive": 0.6428571428571429,
-                "params": 0.6333333333333333,
+                "params": 0.6285714285714286,
                 "returns": 0.16666666666666666,
                 "live_peak": 0.8761904761904762,
                 "entangle": 0.9380952380952381
@@ -1130,7 +1130,7 @@
             },
             "percentile": {
                 "cognitive": 0.5523809523809524,
-                "params": 0.6333333333333333,
+                "params": 0.6285714285714286,
                 "returns": 0.16666666666666666,
                 "live_peak": 0.7285714285714285,
                 "entangle": 0.9380952380952381
@@ -1151,7 +1151,7 @@
             },
             "percentile": {
                 "cognitive": 0.9333333333333333,
-                "params": 0.6333333333333333,
+                "params": 0.6285714285714286,
                 "returns": 0.16666666666666666,
                 "live_peak": 0.5904761904761905,
                 "entangle": 0.8809523809523809
@@ -1183,7 +1183,7 @@
         {
             "file": "Cli/Application.php",
             "name": "run",
-            "line": 44,
+            "line": 46,
             "metrics": {
                 "cognitive": 3,
                 "params": 1,
@@ -1319,7 +1319,7 @@
             },
             "percentile": {
                 "cognitive": 0.9,
-                "params": 0.6333333333333333,
+                "params": 0.6285714285714286,
                 "returns": 0.16666666666666666,
                 "live_peak": 0.9238095238095239,
                 "entangle": 0.7857142857142857
@@ -1382,7 +1382,7 @@
             },
             "percentile": {
                 "cognitive": 0.7523809523809524,
-                "params": 0.6333333333333333,
+                "params": 0.6285714285714286,
                 "returns": 0.16666666666666666,
                 "live_peak": 0.4523809523809524,
                 "entangle": 0
@@ -1445,7 +1445,7 @@
             },
             "percentile": {
                 "cognitive": 0.5523809523809524,
-                "params": 0.6333333333333333,
+                "params": 0.6285714285714286,
                 "returns": 0.16666666666666666,
                 "live_peak": 0.7285714285714285,
                 "entangle": 0.8809523809523809
@@ -1466,7 +1466,7 @@
             },
             "percentile": {
                 "cognitive": 0.6428571428571429,
-                "params": 0.6333333333333333,
+                "params": 0.6285714285714286,
                 "returns": 0.16666666666666666,
                 "live_peak": 0.5904761904761905,
                 "entangle": 0.8809523809523809
@@ -1529,7 +1529,7 @@
             },
             "percentile": {
                 "cognitive": 0,
-                "params": 0.6333333333333333,
+                "params": 0.6285714285714286,
                 "returns": 0.16666666666666666,
                 "live_peak": 0.5904761904761905,
                 "entangle": 0.7095238095238096
@@ -1561,7 +1561,7 @@
         {
             "file": "Cli/Application.php",
             "name": "autoDetectConfig",
-            "line": 350,
+            "line": 352,
             "metrics": {
                 "cognitive": 4,
                 "params": 1,
@@ -1603,7 +1603,7 @@
         {
             "file": "Cli/Application.php",
             "name": "countViolations",
-            "line": 279,
+            "line": 281,
             "metrics": {
                 "cognitive": 6,
                 "params": 3,
@@ -1832,279 +1832,6 @@
             "violations": []
         },
         {
-            "file": "Analyzer/ProjectAnalyzer.php",
-            "name": "__construct",
-            "line": 32,
-            "metrics": {
-                "cognitive": 0,
-                "params": 2,
-                "returns": 0,
-                "live_peak": 0,
-                "entangle": 0
-            },
-            "percentile": {
-                "cognitive": 0,
-                "params": 0.6333333333333333,
-                "returns": 0,
-                "live_peak": 0,
-                "entangle": 0
-            },
-            "divergence": 0.6333,
-            "violations": []
-        },
-        {
-            "file": "Cli/Application.php",
-            "name": "discard",
-            "line": 120,
-            "metrics": {
-                "cognitive": 1,
-                "params": 2,
-                "returns": 1,
-                "live_peak": 1,
-                "entangle": 0
-            },
-            "percentile": {
-                "cognitive": 0.4095238095238095,
-                "params": 0.6333333333333333,
-                "returns": 0.16666666666666666,
-                "live_peak": 0.2904761904761905,
-                "entangle": 0
-            },
-            "divergence": 0.6333,
-            "violations": []
-        },
-        {
-            "file": "Report/HtmlReporter.php",
-            "name": "__construct",
-            "line": 34,
-            "metrics": {
-                "cognitive": 0,
-                "params": 2,
-                "returns": 0,
-                "live_peak": 0,
-                "entangle": 0
-            },
-            "percentile": {
-                "cognitive": 0,
-                "params": 0.6333333333333333,
-                "returns": 0,
-                "live_peak": 0,
-                "entangle": 0
-            },
-            "divergence": 0.6333,
-            "violations": []
-        },
-        {
-            "file": "Report/HtmlReporter.php",
-            "name": "statCard",
-            "line": 210,
-            "metrics": {
-                "cognitive": 0,
-                "params": 2,
-                "returns": 1,
-                "live_peak": 2,
-                "entangle": 0
-            },
-            "percentile": {
-                "cognitive": 0,
-                "params": 0.6333333333333333,
-                "returns": 0.16666666666666666,
-                "live_peak": 0.4523809523809524,
-                "entangle": 0
-            },
-            "divergence": 0.6333,
-            "violations": []
-        },
-        {
-            "file": "Report/CoverageReporter.php",
-            "name": "render",
-            "line": 19,
-            "metrics": {
-                "cognitive": 0,
-                "params": 2,
-                "returns": 1,
-                "live_peak": 2,
-                "entangle": 1
-            },
-            "percentile": {
-                "cognitive": 0,
-                "params": 0.6333333333333333,
-                "returns": 0.16666666666666666,
-                "live_peak": 0.4523809523809524,
-                "entangle": 0.5904761904761905
-            },
-            "divergence": 0.6333,
-            "violations": []
-        },
-        {
-            "file": "Report/ConsoleReporter.php",
-            "name": "__construct",
-            "line": 22,
-            "metrics": {
-                "cognitive": 0,
-                "params": 2,
-                "returns": 0,
-                "live_peak": 0,
-                "entangle": 0
-            },
-            "percentile": {
-                "cognitive": 0,
-                "params": 0.6333333333333333,
-                "returns": 0,
-                "live_peak": 0,
-                "entangle": 0
-            },
-            "divergence": 0.6333,
-            "violations": []
-        },
-        {
-            "file": "Report/JsonReporter.php",
-            "name": "__construct",
-            "line": 26,
-            "metrics": {
-                "cognitive": 0,
-                "params": 2,
-                "returns": 0,
-                "live_peak": 0,
-                "entangle": 0
-            },
-            "percentile": {
-                "cognitive": 0,
-                "params": 0.6333333333333333,
-                "returns": 0,
-                "live_peak": 0,
-                "entangle": 0
-            },
-            "divergence": 0.6333,
-            "violations": []
-        },
-        {
-            "file": "Lens/CognitiveComplexityLens.php",
-            "name": "measure",
-            "line": 68,
-            "metrics": {
-                "cognitive": 0,
-                "params": 2,
-                "returns": 1,
-                "live_peak": 1,
-                "entangle": 0
-            },
-            "percentile": {
-                "cognitive": 0,
-                "params": 0.6333333333333333,
-                "returns": 0.16666666666666666,
-                "live_peak": 0.2904761904761905,
-                "entangle": 0
-            },
-            "divergence": 0.6333,
-            "violations": []
-        },
-        {
-            "file": "Lens/CognitiveComplexityLens.php",
-            "name": "walkNesting",
-            "line": 210,
-            "metrics": {
-                "cognitive": 0,
-                "params": 2,
-                "returns": 1,
-                "live_peak": 2,
-                "entangle": 1
-            },
-            "percentile": {
-                "cognitive": 0,
-                "params": 0.6333333333333333,
-                "returns": 0.16666666666666666,
-                "live_peak": 0.4523809523809524,
-                "entangle": 0.5904761904761905
-            },
-            "divergence": 0.6333,
-            "violations": []
-        },
-        {
-            "file": "Lens/ParameterCountLens.php",
-            "name": "measure",
-            "line": 41,
-            "metrics": {
-                "cognitive": 0,
-                "params": 2,
-                "returns": 1,
-                "live_peak": 1,
-                "entangle": 0
-            },
-            "percentile": {
-                "cognitive": 0,
-                "params": 0.6333333333333333,
-                "returns": 0.16666666666666666,
-                "live_peak": 0.2904761904761905,
-                "entangle": 0
-            },
-            "divergence": 0.6333,
-            "violations": []
-        },
-        {
-            "file": "Ast/AstHelper.php",
-            "name": "traverse",
-            "line": 120,
-            "metrics": {
-                "cognitive": 0,
-                "params": 2,
-                "returns": 0,
-                "live_peak": 2,
-                "entangle": 0
-            },
-            "percentile": {
-                "cognitive": 0,
-                "params": 0.6333333333333333,
-                "returns": 0,
-                "live_peak": 0.4523809523809524,
-                "entangle": 0
-            },
-            "divergence": 0.6333,
-            "violations": []
-        },
-        {
-            "file": "Baseline/BaselineComparator.php",
-            "name": "__construct",
-            "line": 23,
-            "metrics": {
-                "cognitive": 0,
-                "params": 2,
-                "returns": 0,
-                "live_peak": 0,
-                "entangle": 0
-            },
-            "percentile": {
-                "cognitive": 0,
-                "params": 0.6333333333333333,
-                "returns": 0,
-                "live_peak": 0,
-                "entangle": 0
-            },
-            "divergence": 0.6333,
-            "violations": []
-        },
-        {
-            "file": "Baseline/Snapshot.php",
-            "name": "__construct",
-            "line": 24,
-            "metrics": {
-                "cognitive": 0,
-                "params": 2,
-                "returns": 0,
-                "live_peak": 0,
-                "entangle": 0
-            },
-            "percentile": {
-                "cognitive": 0,
-                "params": 0.6333333333333333,
-                "returns": 0,
-                "live_peak": 0,
-                "entangle": 0
-            },
-            "divergence": 0.6333,
-            "violations": []
-        },
-        {
             "file": "Baseline/Snapshot.php",
             "name": "floats",
             "line": 154,
@@ -2121,111 +1848,6 @@
                 "returns": 0.8047619047619048,
                 "live_peak": 0.7285714285714285,
                 "entangle": 0.5904761904761905
-            },
-            "divergence": 0.6333,
-            "violations": []
-        },
-        {
-            "file": "Audit/AuditRunner.php",
-            "name": "__construct",
-            "line": 28,
-            "metrics": {
-                "cognitive": 0,
-                "params": 2,
-                "returns": 0,
-                "live_peak": 0,
-                "entangle": 0
-            },
-            "percentile": {
-                "cognitive": 0,
-                "params": 0.6333333333333333,
-                "returns": 0,
-                "live_peak": 0,
-                "entangle": 0
-            },
-            "divergence": 0.6333,
-            "violations": []
-        },
-        {
-            "file": "Vcs/Exception/GitException.php",
-            "name": "cloneFailed",
-            "line": 28,
-            "metrics": {
-                "cognitive": 0,
-                "params": 2,
-                "returns": 1,
-                "live_peak": 2,
-                "entangle": 0
-            },
-            "percentile": {
-                "cognitive": 0,
-                "params": 0.6333333333333333,
-                "returns": 0.16666666666666666,
-                "live_peak": 0.4523809523809524,
-                "entangle": 0
-            },
-            "divergence": 0.6333,
-            "violations": []
-        },
-        {
-            "file": "Vcs/GitCloner.php",
-            "name": "__construct",
-            "line": 26,
-            "metrics": {
-                "cognitive": 0,
-                "params": 2,
-                "returns": 0,
-                "live_peak": 0,
-                "entangle": 0
-            },
-            "percentile": {
-                "cognitive": 0,
-                "params": 0.6333333333333333,
-                "returns": 0,
-                "live_peak": 0,
-                "entangle": 0
-            },
-            "divergence": 0.6333,
-            "violations": []
-        },
-        {
-            "file": "Vcs/Checkout.php",
-            "name": "__construct",
-            "line": 20,
-            "metrics": {
-                "cognitive": 0,
-                "params": 2,
-                "returns": 0,
-                "live_peak": 0,
-                "entangle": 0
-            },
-            "percentile": {
-                "cognitive": 0,
-                "params": 0.6333333333333333,
-                "returns": 0,
-                "live_peak": 0,
-                "entangle": 0
-            },
-            "divergence": 0.6333,
-            "violations": []
-        },
-        {
-            "file": "Qa/QaPresenceChecker.php",
-            "name": "__construct",
-            "line": 19,
-            "metrics": {
-                "cognitive": 0,
-                "params": 2,
-                "returns": 0,
-                "live_peak": 0,
-                "entangle": 0
-            },
-            "percentile": {
-                "cognitive": 0,
-                "params": 0.6333333333333333,
-                "returns": 0,
-                "live_peak": 0,
-                "entangle": 0
             },
             "divergence": 0.6333,
             "violations": []
@@ -2252,9 +1874,408 @@
             "violations": []
         },
         {
+            "file": "Analyzer/ProjectAnalyzer.php",
+            "name": "__construct",
+            "line": 32,
+            "metrics": {
+                "cognitive": 0,
+                "params": 2,
+                "returns": 0,
+                "live_peak": 0,
+                "entangle": 0
+            },
+            "percentile": {
+                "cognitive": 0,
+                "params": 0.6285714285714286,
+                "returns": 0,
+                "live_peak": 0,
+                "entangle": 0
+            },
+            "divergence": 0.6286,
+            "violations": []
+        },
+        {
+            "file": "Cli/Application.php",
+            "name": "__construct",
+            "line": 37,
+            "metrics": {
+                "cognitive": 0,
+                "params": 2,
+                "returns": 0,
+                "live_peak": 0,
+                "entangle": 0
+            },
+            "percentile": {
+                "cognitive": 0,
+                "params": 0.6285714285714286,
+                "returns": 0,
+                "live_peak": 0,
+                "entangle": 0
+            },
+            "divergence": 0.6286,
+            "violations": []
+        },
+        {
+            "file": "Cli/Application.php",
+            "name": "discard",
+            "line": 122,
+            "metrics": {
+                "cognitive": 1,
+                "params": 2,
+                "returns": 1,
+                "live_peak": 1,
+                "entangle": 0
+            },
+            "percentile": {
+                "cognitive": 0.4095238095238095,
+                "params": 0.6285714285714286,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.2904761904761905,
+                "entangle": 0
+            },
+            "divergence": 0.6286,
+            "violations": []
+        },
+        {
+            "file": "Report/HtmlReporter.php",
+            "name": "__construct",
+            "line": 34,
+            "metrics": {
+                "cognitive": 0,
+                "params": 2,
+                "returns": 0,
+                "live_peak": 0,
+                "entangle": 0
+            },
+            "percentile": {
+                "cognitive": 0,
+                "params": 0.6285714285714286,
+                "returns": 0,
+                "live_peak": 0,
+                "entangle": 0
+            },
+            "divergence": 0.6286,
+            "violations": []
+        },
+        {
+            "file": "Report/HtmlReporter.php",
+            "name": "statCard",
+            "line": 210,
+            "metrics": {
+                "cognitive": 0,
+                "params": 2,
+                "returns": 1,
+                "live_peak": 2,
+                "entangle": 0
+            },
+            "percentile": {
+                "cognitive": 0,
+                "params": 0.6285714285714286,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.4523809523809524,
+                "entangle": 0
+            },
+            "divergence": 0.6286,
+            "violations": []
+        },
+        {
+            "file": "Report/CoverageReporter.php",
+            "name": "render",
+            "line": 19,
+            "metrics": {
+                "cognitive": 0,
+                "params": 2,
+                "returns": 1,
+                "live_peak": 2,
+                "entangle": 1
+            },
+            "percentile": {
+                "cognitive": 0,
+                "params": 0.6285714285714286,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.4523809523809524,
+                "entangle": 0.5904761904761905
+            },
+            "divergence": 0.6286,
+            "violations": []
+        },
+        {
+            "file": "Report/ConsoleReporter.php",
+            "name": "__construct",
+            "line": 22,
+            "metrics": {
+                "cognitive": 0,
+                "params": 2,
+                "returns": 0,
+                "live_peak": 0,
+                "entangle": 0
+            },
+            "percentile": {
+                "cognitive": 0,
+                "params": 0.6285714285714286,
+                "returns": 0,
+                "live_peak": 0,
+                "entangle": 0
+            },
+            "divergence": 0.6286,
+            "violations": []
+        },
+        {
+            "file": "Report/JsonReporter.php",
+            "name": "__construct",
+            "line": 26,
+            "metrics": {
+                "cognitive": 0,
+                "params": 2,
+                "returns": 0,
+                "live_peak": 0,
+                "entangle": 0
+            },
+            "percentile": {
+                "cognitive": 0,
+                "params": 0.6285714285714286,
+                "returns": 0,
+                "live_peak": 0,
+                "entangle": 0
+            },
+            "divergence": 0.6286,
+            "violations": []
+        },
+        {
+            "file": "Lens/CognitiveComplexityLens.php",
+            "name": "measure",
+            "line": 68,
+            "metrics": {
+                "cognitive": 0,
+                "params": 2,
+                "returns": 1,
+                "live_peak": 1,
+                "entangle": 0
+            },
+            "percentile": {
+                "cognitive": 0,
+                "params": 0.6285714285714286,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.2904761904761905,
+                "entangle": 0
+            },
+            "divergence": 0.6286,
+            "violations": []
+        },
+        {
+            "file": "Lens/CognitiveComplexityLens.php",
+            "name": "walkNesting",
+            "line": 210,
+            "metrics": {
+                "cognitive": 0,
+                "params": 2,
+                "returns": 1,
+                "live_peak": 2,
+                "entangle": 1
+            },
+            "percentile": {
+                "cognitive": 0,
+                "params": 0.6285714285714286,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.4523809523809524,
+                "entangle": 0.5904761904761905
+            },
+            "divergence": 0.6286,
+            "violations": []
+        },
+        {
+            "file": "Lens/ParameterCountLens.php",
+            "name": "measure",
+            "line": 41,
+            "metrics": {
+                "cognitive": 0,
+                "params": 2,
+                "returns": 1,
+                "live_peak": 1,
+                "entangle": 0
+            },
+            "percentile": {
+                "cognitive": 0,
+                "params": 0.6285714285714286,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.2904761904761905,
+                "entangle": 0
+            },
+            "divergence": 0.6286,
+            "violations": []
+        },
+        {
+            "file": "Ast/AstHelper.php",
+            "name": "traverse",
+            "line": 120,
+            "metrics": {
+                "cognitive": 0,
+                "params": 2,
+                "returns": 0,
+                "live_peak": 2,
+                "entangle": 0
+            },
+            "percentile": {
+                "cognitive": 0,
+                "params": 0.6285714285714286,
+                "returns": 0,
+                "live_peak": 0.4523809523809524,
+                "entangle": 0
+            },
+            "divergence": 0.6286,
+            "violations": []
+        },
+        {
+            "file": "Baseline/BaselineComparator.php",
+            "name": "__construct",
+            "line": 23,
+            "metrics": {
+                "cognitive": 0,
+                "params": 2,
+                "returns": 0,
+                "live_peak": 0,
+                "entangle": 0
+            },
+            "percentile": {
+                "cognitive": 0,
+                "params": 0.6285714285714286,
+                "returns": 0,
+                "live_peak": 0,
+                "entangle": 0
+            },
+            "divergence": 0.6286,
+            "violations": []
+        },
+        {
+            "file": "Baseline/Snapshot.php",
+            "name": "__construct",
+            "line": 24,
+            "metrics": {
+                "cognitive": 0,
+                "params": 2,
+                "returns": 0,
+                "live_peak": 0,
+                "entangle": 0
+            },
+            "percentile": {
+                "cognitive": 0,
+                "params": 0.6285714285714286,
+                "returns": 0,
+                "live_peak": 0,
+                "entangle": 0
+            },
+            "divergence": 0.6286,
+            "violations": []
+        },
+        {
+            "file": "Audit/AuditRunner.php",
+            "name": "__construct",
+            "line": 28,
+            "metrics": {
+                "cognitive": 0,
+                "params": 2,
+                "returns": 0,
+                "live_peak": 0,
+                "entangle": 0
+            },
+            "percentile": {
+                "cognitive": 0,
+                "params": 0.6285714285714286,
+                "returns": 0,
+                "live_peak": 0,
+                "entangle": 0
+            },
+            "divergence": 0.6286,
+            "violations": []
+        },
+        {
+            "file": "Vcs/Exception/GitException.php",
+            "name": "cloneFailed",
+            "line": 28,
+            "metrics": {
+                "cognitive": 0,
+                "params": 2,
+                "returns": 1,
+                "live_peak": 2,
+                "entangle": 0
+            },
+            "percentile": {
+                "cognitive": 0,
+                "params": 0.6285714285714286,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.4523809523809524,
+                "entangle": 0
+            },
+            "divergence": 0.6286,
+            "violations": []
+        },
+        {
+            "file": "Vcs/GitCloner.php",
+            "name": "__construct",
+            "line": 26,
+            "metrics": {
+                "cognitive": 0,
+                "params": 2,
+                "returns": 0,
+                "live_peak": 0,
+                "entangle": 0
+            },
+            "percentile": {
+                "cognitive": 0,
+                "params": 0.6285714285714286,
+                "returns": 0,
+                "live_peak": 0,
+                "entangle": 0
+            },
+            "divergence": 0.6286,
+            "violations": []
+        },
+        {
+            "file": "Vcs/Checkout.php",
+            "name": "__construct",
+            "line": 20,
+            "metrics": {
+                "cognitive": 0,
+                "params": 2,
+                "returns": 0,
+                "live_peak": 0,
+                "entangle": 0
+            },
+            "percentile": {
+                "cognitive": 0,
+                "params": 0.6285714285714286,
+                "returns": 0,
+                "live_peak": 0,
+                "entangle": 0
+            },
+            "divergence": 0.6286,
+            "violations": []
+        },
+        {
+            "file": "Qa/QaPresenceChecker.php",
+            "name": "__construct",
+            "line": 19,
+            "metrics": {
+                "cognitive": 0,
+                "params": 2,
+                "returns": 0,
+                "live_peak": 0,
+                "entangle": 0
+            },
+            "percentile": {
+                "cognitive": 0,
+                "params": 0.6285714285714286,
+                "returns": 0,
+                "live_peak": 0,
+                "entangle": 0
+            },
+            "divergence": 0.6286,
+            "violations": []
+        },
+        {
             "file": "Cli/Application.php",
             "name": "targetError",
-            "line": 88,
+            "line": 90,
             "metrics": {
                 "cognitive": 4,
                 "params": 1,
@@ -2275,7 +2296,7 @@
         {
             "file": "Cli/Application.php",
             "name": "fetch",
-            "line": 103,
+            "line": 105,
             "metrics": {
                 "cognitive": 1,
                 "params": 1,
@@ -2296,7 +2317,7 @@
         {
             "file": "Cli/Application.php",
             "name": "decodeConfigFile",
-            "line": 333,
+            "line": 335,
             "metrics": {
                 "cognitive": 4,
                 "params": 1,
@@ -2453,7 +2474,7 @@
             },
             "percentile": {
                 "cognitive": 0.4095238095238095,
-                "params": 0.6333333333333333,
+                "params": 0.6285714285714286,
                 "returns": 0.16666666666666666,
                 "live_peak": 0.5904761904761905,
                 "entangle": 0.7857142857142857
@@ -2495,7 +2516,7 @@
             },
             "percentile": {
                 "cognitive": 0.6428571428571429,
-                "params": 0.6333333333333333,
+                "params": 0.6285714285714286,
                 "returns": 0.16666666666666666,
                 "live_peak": 0.7285714285714285,
                 "entangle": 0.7857142857142857
@@ -2516,7 +2537,7 @@
             },
             "percentile": {
                 "cognitive": 0.5523809523809524,
-                "params": 0.6333333333333333,
+                "params": 0.6285714285714286,
                 "returns": 0.16666666666666666,
                 "live_peak": 0.5904761904761905,
                 "entangle": 0.7857142857142857
@@ -2600,7 +2621,7 @@
             },
             "percentile": {
                 "cognitive": 0.5523809523809524,
-                "params": 0.6333333333333333,
+                "params": 0.6285714285714286,
                 "returns": 0.16666666666666666,
                 "live_peak": 0.7285714285714285,
                 "entangle": 0.6857142857142857
@@ -2684,7 +2705,7 @@
             },
             "percentile": {
                 "cognitive": 0.4095238095238095,
-                "params": 0.6333333333333333,
+                "params": 0.6285714285714286,
                 "returns": 0.16666666666666666,
                 "live_peak": 0.5904761904761905,
                 "entangle": 0.7095238095238096
@@ -2705,7 +2726,7 @@
             },
             "percentile": {
                 "cognitive": 0.4095238095238095,
-                "params": 0.6333333333333333,
+                "params": 0.6285714285714286,
                 "returns": 0.16666666666666666,
                 "live_peak": 0.5904761904761905,
                 "entangle": 0.7095238095238096
@@ -2726,7 +2747,7 @@
             },
             "percentile": {
                 "cognitive": 0.5523809523809524,
-                "params": 0.6333333333333333,
+                "params": 0.6285714285714286,
                 "returns": 0.16666666666666666,
                 "live_peak": 0.4523809523809524,
                 "entangle": 0.7095238095238096
@@ -2758,7 +2779,7 @@
         {
             "file": "Cli/Application.php",
             "name": "writeFile",
-            "line": 216,
+            "line": 218,
             "metrics": {
                 "cognitive": 3,
                 "params": 2,
@@ -2768,7 +2789,7 @@
             },
             "percentile": {
                 "cognitive": 0.6428571428571429,
-                "params": 0.6333333333333333,
+                "params": 0.6285714285714286,
                 "returns": 0.9476190476190476,
                 "live_peak": 0.4523809523809524,
                 "entangle": 0.5333333333333333
@@ -2831,7 +2852,7 @@
             },
             "percentile": {
                 "cognitive": 1,
-                "params": 0.6333333333333333,
+                "params": 0.6285714285714286,
                 "returns": 0.8047619047619048,
                 "live_peak": 0.7285714285714285,
                 "entangle": 0.5238095238095238
@@ -2840,27 +2861,6 @@
             "violations": [
                 "cognitive"
             ]
-        },
-        {
-            "file": "Coverage/CoverageReportReader.php",
-            "name": "absolutePath",
-            "line": 62,
-            "metrics": {
-                "cognitive": 1,
-                "params": 2,
-                "returns": 1,
-                "live_peak": 2,
-                "entangle": 1
-            },
-            "percentile": {
-                "cognitive": 0.4095238095238095,
-                "params": 0.6333333333333333,
-                "returns": 0.16666666666666666,
-                "live_peak": 0.4523809523809524,
-                "entangle": 0.5904761904761905
-            },
-            "divergence": 0.4667,
-            "violations": []
         },
         {
             "file": "Coverage/CoverageReportReader.php",
@@ -2875,12 +2875,33 @@
             },
             "percentile": {
                 "cognitive": 0.4095238095238095,
-                "params": 0.6333333333333333,
+                "params": 0.6285714285714286,
                 "returns": 0.8047619047619048,
                 "live_peak": 0.8761904761904762,
                 "entangle": 0.7761904761904762
             },
             "divergence": 0.4667,
+            "violations": []
+        },
+        {
+            "file": "Coverage/CoverageReportReader.php",
+            "name": "absolutePath",
+            "line": 62,
+            "metrics": {
+                "cognitive": 1,
+                "params": 2,
+                "returns": 1,
+                "live_peak": 2,
+                "entangle": 1
+            },
+            "percentile": {
+                "cognitive": 0.4095238095238095,
+                "params": 0.6285714285714286,
+                "returns": 0.16666666666666666,
+                "live_peak": 0.4523809523809524,
+                "entangle": 0.5904761904761905
+            },
+            "divergence": 0.4619,
             "violations": []
         },
         {
@@ -2896,18 +2917,18 @@
             },
             "percentile": {
                 "cognitive": 0.4095238095238095,
-                "params": 0.6333333333333333,
+                "params": 0.6285714285714286,
                 "returns": 0.16666666666666666,
                 "live_peak": 0.4523809523809524,
                 "entangle": 0.5904761904761905
             },
-            "divergence": 0.4667,
+            "divergence": 0.4619,
             "violations": []
         },
         {
             "file": "Cli/Application.php",
             "name": "audit",
-            "line": 131,
+            "line": 133,
             "metrics": {
                 "cognitive": 2,
                 "params": 2,
@@ -2917,7 +2938,7 @@
             },
             "percentile": {
                 "cognitive": 0.5523809523809524,
-                "params": 0.6333333333333333,
+                "params": 0.6285714285714286,
                 "returns": 0.8047619047619048,
                 "live_peak": 0.9238095238095239,
                 "entangle": 1
@@ -3098,7 +3119,7 @@
         {
             "file": "Cli/Application.php",
             "name": "emit",
-            "line": 173,
+            "line": 175,
             "metrics": {
                 "cognitive": 2,
                 "params": 5,
@@ -3119,7 +3140,7 @@
         {
             "file": "Cli/Application.php",
             "name": "emitHtml",
-            "line": 193,
+            "line": 195,
             "metrics": {
                 "cognitive": 2,
                 "params": 2,
@@ -3129,7 +3150,7 @@
             },
             "percentile": {
                 "cognitive": 0.5523809523809524,
-                "params": 0.6333333333333333,
+                "params": 0.6285714285714286,
                 "returns": 0.9476190476190476,
                 "live_peak": 0.5904761904761905,
                 "entangle": 0.7095238095238096
@@ -3171,12 +3192,12 @@
             },
             "percentile": {
                 "cognitive": 0.6428571428571429,
-                "params": 0.6333333333333333,
+                "params": 0.6285714285714286,
                 "returns": 0.9476190476190476,
                 "live_peak": 0.7285714285714285,
                 "entangle": 0.8809523809523809
             },
-            "divergence": 0.3143,
+            "divergence": 0.319,
             "violations": []
         },
         {
@@ -3203,7 +3224,7 @@
         {
             "file": "Cli/Application.php",
             "name": "usage",
-            "line": 363,
+            "line": 365,
             "metrics": {
                 "cognitive": 0,
                 "params": 0,
@@ -3222,9 +3243,9 @@
             "violations": []
         },
         {
-            "file": "Cli/Application.php",
-            "name": "stdout",
-            "line": 415,
+            "file": "Cli/StreamOutput.php",
+            "name": "write",
+            "line": 12,
             "metrics": {
                 "cognitive": 0,
                 "params": 1,
@@ -3243,9 +3264,9 @@
             "violations": []
         },
         {
-            "file": "Cli/Application.php",
-            "name": "stderr",
-            "line": 420,
+            "file": "Cli/StreamOutput.php",
+            "name": "error",
+            "line": 17,
             "metrics": {
                 "cognitive": 0,
                 "params": 1,
@@ -3528,7 +3549,7 @@
             },
             "percentile": {
                 "cognitive": 0.8142857142857143,
-                "params": 0.6333333333333333,
+                "params": 0.6285714285714286,
                 "returns": 0.8047619047619048,
                 "live_peak": 0.5904761904761905,
                 "entangle": 0.580952380952381
@@ -3539,7 +3560,7 @@
         {
             "file": "Cli/Application.php",
             "name": "exitCode",
-            "line": 259,
+            "line": 261,
             "metrics": {
                 "cognitive": 4,
                 "params": 5,
@@ -3570,7 +3591,7 @@
             },
             "percentile": {
                 "cognitive": 0.7523809523809524,
-                "params": 0.6333333333333333,
+                "params": 0.6285714285714286,
                 "returns": 0.8047619047619048,
                 "live_peak": 0.5904761904761905,
                 "entangle": 0.7857142857142857
@@ -3600,27 +3621,6 @@
             "violations": [
                 "entangle"
             ]
-        },
-        {
-            "file": "Cli/Application.php",
-            "name": "__construct",
-            "line": 37,
-            "metrics": {
-                "cognitive": 0,
-                "params": 1,
-                "returns": 0,
-                "live_peak": 0,
-                "entangle": 0
-            },
-            "percentile": {
-                "cognitive": 0,
-                "params": 0.18095238095238095,
-                "returns": 0,
-                "live_peak": 0,
-                "entangle": 0
-            },
-            "divergence": 0.181,
-            "violations": []
         },
         {
             "file": "Lens/EntanglementLens.php",
@@ -3782,12 +3782,12 @@
             },
             "percentile": {
                 "cognitive": 0.6428571428571429,
-                "params": 0.6333333333333333,
+                "params": 0.6285714285714286,
                 "returns": 0.8047619047619048,
                 "live_peak": 0.7285714285714285,
                 "entangle": 0.7047619047619048
             },
-            "divergence": 0.1714,
+            "divergence": 0.1762,
             "violations": []
         },
         {

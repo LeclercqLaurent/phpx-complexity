@@ -211,7 +211,7 @@ Précédence : `--html=FICHIER` (CLI) > `html.path` (config) > stdout.
 Le projet s'applique à lui-même les exigences qu'il audite :
 
 ```bash
-scripts/qa.sh    # PHP-CS-Fixer (PSR-12) + PHPStan level 9 + PHPUnit
+scripts/qa.sh    # CS-Fixer (PSR-12) + PHPStan level 9 + PHPUnit + couverture ≥ 90 %
 composer qa      # idem
 ```
 
@@ -230,8 +230,12 @@ Le script inclut l'outil **appliqué à son propre code, en mode cliquet** : les
 quelques dépassements hérités sont figés dans `baseline.json` et passent, toute
 régression échoue.
 
-État actuel : **PHPStan level 9 sans erreur**, PSR-12 respecté, tests verts,
-trois dépassements hérités figés.
+La couverture est **gatée à 90 %** quand un pilote (Xdebug ou PCOV) est
+disponible ; sans pilote, les tests tournent sans elle plutôt que d'échouer —
+mieux vaut un garde-fou partiel qu'un garde-fou contourné.
+
+État actuel : **PHPStan level 9 sans erreur**, PSR-12 respecté, **95,4 % de
+couverture**, dépassements hérités figés dans la baseline.
 
 ## Build PHAR
 
