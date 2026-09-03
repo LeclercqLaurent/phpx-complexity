@@ -144,9 +144,36 @@ final class Application
             return 2;
         }
 
-        $emitted = $this->emit($result, $comparison, $options, $config, $lenses);
+        $written = $this->writeSnapshot($result, $options, $config, $lenses);
+        $emitted = 0 !== $written ? $written : $this->emit($result, $comparison, $options, $config, $lenses);
 
         return 0 === $emitted ? $this->exitCode($result, $comparison, $options, $config, $lenses) : $emitted;
+    }
+
+    /**
+     * Fige l'instantané demandé par --baseline-out, en marge du rapport : ce
+     * n'est pas un format de sortie mais un artefact, le rapport habituel a
+     * lieu quand même.
+     *
+     * @param list<Lens> $lenses
+     */
+    private function writeSnapshot(AuditResult $audit, Options $options, Config $config, array $lenses): int
+    {
+        if (null === $options->baselineOut) {
+            return 0;
+        }
+
+        $snapshot = Snapshot::fromAudit($audit, $config, $lenses)->toJson();
+        $error = $this->writeFile($options->baselineOut, $snapshot);
+        if (null !== $error) {
+            $this->output->error($error);
+
+            return 2;
+        }
+
+        $this->output->error(sprintf('Instantané écrit : %s', $options->baselineOut));
+
+        return 0;
     }
 
     /**
@@ -388,8 +415,11 @@ final class Application
               --coverage             Lit un rapport de couverture (clover/cobertura) s'il
                                      existe + faits de présence de tests (statique)
               --config=FICHIER       Fichier de config (défaut : phpx-complexity.json)
-              --baseline=FICHIER     Compare à un instantané figé (une sortie --json).
-                                     Affiche nouvelles violations, aggravées, résolues
+              --baseline=FICHIER     Compare à un instantané figé. Affiche nouvelles
+                                     violations, aggravées, résolues
+              --baseline-out=FICHIER Fige l'instantané de référence. Réduit à ce que
+                                     la comparaison lit, trié par identité : les
+                                     régénérations restent lisibles en revue
               --fail-on-new          Code de sortie 1 sur les seules RÉGRESSIONS par
                                      rapport à la baseline : l'existant hérité passe
               --fail-on-violations   Code de sortie 1 si un seuil est dépassé, ou si un

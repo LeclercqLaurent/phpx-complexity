@@ -39,6 +39,7 @@ final class Options
     public readonly bool $showDivergence;
     public readonly ?string $configFile;
     public readonly ?string $baselineFile;
+    public readonly ?string $baselineOut;
     public readonly bool $failOnNew;
     public readonly ?int $top;
 
@@ -66,6 +67,7 @@ final class Options
         $this->showDivergence = !isset($raw['no-divergence']);
         $this->configFile = self::text($raw, 'config');
         $this->baselineFile = self::text($raw, 'baseline');
+        $this->baselineOut = self::text($raw, 'baseline-out');
         $this->failOnNew = isset($raw['fail-on-new']);
         $this->top = null === $top ? null : (int) $top;
         $this->exclude = self::texts($raw, 'exclude');
@@ -96,6 +98,7 @@ final class Options
         '--exclude=' => 'exclude',
         '--config=' => 'config',
         '--baseline=' => 'baseline',
+        '--baseline-out=' => 'baseline-out',
         '--top=' => 'top',
     ];
 

@@ -117,7 +117,7 @@ ne régresse pas.
 
 ```bash
 # 1. Figer l'instantané de référence (une fois, committé dans le dépôt)
-bin/phpx-complexity src/ --json > baseline.json
+bin/phpx-complexity src/ --baseline-out=baseline.json
 
 # 2. Comparer l'état courant à la référence
 bin/phpx-complexity src/ --baseline=baseline.json
@@ -126,8 +126,21 @@ bin/phpx-complexity src/ --baseline=baseline.json
 bin/phpx-complexity src/ --baseline=baseline.json --fail-on-new
 ```
 
-Un instantané **est une sortie `--json` figée** : aucun format n'est inventé pour
-la baseline. Le rapport distingue quatre faits :
+Un instantané est un **sous-ensemble du contrat `--json`** : aucun format n'est
+inventé, et une sortie `--json` complète reste une référence valide. Mais
+`--baseline-out` n'y garde que ce que la comparaison lit — identité, ligne,
+valeurs brutes, seuils — et **ordonne par identité plutôt que par divergence**.
+
+La différence est celle d'un fichier relisible ou non. Les rangs centiles et la
+divergence sont **relatifs au lot** : ils changent pour toutes les méthodes dès
+qu'une seule bouge. Mesuré sur ce dépôt, en modifiant une seule méthode :
+
+| | lignes changées | taille |
+|---|---:|---:|
+| sortie `--json` complète | 396 | 139 Ko |
+| `--baseline-out` | **4** | 69 Ko |
+
+Le rapport distingue quatre faits :
 
 | Catégorie | Sens |
 |---|---|
@@ -150,7 +163,9 @@ Points de méthode :
   imposer. Si un seuil a bougé depuis l'instantané, le rapport le signale : les
   valeurs brutes, elles, restent comparables.
 - **`baseline.json` se committe et se régénère volontairement**, jamais
-  automatiquement — sans quoi le cliquet ne retient plus rien.
+  automatiquement — sans quoi le cliquet ne retient plus rien. La régénération
+  reste donc relisible : un diff de quatre lignes se revoit, un diff de quatre
+  cents se tamponne sans lire.
 
 ## Installation
 

@@ -125,6 +125,57 @@ final class ApplicationTest extends TestCase
         self::assertStringContainsString('Nouvelles violations (1)', $this->output->out);
     }
 
+    public function testBaselineOutFreezesASnapshotUsableAsAReference(): void
+    {
+        $snapshot = $this->temporary . '/instantane.json';
+
+        self::assertSame(0, $this->cli([self::PROJECT, '--config=' . self::STRICT, '--baseline-out=' . $snapshot]));
+        self::assertFileExists($snapshot);
+        self::assertStringContainsString('Instantané écrit', $this->output->err);
+        // Le rapport habituel a tout de même lieu : c'est un artefact, pas un
+        // format de sortie.
+        self::assertStringContainsString('phpx-complexity —', $this->output->out);
+
+        // Et il est immédiatement exploitable comme référence : rien n'a bougé.
+        $this->output = new BufferedOutput();
+        self::assertSame(0, $this->cli([
+            self::PROJECT,
+            '--config=' . self::STRICT,
+            '--baseline=' . $snapshot,
+            '--fail-on-new',
+        ]));
+        self::assertStringContainsString('0 régression(s)', $this->output->out);
+    }
+
+    public function testUnwritableSnapshotTargetIsAnIoError(): void
+    {
+        $blocker = $this->temporary . '/bloque';
+        touch($blocker);
+
+        self::assertSame(2, $this->cli([self::PROJECT, '--baseline-out=' . $blocker . '/x.json']));
+        self::assertStringContainsString('non créable', $this->output->err);
+    }
+
+    /**
+     * Rétrocompatibilité : une sortie --json complète reste une référence
+     * valide, le format d'instantané n'étant qu'un sous-ensemble.
+     */
+    public function testFullJsonOutputRemainsAValidBaseline(): void
+    {
+        $full = $this->temporary . '/plein.json';
+        self::assertSame(0, $this->cli([self::PROJECT, '--config=' . self::STRICT, '--json']));
+        file_put_contents($full, $this->output->out);
+
+        $this->output = new BufferedOutput();
+        self::assertSame(0, $this->cli([
+            self::PROJECT,
+            '--config=' . self::STRICT,
+            '--baseline=' . $full,
+            '--fail-on-new',
+        ]));
+        self::assertStringContainsString('0 régression(s)', $this->output->out);
+    }
+
     public function testMalformedBaselineIsAnIoError(): void
     {
         self::assertSame(2, $this->runRatchet('broken-baseline.json'));

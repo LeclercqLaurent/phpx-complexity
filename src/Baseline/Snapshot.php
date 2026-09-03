@@ -77,6 +77,42 @@ final class Snapshot
     }
 
     /**
+     * Sérialise l'instantané, réduit à ce que la comparaison lit RÉELLEMENT :
+     * identité, ligne et valeurs brutes, plus les seuils du moment.
+     *
+     * Les rangs centiles et la divergence de la sortie `--json` en sont absents
+     * à dessein : ce sont des rangs RELATIFS au lot analysé, donc réécrits pour
+     * toutes les méthodes dès qu'une seule bouge. Les conserver rendrait chaque
+     * régénération illisible en revue, alors qu'ils ne servent pas à comparer.
+     *
+     * L'ordre est celui de l'identité, pas de la divergence : un ajout insère un
+     * bloc au lieu de tout redistribuer. Le résultat reste un sous-ensemble
+     * valide du contrat `--json`, que le lecteur continue d'accepter entier.
+     */
+    public function toJson(): string
+    {
+        $methods = [];
+        foreach ($this->methods as $method) {
+            $methods[] = [
+                'file' => $method->file,
+                'name' => $method->name,
+                'line' => $method->line,
+                'metrics' => $method->metrics,
+            ];
+        }
+
+        $lenses = [];
+        foreach ($this->thresholds as $key => $threshold) {
+            $lenses[$key] = ['threshold' => $threshold];
+        }
+
+        return (string) json_encode(
+            ['tool' => 'phpx-complexity', 'lenses' => $lenses, 'methods' => $methods],
+            \JSON_PRETTY_PRINT | \JSON_UNESCAPED_SLASHES | \JSON_UNESCAPED_UNICODE,
+        );
+    }
+
+    /**
      * Clé d'identité : fichier + nom, jamais la ligne — celle-ci se décale au
      * moindre ajout en amont et ferait passer un fichier entier pour réécrit.
      * Les rares homonymes d'un même fichier (plusieurs classes) sont départagés

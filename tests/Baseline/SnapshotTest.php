@@ -7,9 +7,14 @@ namespace PhpxComplexity\Tests\Baseline;
 use PHPUnit\Framework\TestCase;
 use PhpxComplexity\Baseline\Exception\BaselineException;
 use PhpxComplexity\Baseline\Snapshot;
+use PhpxComplexity\Config\Config;
+use PhpxComplexity\Lens\LensRegistry;
+use PhpxComplexity\Tests\Support\SampleAudit;
 
 final class SnapshotTest extends TestCase
 {
+    use SampleAudit;
+
     private const FIXTURES = __DIR__ . '/../fixtures/baseline';
 
     public function testIdentityIgnoresTheLineNumber(): void
@@ -49,5 +54,74 @@ final class SnapshotTest extends TestCase
         $this->expectExceptionMessageMatches('/Baseline invalide/');
 
         Snapshot::fromFile(__DIR__ . '/../fixtures/baseline-project/broken-baseline.json');
+    }
+
+    /**
+     * L'instantané écrit ne garde que ce que la comparaison lit. Les rangs
+     * centiles et la divergence en sont exclus : relatifs au lot, ils seraient
+     * réécrits pour toutes les méthodes dès qu'une seule bouge.
+     */
+    public function testSerialisedSnapshotDropsWhatComparisonDoesNotRead(): void
+    {
+        $json = $this->serialised();
+
+        self::assertStringNotContainsString('percentile', $json);
+        self::assertStringNotContainsString('divergence', $json);
+        self::assertStringNotContainsString('violations', $json);
+        self::assertStringNotContainsString('summary', $json);
+        self::assertStringContainsString('"metrics"', $json);
+        self::assertStringContainsString('"threshold"', $json);
+    }
+
+    /**
+     * Ordre d'identité et non de divergence : un ajout insère un bloc au lieu
+     * de redistribuer tout le fichier.
+     */
+    public function testSerialisedMethodsAreOrderedByIdentity(): void
+    {
+        /** @var array{methods: list<array{file:string,name:string}>} $decoded */
+        $decoded = json_decode($this->serialised(), true, 512, \JSON_THROW_ON_ERROR);
+        $keys = array_map(
+            static fn (array $m): string => $m['file'] . '::' . $m['name'],
+            $decoded['methods'],
+        );
+
+        $sorted = $keys;
+        sort($sorted);
+        self::assertSame($sorted, $keys);
+    }
+
+    public function testSerialisedSnapshotIsReadableBackWithoutLoss(): void
+    {
+        $directory = __DIR__ . '/../../var';
+        @mkdir($directory, 0o755, true);
+        $file = $directory . '/snapshot-' . bin2hex(random_bytes(4)) . '.json';
+        file_put_contents($file, $this->serialised());
+
+        try {
+            $reread = Snapshot::fromFile($file);
+            $original = $this->snapshot();
+
+            self::assertSame(array_keys($original->methods), array_keys($reread->methods));
+            self::assertSame($original->thresholds, $reread->thresholds);
+            self::assertSame(
+                $original->methods['src/Foo.php::compute']->metrics,
+                $reread->methods['src/Foo.php::compute']->metrics,
+            );
+        } finally {
+            @unlink($file);
+        }
+    }
+
+    private function snapshot(): Snapshot
+    {
+        $config = Config::defaults();
+
+        return Snapshot::fromAudit($this->audit(), $config, LensRegistry::defaults($config));
+    }
+
+    private function serialised(): string
+    {
+        return $this->snapshot()->toJson();
     }
 }
