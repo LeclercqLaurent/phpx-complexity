@@ -9,7 +9,49 @@ PHP ≥ 8.2 · MIT · `codeam/phpx-complexity`
 
 ---
 
-## Pourquoi
+## L'idée de départ : la QA comme politique d'entropie
+
+L'outil est né d'un raisonnement de fond : **les règles de QA sont des proxys
+d'entropie**, au sens de Shannon — le nombre de bits nécessaires pour décrire le
+comportement d'une méthode. S3776 borne les chemins d'exécution, S107 les degrés
+de liberté en entrée, S1142 les branches terminales. Chacune met une limite à une
+facette de « combien d'information il faut tenir en tête pour comprendre ce
+code ».
+
+Reste à savoir quel lien de causalité on postule entre QA et entropie. La réponse
+naïve — *la QA fait baisser l'entropie* — ne tient pas : si c'était le but, le
+meilleur code serait toujours le plus trivial, et un logiciel qui ne fait rien
+serait un chef-d'œuvre. La position retenue est plus étroite :
+
+> L'entropie **essentielle** est irréductible : elle vient du problème à
+> résoudre, pas de la façon de l'écrire (Brooks, *No Silver Bullet*). La QA
+> élimine l'entropie **accidentelle** — celle qu'on a ajoutée sans nécessité, ce
+> que visent DRY, KISS et YAGNI — et **localise** l'entropie essentielle en
+> paquets qui tiennent sous le seuil cognitif du lecteur.
+>
+> C'est une politique de **compression et de localisation**, pas une lutte contre
+> la complexité.
+
+Trois conséquences directes, qui expliquent l'outil bien plus que ses options.
+
+**Il manque un axe aux règles existantes.** S3776 compte les *branches* mais est
+aveugle à la **dépendance entre symboles**. Deux méthodes de complexité cognitive
+12 peuvent imposer une charge de lecture très différente selon que leurs
+variables sont indépendantes ou entremêlées. C'est ce trou que comblent les deux
+lentilles maison, `live_peak` et `entangle`.
+
+**On n'exige pas zéro complexité, on exige qu'elle n'augmente pas sans raison.**
+Puisque l'entropie essentielle est irréductible, un seuil absolu est
+inapplicable sur du code existant. D'où le mode **cliquet** : accepter l'existant,
+n'échouer que sur les régressions.
+
+**Un score serait un contresens.** L'entropie d'une méthode n'est pas une note ;
+la confronter à un seuil est un fait, la résumer en 7,5/10 est une opinion
+déguisée. D'où le refus, ferme, de produire le moindre score.
+
+---
+
+## Pourquoi croiser les lentilles
 
 Une métrique de complexité isolée a des angles morts. La complexité cognitive
 (S3776) compte les branches mais ignore une méthode sans `if` qui entremêle dix
@@ -27,9 +69,10 @@ classent donc réellement différemment. Détail dans
 
 ### Principe directeur : factuel, jamais de score
 
-**L'outil ne produit aucun score, ni par item ni global.** Un audit se veut
-factuel ; un score est subjectif et invite à l'optimiser au lieu de comprendre.
-On affiche des **compteurs et des valeurs brutes** confrontés à des seuils.
+En pratique : **aucun score, ni par item ni global**, nulle part — ni dans la
+console, ni dans le JSON, ni dans le HTML. Uniquement des **compteurs et des
+valeurs brutes** confrontés à des seuils. Des tests le vérifient sur chaque
+format de sortie.
 
 ---
 
@@ -173,9 +216,9 @@ centaines de violations héritées que personne ne corrigera d'un coup, donc on
 désactive le gate et il ne sert plus à rien. La baseline **accepte l'existant** et
 ne fait échouer que ce qui **empire** — le modèle de PHPStan ou Psalm.
 
-C'est aussi la réponse à la limite philosophique de l'outil : l'entropie
-essentielle étant irréductible, on n'exige pas zéro complexité, on exige qu'elle
-**ne régresse pas**.
+C'est la traduction opérationnelle de l'idée de départ : l'entropie essentielle
+étant irréductible, exiger zéro complexité n'a pas de sens sur du code réel. On
+exige seulement qu'elle **ne régresse pas**.
 
 ```bash
 # 1. Figer la référence (une fois, committée dans le dépôt)
