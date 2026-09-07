@@ -5,7 +5,12 @@ unique (`nikic/php-parser`). Il reproduit nativement la famille de règles
 SonarQube « complexité », y ajoute deux lentilles propres, puis **confronte les
 lentilles entre elles** pour révéler ce qu'une métrique isolée laisse passer.
 
-PHP ≥ 8.2 · MIT · `codeam/phpx-complexity`
+[![CI](https://github.com/LeclercqLaurent/phpx-complexity/actions/workflows/ci.yml/badge.svg)](https://github.com/LeclercqLaurent/phpx-complexity/actions/workflows/ci.yml)
+[![PHP](https://img.shields.io/badge/PHP-%E2%89%A5%208.2-777BB4)](https://www.php.net/)
+[![Licence](https://img.shields.io/badge/licence-MIT-blue)](LICENSE)
+[![Couverture](https://img.shields.io/badge/couverture-95%25-brightgreen)](#qualité-du-projet-lui-même)
+
+PHP ≥ 8.2 · MIT · `codeam/phpx-complexity` · dépendance unique : `nikic/php-parser`
 
 ---
 
@@ -117,15 +122,29 @@ mais haute en vivacité, par exemple. Masquable avec `--no-divergence`.
 
 ## Installation
 
-Depuis un clone du dépôt :
+### Le PHAR (recommandé)
+
+Un binaire unique, sans dépendance à installer : la forme la plus commode pour
+auditer un projet tiers sans polluer son `composer.json`.
 
 ```bash
+curl -sSLo phpx-complexity.phar \
+  https://github.com/LeclercqLaurent/phpx-complexity/releases/latest/download/phpx-complexity.phar
+chmod +x phpx-complexity.phar
+./phpx-complexity.phar --help
+```
+
+Les PHAR sont publiés sur la [page des releases](https://github.com/LeclercqLaurent/phpx-complexity/releases)
+et reconstructibles depuis les sources (voir *Build PHAR*).
+
+### Depuis un clone du dépôt
+
+```bash
+git clone https://github.com/LeclercqLaurent/phpx-complexity.git
+cd phpx-complexity
 composer install
 bin/phpx-complexity --help
 ```
-
-Le PHAR (voir *Build PHAR*) est un binaire unique, sans dépendance à installer :
-c'est la forme la plus commode pour auditer des projets tiers.
 
 > Le paquet **n'est pas publié sur Packagist** à ce jour : `composer require
 > codeam/phpx-complexity` ne fonctionnera pas encore. Le nom est celui déclaré
@@ -371,6 +390,11 @@ Le projet s'applique les exigences qu'il audite :
 scripts/qa.sh    # CS-Fixer (PSR-12) + PHPStan level 9 + PHPUnit + couverture ≥ 90 %
 composer qa      # idem
 ```
+
+Le même garde-fou tourne en **intégration continue** sur PHP 8.2, 8.3 et 8.4
+(`.github/workflows/ci.yml`) : CS-Fixer, PHPStan, PHPUnit avec le plancher de
+couverture, puis le dogfooding en cliquet. Le badge en tête de README en reflète
+l'état sur `main`.
 
 Garde-fou à lancer avant chaque commit ; un code de sortie non nul signale un
 commit à corriger. Le script inclut l'outil **appliqué à son propre code en mode
