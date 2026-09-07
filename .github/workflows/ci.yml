@@ -10,13 +10,12 @@ permissions:
   contents: read
 
 jobs:
+  # Le gate autoritaire : dépendances verrouillées (composer.lock versionné), donc
+  # exactement les versions de CS-Fixer et PHPStan que le projet a délibérément
+  # figées au patch. Il tourne sur la version de PHP de développement.
   qa:
-    name: QA (PHP ${{ matrix.php }})
+    name: Gate QA (PHP 8.4, dépendances verrouillées)
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        php: ['8.2', '8.3', '8.4']
 
     steps:
       - uses: actions/checkout@v4
@@ -24,7 +23,7 @@ jobs:
       - name: Installer PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php }}
+          php-version: '8.4'
           coverage: pcov
           tools: none
 
@@ -41,6 +40,40 @@ jobs:
         run: |
           vendor/bin/phpunit --coverage-clover var/clover.xml
           php tools/coverage-gate.php var/clover.xml 90
+
+      - name: Dogfooding — l'outil s'audite en mode cliquet
+        run: php bin/phpx-complexity src/ --baseline=baseline.json --fail-on-new
+
+  # Preuve que la borne annoncée (PHP >= 8.2) tient réellement. Le lock ne peut
+  # pas servir ici : résolu sous 8.4, il entraîne des composants Symfony exigeant
+  # >= 8.4.1 via PHP-CS-Fixer. On résout donc pour la plateforme testée, et on
+  # n'exécute que ce qui engage la bibliothèque elle-même — jamais le gate, qui
+  # resterait à la merci d'une version d'outil non figée.
+  tests:
+    name: Tests (PHP ${{ matrix.php }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['8.2', '8.3']
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Installer PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+          tools: none
+
+      - name: Résoudre les dépendances pour cette plateforme
+        uses: ramsey/composer-install@v3
+        with:
+          dependency-versions: highest
+
+      - name: PHPUnit
+        run: vendor/bin/phpunit
 
       - name: Dogfooding — l'outil s'audite en mode cliquet
         run: php bin/phpx-complexity src/ --baseline=baseline.json --fail-on-new
