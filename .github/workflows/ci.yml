@@ -10,24 +10,24 @@ permissions:
   contents: read
 
 jobs:
-  # Le gate autoritaire : dépendances verrouillées (composer.lock versionné), donc
-  # exactement les versions de CS-Fixer et PHPStan que le projet a délibérément
-  # figées au patch. Il tourne sur la version de PHP de développement.
+  # The authoritative gate: locked dependencies (composer.lock is versioned), so
+  # exactly the CS-Fixer and PHPStan versions the project deliberately pinned to
+  # the patch level. It runs on the development version of PHP.
   qa:
-    name: Gate QA (PHP 8.4, dépendances verrouillées)
+    name: QA gate (PHP 8.4, locked dependencies)
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Installer PHP
+      - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.4'
           coverage: pcov
           tools: none
 
-      - name: Installer les dépendances
+      - name: Install dependencies
         uses: ramsey/composer-install@v3
 
       - name: PHP-CS-Fixer (PSR-12)
@@ -36,19 +36,19 @@ jobs:
       - name: PHPStan (level 9)
         run: vendor/bin/phpstan analyse --no-progress
 
-      - name: PHPUnit + couverture (plancher 90 %)
+      - name: PHPUnit and coverage floor
         run: |
           vendor/bin/phpunit --coverage-clover var/clover.xml
           php tools/coverage-gate.php var/clover.xml 90
 
-      - name: Dogfooding, l'outil s'audite en mode cliquet
+      - name: Dogfooding, the tool audits itself in ratchet mode
         run: php bin/phpx-complexity src/ --baseline=baseline.json --fail-on-new
 
-  # Preuve que la borne annoncée (PHP >= 8.2) tient réellement. Le lock ne peut
-  # pas servir ici : résolu sous 8.4, il entraîne des composants Symfony exigeant
-  # >= 8.4.1 via PHP-CS-Fixer. On résout donc pour la plateforme testée, et on
-  # n'exécute que ce qui engage la bibliothèque elle-même, jamais le gate, qui
-  # resterait à la merci d'une version d'outil non figée.
+  # Proof that the advertised range (PHP >= 8.2) really holds. The lock file is no
+  # use here: resolved under 8.4, it drags in Symfony components requiring 8.4.1
+  # through PHP-CS-Fixer. So we resolve for the platform under test, and run only
+  # what engages the library itself, never the gate, which would otherwise be at
+  # the mercy of an unpinned tool version.
   tests:
     name: Tests (PHP ${{ matrix.php }})
     runs-on: ubuntu-latest
@@ -60,14 +60,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Installer PHP
+      - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
           coverage: none
           tools: none
 
-      - name: Résoudre les dépendances pour cette plateforme
+      - name: Resolve dependencies for this platform
         uses: ramsey/composer-install@v3
         with:
           dependency-versions: highest
@@ -75,5 +75,5 @@ jobs:
       - name: PHPUnit
         run: vendor/bin/phpunit
 
-      - name: Dogfooding, l'outil s'audite en mode cliquet
+      - name: Dogfooding, the tool audits itself in ratchet mode
         run: php bin/phpx-complexity src/ --baseline=baseline.json --fail-on-new

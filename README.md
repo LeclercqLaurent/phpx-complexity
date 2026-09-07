@@ -1,131 +1,128 @@
 # phpx-complexity
 
-Auditeur de complexité PHP **multi-lentilles**, **hors-ligne**, à dépendance
-unique (`nikic/php-parser`). Il reproduit nativement la famille de règles
-SonarQube « complexité », y ajoute deux lentilles propres, puis **confronte les
-lentilles entre elles** pour révéler ce qu'une métrique isolée laisse passer.
+A **multi-lens**, **offline** PHP complexity auditor with a single dependency
+(`nikic/php-parser`). It natively reproduces the SonarQube "complexity" family of
+rules, adds two lenses of its own, then **plays the lenses against each other** to
+reveal what any isolated metric lets through.
 
 [![CI](https://github.com/LeclercqLaurent/phpx-complexity/actions/workflows/ci.yml/badge.svg)](https://github.com/LeclercqLaurent/phpx-complexity/actions/workflows/ci.yml)
 [![PHP](https://img.shields.io/badge/PHP-%E2%89%A5%208.2-777BB4)](https://www.php.net/)
-[![Licence](https://img.shields.io/badge/licence-MIT-blue)](LICENSE)
-[![Couverture](https://img.shields.io/badge/couverture-95%25-brightgreen)](#qualité-du-projet-lui-même)
+[![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+[![Coverage](https://img.shields.io/badge/coverage-95%25-brightgreen)](#the-quality-of-the-project-itself)
 
-PHP ≥ 8.2 · MIT · `codeam/phpx-complexity` · dépendance unique : `nikic/php-parser`
+PHP >= 8.2 · MIT · `codeam/phpx-complexity` · single dependency: `nikic/php-parser`
 
 ---
 
-## L'idée de départ : la QA comme politique d'entropie
+## The starting idea: QA as an entropy policy
 
-L'outil est né d'un raisonnement de fond : **les règles de QA sont des proxys
-d'entropie**, au sens de Shannon — le nombre de bits nécessaires pour décrire le
-comportement d'une méthode. S3776 borne les chemins d'exécution, S107 les degrés
-de liberté en entrée, S1142 les branches terminales. Chacune met une limite à une
-facette de « combien d'information il faut tenir en tête pour comprendre ce
-code ».
+The tool grew out of one underlying argument: **QA rules are proxies for
+entropy** in Shannon's sense, the number of bits needed to describe the behaviour
+of a method. S3776 bounds execution paths, S107 the degrees of freedom on input,
+S1142 the terminal branches. Each puts a limit on one facet of "how much
+information you have to hold in mind to understand this code".
 
-Reste à savoir quel lien de causalité on postule entre QA et entropie. La réponse
-naïve — *la QA fait baisser l'entropie* — ne tient pas : si c'était le but, le
-meilleur code serait toujours le plus trivial, et un logiciel qui ne fait rien
-serait un chef-d'œuvre. La position retenue est plus étroite :
+What remains is the causal link one assumes between QA and entropy. The naive
+answer, *QA lowers entropy*, does not hold: if that were the goal, the best code
+would always be the most trivial, and software that does nothing would be a
+masterpiece. The position taken here is narrower:
 
-> L'entropie **essentielle** est irréductible : elle vient du problème à
-> résoudre, pas de la façon de l'écrire (Brooks, *No Silver Bullet*). La QA
-> élimine l'entropie **accidentelle** — celle qu'on a ajoutée sans nécessité, ce
-> que visent DRY, KISS et YAGNI — et **localise** l'entropie essentielle en
-> paquets qui tiennent sous le seuil cognitif du lecteur.
+> **Essential** entropy is irreducible: it comes from the problem to be solved,
+> not from the way it is written (Brooks, *No Silver Bullet*). QA eliminates
+> **accidental** entropy, the kind added without necessity, which is what DRY,
+> KISS and YAGNI target, and it **localises** essential entropy into packets that
+> fit under the reader's cognitive threshold.
 >
-> C'est une politique de **compression et de localisation**, pas une lutte contre
-> la complexité.
+> It is a policy of **compression and localisation**, not a fight against
+> complexity.
 
-Trois conséquences directes, qui expliquent l'outil bien plus que ses options.
+Three direct consequences, which explain the tool far better than its options do.
 
-**Il manque un axe aux règles existantes.** S3776 compte les *branches* mais est
-aveugle à la **dépendance entre symboles**. Deux méthodes de complexité cognitive
-12 peuvent imposer une charge de lecture très différente selon que leurs
-variables sont indépendantes ou entremêlées. C'est ce trou que comblent les deux
-lentilles maison, `live_peak` et `entangle`.
+**The existing rules are missing an axis.** S3776 counts *branches* but is blind
+to **dependency between symbols**. Two methods with a cognitive complexity of 12
+can impose very different reading loads depending on whether their variables are
+independent or interwoven. That gap is what the two in-house lenses, `live_peak`
+and `entangle`, fill.
 
-**On n'exige pas zéro complexité, on exige qu'elle n'augmente pas sans raison.**
-Puisque l'entropie essentielle est irréductible, un seuil absolu est
-inapplicable sur du code existant. D'où le mode **cliquet** : accepter l'existant,
-n'échouer que sur les régressions.
+**Zero complexity is not the requirement; not growing without reason is.** Since
+essential entropy is irreducible, an absolute threshold is unenforceable on
+existing code. Hence the **ratchet** mode: accept what exists, fail only on
+regressions.
 
-**Un score serait un contresens.** L'entropie d'une méthode n'est pas une note ;
-la confronter à un seuil est un fait, la résumer en 7,5/10 est une opinion
-déguisée. D'où le refus, ferme, de produire le moindre score.
-
----
-
-## Pourquoi croiser les lentilles
-
-Une métrique de complexité isolée a des angles morts. La complexité cognitive
-(S3776) compte les branches mais ignore une méthode sans `if` qui entremêle dix
-variables ; le nombre de paramètres (S107) ignore la logique interne.
-
-En croisant plusieurs lentilles, on repère les méthodes où elles **se
-contredisent** — c'est là que se cachent les problèmes qu'un linter mono-métrique
-laisse passer. Sur un code propre, les lentilles convergent. **Leur divergence est
-le signal.**
-
-Ce n'est pas une intuition : mesuré sur 40 594 méthodes de 10 projets PHP
-publics, les corrélations de rangs entre lentilles vont de −0,02 à 0,72. Elles
-classent donc réellement différemment. Détail dans
-[docs/validation-lentilles.md](docs/validation-lentilles.md).
-
-### Principe directeur : factuel, jamais de score
-
-En pratique : **aucun score, ni par item ni global**, nulle part — ni dans la
-console, ni dans le JSON, ni dans le HTML. Uniquement des **compteurs et des
-valeurs brutes** confrontés à des seuils. Des tests le vérifient sur chaque
-format de sortie.
+**A score would be a contradiction in terms.** The entropy of a method is not a
+grade; comparing it to a threshold is a fact, summarising it as 7.5/10 is an
+opinion in disguise. Hence the firm refusal to produce any score at all.
 
 ---
 
-## Les 5 lentilles
+## Why cross the lenses
 
-| Clé | Réf. | Mesure | Seuil |
+An isolated complexity metric has blind spots. Cognitive complexity (S3776)
+counts branches but ignores a method with no `if` that interweaves ten variables;
+the parameter count (S107) ignores internal logic.
+
+Crossing several lenses surfaces the methods where they **contradict each other**,
+and that is where the problems a single-metric linter lets through are hiding. On
+clean code the lenses converge. **Their divergence is the signal.**
+
+This is not a hunch: measured over 40,594 methods from 10 public PHP projects,
+the rank correlations between lenses range from -0.02 to 0.72. They really do
+rank differently. Details in
+[docs/lens-validation.md](docs/lens-validation.md).
+
+### Guiding principle: factual, never a score
+
+In practice: **no score, neither per item nor overall**, anywhere, not in the
+console, not in the JSON, not in the HTML. Only **counters and raw values**
+compared to thresholds. Tests verify this on every output format.
+
+---
+
+## The 5 lenses
+
+| Key | Ref. | Measures | Threshold |
 |---|---|---|---:|
-| `cognitive` | S3776 | Complexité cognitive : branches + imbrication + séquences d'opérateurs logiques | 15 |
-| `params` | S107 | Nombre de paramètres de la signature | 7 |
-| `returns` | S1142 | Nombre d'instructions `return` | 3 |
-| `live_peak` | — | Pic de variables vivantes simultanément (mémoire de travail, 7±2) | 8 |
-| `entangle` | — | Intrication : degré moyen du graphe de co-occurrence des variables | 3 |
+| `cognitive` | S3776 | Cognitive complexity: branching + nesting + sequences of logical operators | 15 |
+| `params` | S107 | Number of parameters in the signature | 7 |
+| `returns` | S1142 | Number of `return` statements | 3 |
+| `live_peak` | | Peak of simultaneously live variables (working memory, 7±2) | 8 |
+| `entangle` | | Entanglement: average degree of the variable co-occurrence graph | 3 |
 
-**`cognitive`, `params` et `returns` sont des réimplémentations natives**
-(php-parser pur, sans PHPStan). Leur conformité aux règles publiées est **testée
-cas par cas**, avec des valeurs attendues dérivées de la spécification et non de
-notre sortie — seule façon pour un test de détecter une réimplémentation fautive
-(`tests/Lens/*ConformanceTest.php`).
+**`cognitive`, `params` and `returns` are native reimplementations** (pure
+php-parser, no PHPStan). Their conformance to the published rules is **tested case
+by case**, with expected values derived from the specification rather than from
+our own output, which is the only way for a test to catch a faulty
+reimplementation (`tests/Lens/*ConformanceTest.php`).
 
-Écarts assumés et documentés : la récursion n'est pas comptée (elle demanderait
-une analyse inter-procédurale), `match` est traité comme un `switch` (postérieur à
-la spec), et `else { if ... }` est compté comme un `else if` — php-parser produit
-le même arbre pour les deux, et PHP lui-même ne distingue pas `else if` de
+Accepted and documented deviations: recursion is not counted (it would require
+interprocedural analysis), `match` is treated as a `switch` (it postdates the
+spec), and `else { if ... }` counts as an `else if`, because php-parser produces
+the same tree for both and PHP itself does not distinguish `else if` from
 `elseif`.
 
-**`live_peak` et `entangle` sont propres à l'outil.** Elles se lisent **en regard
-l'une de l'autre** : un pic élevé sans intrication (une factory à 8 champs) n'est
-pas un problème ; un pic élevé *avec* intrication forte l'est.
+**`live_peak` and `entangle` belong to the tool.** They are read **against each
+other**: a high peak with no entanglement (a factory with 8 fields) is not a
+problem; a high peak *with* strong entanglement is.
 
-Réserve mesurée et assumée : `live_peak` compte les paramètres **utilisés** dans
-le corps — pour le lecteur, un argument qu'il faut garder en tête occupe bien la
-mémoire de travail. Elle n'est donc pas orthogonale à S107 (corrélation 0,70,
-supérieure à celle avec S3776 à 0,64).
+A measured and accepted reservation: `live_peak` counts the parameters **used** in
+the body, because for the reader an argument that has to be kept in mind does
+occupy working memory. The lens is therefore not orthogonal to S107 (correlation
+0.70, higher than its 0.64 with S3776).
 
-### Le rapport de divergence
+### The divergence report
 
-Le cœur de l'outil. Il confronte les **rangs centiles** des méthodes selon chaque
-lentille et met en avant celles où les lentilles se contredisent — basse en S3776
-mais haute en vivacité, par exemple. Masquable avec `--no-divergence`.
+The heart of the tool. It compares the **percentile ranks** of methods under each
+lens and surfaces those where the lenses contradict one another: low on S3776 but
+high on liveness, for instance. Hidden with `--no-divergence`.
 
 ---
 
 ## Installation
 
-### Le PHAR (recommandé)
+### The PHAR (recommended)
 
-Un binaire unique, sans dépendance à installer : la forme la plus commode pour
-auditer un projet tiers sans polluer son `composer.json`.
+A single binary with no dependency to install: the most convenient form for
+auditing a third-party project without polluting its `composer.json`.
 
 ```bash
 curl -sSLo phpx-complexity.phar \
@@ -134,10 +131,10 @@ chmod +x phpx-complexity.phar
 ./phpx-complexity.phar --help
 ```
 
-Les PHAR sont publiés sur la [page des releases](https://github.com/LeclercqLaurent/phpx-complexity/releases)
-et reconstructibles depuis les sources (voir *Build PHAR*).
+PHARs are published on the [releases page](https://github.com/LeclercqLaurent/phpx-complexity/releases)
+and can be rebuilt from source (see *Building the PHAR*).
 
-### Depuis un clone du dépôt
+### From a clone of the repository
 
 ```bash
 git clone https://github.com/LeclercqLaurent/phpx-complexity.git
@@ -146,215 +143,216 @@ composer install
 bin/phpx-complexity --help
 ```
 
-> Le paquet **n'est pas publié sur Packagist** à ce jour : `composer require
-> codeam/phpx-complexity` ne fonctionnera pas encore. Le nom est celui déclaré
-> dans `composer.json` pour le jour où il le sera.
+> The package is **not published on Packagist** yet, so `composer require
+> codeam/phpx-complexity` will not work. The name is the one declared in
+> `composer.json` for the day it is.
 
 ---
 
-## Commandes
+## Commands
 
-### Forme générale
+### General form
 
 ```
-phpx-complexity [audit] [CHEMIN] [options]
+phpx-complexity [audit] [PATH] [options]
 phpx-complexity fetch URL [options]
 ```
 
-Le verbe est optionnel : `audit` est implicite, `fetch` est le seul explicite.
-Sans chemin, le répertoire courant est audité.
+The verb is optional: `audit` is implicit, `fetch` is the only explicit one. With
+no path, the current directory is audited.
 
-> Un dossier nommé littéralement `fetch` ou `audit` serait pris pour un verbe :
-> écrire `./fetch` lève l'ambiguïté.
+> A directory literally named `fetch` or `audit` would be taken for a verb:
+> writing `./fetch` removes the ambiguity.
 
 ### Options
 
-| Option | Effet |
+| Option | Effect |
 |---|---|
-| `--json` | Sortie JSON (CI, tableaux de bord) |
-| `--html[=FICHIER]` | Rapport HTML autonome. Sans valeur : sortie standard. Précédence : `--html=FICHIER` > `html.path` de la config > stdout |
-| `--qa` | Vérifie la présence des outils de QA du projet audité |
-| `--coverage` | Lit un rapport de couverture existant + faits de présence de tests |
-| `--baseline=FICHIER` | Compare à un instantané figé ; affiche nouvelles violations, aggravées, résolues |
-| `--baseline-out=FICHIER` | Fige l'instantané de référence (voir *Baseline*) |
-| `--fail-on-new` | Code 1 sur les seules **régressions** ; exige `--baseline` |
-| `--fail-on-violations` | Code 1 si un seuil est dépassé, ou si un outil QA requis manque |
-| `--config=FICHIER` | Fichier de configuration (défaut : `phpx-complexity.json`) |
-| `--top=N` | Nombre de lignes du classement |
-| `--exclude=FRAGMENT` | Exclut les chemins contenant FRAGMENT (**répétable**) |
-| `--no-divergence` | Masque le rapport de divergence |
-| `--keep` | *(fetch)* Conserve la copie temporaire du dépôt |
-| `-h`, `--help` | Aide |
+| `--json` | JSON output (CI, dashboards) |
+| `--html[=FILE]` | Standalone HTML report. With no value: standard output. Precedence: `--html=FILE` > `html.path` from the config > stdout |
+| `--qa` | Checks that the audited project's QA tools are present |
+| `--coverage` | Reads an existing coverage report plus static facts about test presence |
+| `--baseline=FILE` | Compares against a frozen snapshot; reports new, worsened and resolved violations |
+| `--baseline-out=FILE` | Freezes the reference snapshot (see *Baseline*) |
+| `--fail-on-new` | Exit code 1 on **regressions** only; requires `--baseline` |
+| `--fail-on-violations` | Exit code 1 when a threshold is crossed, or a required QA tool is missing |
+| `--config=FILE` | Configuration file (default: `phpx-complexity.json`) |
+| `--top=N` | Number of rows in the ranking |
+| `--exclude=FRAGMENT` | Excludes paths containing FRAGMENT (**repeatable**) |
+| `--no-divergence` | Hides the divergence report |
+| `--keep` | *(fetch)* Keeps the temporary copy of the repository |
+| `-h`, `--help` | Help |
 
-Une option non reconnue **est refusée** (code 2) plutôt qu'ignorée : une faute de
-frappe comme `--jsno` ne doit pas rendre un rapport console en faisant croire à
-la CI qu'elle reçoit du JSON.
+An unrecognised option **is refused** (exit code 2) rather than ignored: a typo
+such as `--jsno` must not render a console report while letting CI believe it is
+receiving JSON.
 
-### Codes de sortie
+### Exit codes
 
-| Code | Signification |
+| Code | Meaning |
 |---:|---|
-| `0` | Succès |
-| `1` | Violations, en mode gate (`--fail-on-violations` ou `--fail-on-new`) |
-| `2` | Erreur d'usage ou d'entrée-sortie |
+| `0` | Success |
+| `1` | Violations, in gate mode (`--fail-on-violations` or `--fail-on-new`) |
+| `2` | Usage or I/O error |
 
-### Recettes
+### Recipes
 
 ```bash
-# Audit lisible d'un projet
-bin/phpx-complexity /chemin/vers/projet
+# A readable audit of a project
+bin/phpx-complexity /path/to/project
 
-# Sortie JSON pour la CI
-bin/phpx-complexity /chemin/vers/projet --json > complexity.json
+# JSON output for CI
+bin/phpx-complexity /path/to/project --json > complexity.json
 
-# Rapport HTML autonome (un seul fichier, ouvrable au double-clic)
-bin/phpx-complexity /chemin/vers/projet --html=rapport.html
+# Standalone HTML report (a single file, opens on a double click)
+bin/phpx-complexity /path/to/project --html=report.html
 
-# Outillage QA et tests du projet audité
-bin/phpx-complexity /chemin/vers/projet --qa --coverage
+# QA tooling and tests of the audited project
+bin/phpx-complexity /path/to/project --qa --coverage
 
-# Gate strict : échoue sur tout dépassement
-bin/phpx-complexity /chemin/vers/projet --fail-on-violations
+# Strict gate: fails on any violation
+bin/phpx-complexity /path/to/project --fail-on-violations
 
-# Gate en cliquet : n'échoue que sur les régressions
-bin/phpx-complexity /chemin/vers/projet --baseline=baseline.json --fail-on-new
+# Ratchet gate: fails on regressions only
+bin/phpx-complexity /path/to/project --baseline=baseline.json --fail-on-new
 
-# Auditer un dépôt distant
-bin/phpx-complexity fetch https://github.com/vendor/projet.git --qa
+# Audit a remote repository
+bin/phpx-complexity fetch https://github.com/vendor/project.git --qa
 
-# Restreindre le périmètre
+# Narrow the scope
 bin/phpx-complexity src/ --top=10 --exclude=/Legacy/ --exclude=/generated/
 ```
 
 ---
 
-## Baseline & deltas
+## Baseline and deltas
 
-Sur un projet existant, `--fail-on-violations` échoue dès le premier run : des
-centaines de violations héritées que personne ne corrigera d'un coup, donc on
-désactive le gate et il ne sert plus à rien. La baseline **accepte l'existant** et
-ne fait échouer que ce qui **empire** — le modèle de PHPStan ou Psalm.
+On an existing project, `--fail-on-violations` fails on the very first run:
+hundreds of inherited violations nobody will fix at once, so the gate gets
+disabled and stops serving any purpose. A baseline **accepts what exists** and
+fails only on what **gets worse**, which is the model PHPStan and Psalm use.
 
-C'est la traduction opérationnelle de l'idée de départ : l'entropie essentielle
-étant irréductible, exiger zéro complexité n'a pas de sens sur du code réel. On
-exige seulement qu'elle **ne régresse pas**.
+This is the operational translation of the starting idea: since essential
+entropy is irreducible, demanding zero complexity makes no sense on real code.
+All that is demanded is that it **does not regress**.
 
 ```bash
-# 1. Figer la référence (une fois, committée dans le dépôt)
+# 1. Freeze the reference (once, committed to the repository)
 bin/phpx-complexity src/ --baseline-out=baseline.json
 
-# 2. Comparer l'état courant
+# 2. Compare the current state
 bin/phpx-complexity src/ --baseline=baseline.json
 
-# 3. Gate CI
+# 3. CI gate
 bin/phpx-complexity src/ --baseline=baseline.json --fail-on-new
 ```
 
-| Catégorie | Sens |
+| Category | Meaning |
 |---|---|
-| **Nouvelles violations** | dépasse le seuil maintenant, pas dans la référence (méthode neuve incluse) |
-| **Violations aggravées** | déjà au-dessus, valeur en hausse |
-| **Violations résolues** | était au-dessus, ne l'est plus |
-| **Apparues / disparues** | méthodes ajoutées ou supprimées, pour le contexte |
+| **New violations** | crosses the threshold now, did not in the reference (new methods included) |
+| **Worsened violations** | already above, and the value went up |
+| **Resolved violations** | was above, no longer is |
+| **Added / removed** | methods added or deleted, for context |
 
-Une violation héritée **inchangée** n'apparaît nulle part : seul le mouvement est
-montré. `--fail-on-new` sort en 1 sur les seules nouvelles et aggravées.
+An **unchanged** inherited violation appears nowhere: only movement is shown.
+`--fail-on-new` exits 1 on new and worsened ones only.
 
-**Pourquoi `--baseline-out` plutôt que `--json`.** Un instantané est un
-sous-ensemble du contrat `--json`, et une sortie `--json` complète reste une
-référence valide. Mais celle-ci embarque les rangs centiles et la divergence, qui
-sont **relatifs au lot** : ils changent pour toutes les méthodes dès qu'une seule
-bouge. Mesuré sur ce dépôt en modifiant une seule méthode :
+**Why `--baseline-out` rather than `--json`.** A snapshot is a subset of the
+`--json` contract, and a full `--json` output remains a valid reference. But that
+output carries the percentile ranks and the divergence, which are **relative to
+the batch**: they change for every method as soon as a single one moves. Measured
+on this repository by modifying one method:
 
-| | lignes changées | taille |
+| | lines changed | size |
 |---|---:|---:|
-| sortie `--json` complète | 396 | 139 Ko |
-| `--baseline-out` | **4** | 69 Ko |
+| full `--json` output | 396 | 139 KB |
+| `--baseline-out` | **4** | 69 KB |
 
-Un diff de quatre lignes se revoit ; un diff de quatre cents se tamponne sans
-lire — et une baseline qu'on ne relit plus ne protège plus rien.
+A four-line diff gets reviewed; a four-hundred-line diff gets rubber-stamped, and
+a baseline nobody reads any more protects nothing.
 
-Points de méthode :
+Points of method:
 
-- **L'identité d'une méthode est `fichier::méthode`**, jamais la ligne, qui se
-  décale au moindre ajout en amont. Les homonymes d'un même fichier sont
-  départagés par un rang. Un renommage apparaît en disparue + apparue.
-- **Le classement se fait sur les seuils courants**, ceux que le gate doit
-  imposer. Un seuil ayant bougé depuis l'instantané est signalé à part.
-- **`baseline.json` se committe et se régénère volontairement**, jamais
-  automatiquement — sans quoi le cliquet ne retient plus rien.
+- **The identity of a method is `file::method`**, never the line, which shifts on
+  the slightest addition upstream. Namesakes within one file are separated by a
+  rank. A rename shows up as removed plus added.
+- **Classification uses the current thresholds**, the ones the gate has to
+  enforce. A threshold that moved since the snapshot is reported separately.
+- **`baseline.json` is committed and regenerated deliberately**, never
+  automatically, without which the ratchet holds nothing back.
 
 ---
 
-## Présence des outils de QA (`--qa`)
+## QA tooling presence (`--qa`)
 
-Audite l'**outillage qualité** du projet cible : analyse statique (PHPStan,
+Audits the **quality tooling** of the target project: static analysis (PHPStan,
 Psalm), standards (PHP-CS-Fixer, PHP_CodeSniffer), refactoring (Rector), tests
 (PHPUnit, Pest, Behat, Infection), CI (GitHub Actions, GitLab CI), EditorConfig.
 
-Chaque outil est détecté via `composer.json` (require / require-dev) **ou** la
-présence de son fichier de configuration. La racine du projet est résolue en
-remontant jusqu'au `composer.json`.
+Each tool is detected through `composer.json` (require / require-dev) **or** the
+presence of its configuration file. The project root is resolved by walking up to
+the `composer.json`.
 
-C'est un **fait de présence, pas un jugement**. Les outils déclarés `qa.required`
-dans la configuration et manquants font échouer `--fail-on-violations`.
-
----
-
-## Tests & couverture (`--coverage`)
-
-La couverture est une mesure d'**exécution** : l'outil étant statique et
-hors-ligne, il ne la calcule pas. `--coverage` produit donc deux blocs distincts :
-
-1. **Couverture réelle** — lecture d'un rapport déjà généré par le projet (Clover
-   de PHPUnit ou Cobertura), auto-détecté ou indiqué par `coverage.path`. Absence
-   de rapport ⇒ **« non mesurée »**, jamais « 0 % », qui serait un verdict
-   infondé.
-2. **Présence de tests** (proxy statique) — nombre de classes et méthodes de
-   test, et liste des classes source sans aucune classe `*Test`. C'est un
-   **plancher**, pas de la couverture : qu'une classe `FooTest` existe ne prouve
-   pas que `Foo` est testée utilement.
+This is a **fact of presence, not a judgement**. Tools declared under `qa.required`
+in the configuration and found missing make `--fail-on-violations` fail.
 
 ---
 
-## Auditer un dépôt distant (`fetch`)
+## Tests and coverage (`--coverage`)
+
+Coverage is an **execution** measurement, and since the tool is static and
+offline it does not compute it. `--coverage` therefore produces two distinct
+blocks:
+
+1. **Actual coverage**, read from a report already generated by the project
+   (PHPUnit's Clover or Cobertura), auto-detected or pointed at by
+   `coverage.path`. No report means **"not measured"**, never "0%", which would
+   be an unfounded verdict.
+2. **Test presence** (a static proxy): the number of test classes and methods,
+   and the list of source classes with no `*Test` class at all. This is a
+   **floor**, not coverage: the existence of a `FooTest` class does not prove
+   that `Foo` is usefully tested.
+
+---
+
+## Auditing a remote repository (`fetch`)
 
 ```bash
-bin/phpx-complexity fetch https://github.com/vendor/projet.git
-bin/phpx-complexity fetch git@github.com:vendor/projet.git --qa --keep
+bin/phpx-complexity fetch https://github.com/vendor/project.git
+bin/phpx-complexity fetch git@github.com:vendor/project.git --qa --keep
 ```
 
-Clone le dépôt en superficiel dans un dossier temporaire, lui applique l'audit,
-puis **nettoie — y compris si l'analyse échoue**. `--keep` conserve la copie et
-affiche son chemin.
+Shallow-clones the repository into a temporary directory, audits it, then
+**cleans up, including when the analysis fails**. `--keep` keeps the copy and
+prints its path.
 
-> **C'est la seule partie de l'outil qui accède au réseau.** Le cœur d'analyse ne
-> connaît qu'un **chemin local** : la garantie hors-ligne de l'analyse elle-même
-> reste entière. Le réseau est confiné à un wrapper opt-in qu'aucune option de
-> l'audit ne peut déclencher.
+> **This is the only part of the tool that touches the network.** The analysis
+> core knows nothing but a **local path**, so the offline guarantee of the
+> analysis itself stays intact. The network is confined to an opt-in wrapper that
+> no audit option can trigger.
 
-**Accepté** : `https://`, `ssh://`, et la forme `git@hote:chemin`.
-**Refusé** : `git://` (ni chiffré ni authentifié), `file://` et les chemins locaux
-(un dossier local s'analyse directement), le transport `ext::` (exécution de
-commande arbitraire) et tout ce qui commence par un tiret, que git prendrait pour
-une option. La commande est passée en tableau — aucun shell, donc aucune
-interpolation — avec `--` avant l'URL, hooks neutralisés et clone superficiel.
+**Accepted**: `https://`, `ssh://`, and the `git@host:path` form.
+**Refused**: `git://` (neither encrypted nor authenticated), `file://` and local
+paths (a local directory is analysed directly), the `ext::` transport (arbitrary
+command execution) and anything starting with a dash, which git would take for an
+option. The command is passed as an array, so no shell and no interpolation, with
+`--` before the URL, hooks neutralised and a shallow clone.
 
-**Dépôts privés** : l'authentification est celle de git (agent SSH, credential
-helper). Rien n'est réinventé et **aucune invite n'est posée** : un dépôt
-inaccessible échoue immédiatement au lieu de faire attendre. Une clé protégée par
-phrase de passe sans agent chargé échouera donc aussi.
+**Private repositories**: authentication is git's own (SSH agent, credential
+helper). Nothing is reinvented and **no prompt is ever raised**: an unreachable
+repository fails immediately instead of hanging. A passphrase-protected key with
+no agent loaded will therefore fail too.
 
-**Limites** : `--coverage` a besoin d'un rapport **déjà généré** ; un clone seul
-ne l'apporte pas, le module ne verra que la présence statique de tests. `--qa`
-fonctionne pleinement. Nécessite le binaire `git`, dont l'absence est signalée.
+**Limits**: `--coverage` needs a report that has **already been generated**, and a
+clone alone does not bring one, so the module will only see static test presence.
+`--qa` works fully. The `git` binary is required, and its absence is reported.
 
 ---
 
 ## Configuration
 
-Placer un `phpx-complexity.json` à la racine du projet audité (modèle :
-`phpx-complexity.dist.json`) :
+Put a `phpx-complexity.json` at the root of the audited project (template:
+`phpx-complexity.dist.json`):
 
 ```json
 {
@@ -367,84 +365,88 @@ Placer un `phpx-complexity.json` à la racine du projet audité (modèle :
 }
 ```
 
-| Clé | Rôle |
+| Key | Role |
 |---|---|
-| `thresholds` | Seuil par lentille |
-| `exclude` | Fragments de chemin exclus |
-| `top` | Taille du classement affiché |
-| `qa.required` | Outils dont l'absence fait échouer le gate |
-| `coverage.path` | Rapport de couverture à lire |
-| `html.path` | Destination du rapport HTML |
+| `thresholds` | Threshold per lens |
+| `exclude` | Excluded path fragments |
+| `top` | Size of the displayed ranking |
+| `qa.required` | Tools whose absence fails the gate |
+| `coverage.path` | Coverage report to read |
+| `html.path` | Destination of the HTML report |
 
-Les fragments d'`exclude` se comparent au chemin **relatif à la racine auditée**,
-jamais au chemin absolu : auditer un projet installé dans `/var/www/monprojet`
-n'est donc pas vidé par le fragment `/var/`.
+`exclude` fragments are compared to the path **relative to the audited root**,
+never to the absolute path, so auditing a project installed under a system
+directory is not emptied out by a fragment naming that directory.
 
 ---
 
-## Qualité du projet lui-même
+## The quality of the project itself
 
-Le projet s'applique les exigences qu'il audite :
+The project holds itself to the requirements it audits:
 
 ```bash
-scripts/qa.sh    # CS-Fixer (PSR-12) + PHPStan level 9 + PHPUnit + couverture ≥ 90 %
-composer qa      # idem
+scripts/qa.sh    # CS-Fixer (PSR-12) + PHPStan level 9 + PHPUnit + coverage >= 90%
+composer qa      # the same
 ```
 
-Le même garde-fou tourne en **intégration continue** sur PHP 8.2, 8.3 et 8.4
-(`.github/workflows/ci.yml`) : CS-Fixer, PHPStan, PHPUnit avec le plancher de
-couverture, puis le dogfooding en cliquet. Le badge en tête de README en reflète
-l'état sur `main`.
+The same guard runs in **continuous integration** on PHP 8.2, 8.3 and 8.4
+(`.github/workflows/ci.yml`): CS-Fixer, PHPStan, PHPUnit with the coverage floor,
+then the ratchet dogfooding. The badge at the top of this README reflects its
+state on `main`.
 
-Garde-fou à lancer avant chaque commit ; un code de sortie non nul signale un
-commit à corriger. Le script inclut l'outil **appliqué à son propre code en mode
-cliquet** : les dépassements hérités sont figés dans `baseline.json` et passent,
-toute régression échoue. Tout est hors-ligne.
+Run the guard before every commit; a non-zero exit status means the commit needs
+fixing. The script includes the tool **applied to its own code in ratchet mode**:
+inherited violations are frozen in `baseline.json` and pass, any regression
+fails. Everything is offline.
 
-La couverture est gatée à 90 % quand un pilote (Xdebug ou PCOV) est disponible ;
-sans pilote, les tests tournent sans elle plutôt que d'échouer — mieux vaut un
-garde-fou partiel qu'un garde-fou contourné.
+Coverage is gated at 90% when a driver (Xdebug or PCOV) is available; with no
+driver, the tests run without it rather than fail, because a partial guard beats
+a bypassed one.
 
-**`composer.lock` est versionné** et les deux outils qui peuvent faire échouer le
-gate sont contraints au patch (`~3.95.0`, `~2.2.0`). Sans cela, une version
-mineure de PHPStan apportant de nouvelles règles casse la CI sans qu'une ligne de
-code ait bougé. Pour une bibliothèque, ce verrou n'engage que le développement :
-le lock d'un paquet est ignoré par ses consommateurs. Absorber une montée de
-version est donc un geste **délibéré** — `composer update`, relancer
-`scripts/qa.sh`, traiter les nouveaux signalements, committer le lock.
+**`composer.lock` is versioned** and the two tools that can fail the gate are
+constrained to the patch level. Without that, a minor PHPStan release bringing
+new rules breaks CI without a line of code having moved. For a library this lock
+binds development only: a package's lock file is ignored by its consumers.
+Absorbing a version bump is therefore a **deliberate** act: `composer update`,
+re-run `scripts/qa.sh`, deal with the new findings, commit the lock along with
+them.
 
-**État actuel** : PHPStan level 9 sans erreur, PSR-12 respecté, 169 tests,
-**95 % de couverture**, dépassements hérités figés.
+**Current state**: PHPStan level 9 clean, PSR-12 respected, 173 tests,
+**95% coverage**, inherited violations frozen.
 
-### Outils d'étude
+### Study tools
 
-| Script | Rôle |
+| Script | Role |
 |---|---|
-| `tools/corpus-study.sh` | Récupère un corpus de projets PHP publics (mis en cache) et fige un audit par projet |
-| `tools/corpus-report.php` | Agrège : distributions, corrélations de rangs, rendement marginal |
-| `tools/live-peak-variant.php` | Rejoue la variante « paramètres exclus » de `live_peak`, mesurée puis écartée |
-| `tools/coverage-gate.php` | Vérifie un rapport clover contre un plancher |
-| `tools/build-phar.sh` | Construit le PHAR distribuable |
+| `tools/corpus-study.sh` | Fetches a corpus of public PHP projects (cached) and freezes one audit per project |
+| `tools/corpus-report.php` | Aggregates: distributions, rank correlations, marginal yield |
+| `tools/live-peak-variant.php` | Replays the "parameters excluded" variant of `live_peak`, measured then discarded |
+| `tools/coverage-gate.php` | Checks a clover report against a floor |
+| `tools/build-phar.sh` | Builds the distributable PHAR |
 
 ---
 
-## Build PHAR
+## Building the PHAR
 
 ```bash
 composer require --working-dir=var/box humbug/box:^4.7
 tools/build-phar.sh
 ```
 
-produit `phpx-complexity.phar`, binaire unique distribuable (~320 Ko). Le script
-lève `phar.readonly` le temps du build et bascule sur les dépendances de
-production seules — sinon PHPUnit et PHPStan partiraient dans l'archive — puis
-restaure l'environnement de développement quoi qu'il arrive.
+produces `phpx-complexity.phar`, a single distributable binary (about 320 KB).
+The script lifts `phar.readonly` for the duration of the build and switches to
+production dependencies only, otherwise PHPUnit and PHPStan would end up in the
+archive, then restores the development environment whatever happens.
 
 ---
 
-## Origine
+## Origin
 
-Les lentilles `params` (S107) et `returns` (S1142) dérivent de règles PHPStan
-custom Codeam, réimplémentées ici sans couplage PHPStan.
+The `params` (S107) and `returns` (S1142) lenses derive from custom PHPStan rules
+written for internal projects, reimplemented here with no PHPStan coupling. They
+are also available as a PHPStan extension in
+[phpstan-sonar-rules](https://github.com/LeclercqLaurent/phpstan-sonar-rules),
+for a project that would rather plug them into an existing analysis than run a
+separate auditor.
 
-Sous licence MIT.
+Released under the MIT license.

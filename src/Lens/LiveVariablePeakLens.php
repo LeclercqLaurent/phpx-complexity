@@ -20,7 +20,7 @@ use PhpxComplexity\Ast\AstHelper;
  * The signal thus lies in the PAIR with entanglement: a `restore()` factory with
  * 8 fields has a high peak and zero entanglement, whereas a method that really
  * interweaves its variables has both. Excluding parameters from the computation
- * was measured (docs/validation-lentilles.md): it does decorrelate from S107
+ * was measured (docs/lens-validation.md): it does decorrelate from S107
  * (0.29) but moves the lens closer to S3776 (0.71) and to entanglement (0.83).
  * The redundancy would be displaced, not removed.
  */
