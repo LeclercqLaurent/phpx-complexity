@@ -41,7 +41,7 @@ jobs:
           vendor/bin/phpunit --coverage-clover var/clover.xml
           php tools/coverage-gate.php var/clover.xml 90
 
-      - name: Dogfooding : l'outil s'audite en mode cliquet
+      - name: Dogfooding, l'outil s'audite en mode cliquet
         run: php bin/phpx-complexity src/ --baseline=baseline.json --fail-on-new
 
   # Preuve que la borne annoncée (PHP >= 8.2) tient réellement. Le lock ne peut
@@ -75,5 +75,5 @@ jobs:
       - name: PHPUnit
         run: vendor/bin/phpunit
 
-      - name: Dogfooding : l'outil s'audite en mode cliquet
+      - name: Dogfooding, l'outil s'audite en mode cliquet
         run: php bin/phpx-complexity src/ --baseline=baseline.json --fail-on-new
