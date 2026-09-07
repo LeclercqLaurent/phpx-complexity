@@ -10,16 +10,16 @@ use PhpxComplexity\Config\Config;
 use PhpxComplexity\Lens\Lens;
 
 /**
- * Instantané comparable, indexé par identité de méthode.
+ * A comparable snapshot, indexed by method identity.
  *
- * Le format de fichier est celui de la sortie « --json » : aucun format propre
- * n'est inventé pour la baseline, on fige un rapport existant.
+ * The file format is that of the "--json" output: no bespoke format is invented
+ * for the baseline, an existing report is simply frozen.
  */
 final class Snapshot
 {
     /**
-     * @param array<string,MethodSnapshot> $methods    indexés par clé d'identité
-     * @param array<string,float>          $thresholds seuils au moment de l'instantané
+     * @param array<string,MethodSnapshot> $methods    indexed by identity key
+     * @param array<string,float>          $thresholds thresholds at snapshot time
      */
     private function __construct(
         public readonly array $methods,
@@ -77,16 +77,16 @@ final class Snapshot
     }
 
     /**
-     * Sérialise l'instantané, réduit à ce que la comparaison lit RÉELLEMENT :
-     * identité, ligne et valeurs brutes, plus les seuils du moment.
+     * Serialises the snapshot, narrowed to what the comparison REALLY reads:
+     * identity, line and raw values, plus the thresholds of the moment.
      *
      * Les rangs centiles et la divergence de la sortie `--json` en sont absents
-     * à dessein : ce sont des rangs RELATIFS au lot analysé, donc réécrits pour
-     * toutes les méthodes dès qu'une seule bouge. Les conserver rendrait chaque
-     * régénération illisible en revue, alors qu'ils ne servent pas à comparer.
+     * deliberately: they are ranks RELATIVE to the analysed batch, so they get
+     * rewritten for every method as soon as one moves. Keeping them would make
+     * each regeneration unreadable in review, and they play no part in comparing.
      *
-     * L'ordre est celui de l'identité, pas de la divergence : un ajout insère un
-     * bloc au lieu de tout redistribuer. Le résultat reste un sous-ensemble
+     * The order is that of identity, not of divergence: an addition inserts one
+     * block instead of reshuffling everything. The result stays a subset
      * valide du contrat `--json`, que le lecteur continue d'accepter entier.
      */
     public function toJson(): string
@@ -113,10 +113,10 @@ final class Snapshot
     }
 
     /**
-     * Clé d'identité : fichier + nom, jamais la ligne — celle-ci se décale au
-     * moindre ajout en amont et ferait passer un fichier entier pour réécrit.
-     * Les rares homonymes d'un même fichier (plusieurs classes) sont départagés
-     * par un rang attribué dans l'ordre des lignes.
+     * The identity key: file plus name, never the line, which shifts on the
+     * slightest addition upstream and would make a whole file look rewritten.
+     * The rare namesakes within one file (several classes) are separated by a
+     * rank assigned in line order.
      *
      * @param list<array{file:string,name:string,line:int,metrics:array<string,float>}> $rows
      *

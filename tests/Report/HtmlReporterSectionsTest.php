@@ -12,8 +12,8 @@ use PhpxComplexity\Tests\Support\SampleAudit;
 
 /**
  * Sections optionnelles du rapport HTML. Le rendu de base est couvert par
- * HtmlReporterTest ; ici on vérifie que les modules actifs produisent bien leur
- * section, et qu'aucune n'apparaît quand le module n'a pas tourné.
+ * HtmlReporterTest; here we check that active modules do produce their section,
+ * and that none appears when the module did not run.
  */
 final class HtmlReporterSectionsTest extends TestCase
 {
@@ -23,34 +23,34 @@ final class HtmlReporterSectionsTest extends TestCase
     {
         $html = $this->render();
 
-        self::assertStringNotContainsString('Outils de QA', $html);
-        self::assertStringNotContainsString('Baseline —', $html);
+        self::assertStringNotContainsString('QA tooling', $html);
+        self::assertStringNotContainsString('Baseline:', $html);
     }
 
     public function testQaSectionListsToolsAndFlagsMissingRequiredOnes(): void
     {
         $html = $this->render(withQa: true);
 
-        self::assertStringContainsString('Outils de QA — 1/3 présents', $html);
+        self::assertStringContainsString('QA tooling: 1/3 present', $html);
         self::assertStringContainsString('PHPStan', $html);
-        self::assertStringContainsString('manquant (requis)', $html);
-        self::assertStringContainsString('Outils requis manquants : PHPUnit', $html);
+        self::assertStringContainsString('missing (required)', $html);
+        self::assertStringContainsString('Required tools missing: PHPUnit', $html);
     }
 
     public function testCoverageSectionKeepsTheTwoBlocksDistinct(): void
     {
         $html = $this->render(withCoverage: true);
 
-        self::assertStringContainsString('Tests &amp; couverture', $html);
-        // Bloc « couverture réelle ».
-        self::assertStringContainsString('Couverture lignes', $html);
-        // Le HTML rend « 82.50 % » là où la console rend « 82.5% » : formatages
-        // distincts par rapport, assumés tant qu'aucun n'induit en erreur.
+        self::assertStringContainsString('Tests &amp; coverage', $html);
+        // The "actual coverage" block.
+        self::assertStringContainsString('Line coverage', $html);
+        // The HTML renders "82.50 %" where the console renders "82.5%": distinct
+        // formatting per report, accepted as long as neither misleads.
         self::assertStringContainsString('82.50 %', $html);
-        // Bloc « présence de tests », distinct et annoncé comme tel.
-        self::assertStringContainsString('Classes testées', $html);
+        // The "test presence" block, distinct and announced as such.
+        self::assertStringContainsString('Tested classes', $html);
         self::assertStringContainsString('8/10', $html);
-        self::assertStringContainsString('ne garantit ni des tests, ni leur couverture', $html);
+        self::assertStringContainsString('guarantees neither tests nor their coverage', $html);
     }
 
     public function testUnmeasuredCoverageIsNeverShownAsZero(): void
@@ -66,8 +66,8 @@ final class HtmlReporterSectionsTest extends TestCase
             ),
         );
 
-        // « aucun rapport » et non « 0 % », qui serait un verdict infondé.
-        self::assertStringContainsString('aucun rapport', $html);
+        // "no report" rather than "0 %", which would be an unfounded verdict.
+        self::assertStringContainsString('no report', $html);
         self::assertStringNotContainsString('0 %', $html);
     }
 
@@ -75,11 +75,11 @@ final class HtmlReporterSectionsTest extends TestCase
     {
         $html = $this->render(comparison: true);
 
-        self::assertStringContainsString('Baseline — écarts par rapport à baseline.json', $html);
-        self::assertStringContainsString('3 régression(s)', $html);
-        self::assertStringContainsString('nouvelle', $html);
-        self::assertStringContainsString('aggravée', $html);
-        self::assertStringContainsString('résolue', $html);
+        self::assertStringContainsString('Baseline: deltas against baseline.json', $html);
+        self::assertStringContainsString('3 regression(s)', $html);
+        self::assertStringContainsString('new', $html);
+        self::assertStringContainsString('worsened', $html);
+        self::assertStringContainsString('resolved', $html);
         self::assertStringContainsString('src/Neuf.php::fresh', $html);
     }
 
@@ -101,33 +101,33 @@ final class HtmlReporterSectionsTest extends TestCase
     {
         $html = $this->render(withQa: true, withCoverage: true, comparison: true);
 
-        // Le contexte (baseline, outillage, tests) précède les données brutes,
-        // qui précèdent l'analyse croisée.
-        $order = ['id="lentilles"', 'id="baseline"', 'id="qa"', 'id="couverture"', 'id="methodes"', 'id="divergence"'];
+        // Context (baseline, tooling, tests) comes before the raw data, which
+        // comes before the cross-analysis.
+        $order = ['id="lenses"', 'id="baseline"', 'id="qa"', 'id="coverage"', 'id="method-list"', 'id="divergence"'];
         $positions = array_map(static fn (string $needle): int => (int) strpos($html, $needle), $order);
 
         $sorted = $positions;
         sort($sorted);
-        self::assertSame($sorted, $positions, implode(' puis ', $order));
+        self::assertSame($sorted, $positions, implode(' then ', $order));
     }
 
     public function testMenuOnlyLinksToRenderedSections(): void
     {
         $withoutModules = $this->render();
 
-        self::assertStringContainsString('href="#methodes"', $withoutModules);
+        self::assertStringContainsString('href="#method-list"', $withoutModules);
         self::assertStringContainsString('href="#divergence"', $withoutModules);
-        self::assertStringNotContainsString('href="#qa"', $withoutModules, 'module non lancé');
+        self::assertStringNotContainsString('href="#qa"', $withoutModules, 'module did not run');
         self::assertStringNotContainsString('href="#baseline"', $withoutModules);
 
         $withModules = $this->render(withQa: true, withCoverage: true, comparison: true);
         self::assertStringContainsString('href="#qa"', $withModules);
-        self::assertStringContainsString('href="#couverture"', $withModules);
+        self::assertStringContainsString('href="#coverage"', $withModules);
         self::assertStringContainsString('href="#baseline"', $withModules);
     }
 
     /**
-     * Le filtre s'ouvre sur ce qui demande une action ; le reste est à un clic.
+     * The filter opens on what needs action; the rest is one click away.
      */
     public function testMethodFilterDefaultsToBreachedThresholds(): void
     {
@@ -145,7 +145,7 @@ final class HtmlReporterSectionsTest extends TestCase
     {
         $html = $this->render();
 
-        // Une grille à remplir côté client, plus de sélecteurs d'axes.
+        // A grid filled in on the client side, no more axis selectors.
         self::assertStringContainsString('<div class="pairs" id="pairs">', $html);
         self::assertStringNotContainsString('id="axisX"', $html);
         self::assertStringNotContainsString('id="axisY"', $html);

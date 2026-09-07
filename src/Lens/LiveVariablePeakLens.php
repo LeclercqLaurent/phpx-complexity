@@ -8,22 +8,21 @@ use PhpParser\Node;
 use PhpxComplexity\Ast\AstHelper;
 
 /**
- * Pic de variables vivantes : nombre maximal de variables locales dont la durée
- * de vie [première occurrence, dernière occurrence] recouvre une même ligne.
- * Proxy de la charge en mémoire de travail imposée au lecteur (cf. 7±2).
+ * Peak of live variables: the largest number of local variables whose lifetime
+ * [first occurrence, last occurrence] overlaps a single line. A proxy for the
+ * working-memory load imposed on the reader (see 7±2).
  *
- * Les paramètres UTILISÉS dans le corps comptent, et c'est assumé : un argument
- * qu'il faut garder en tête occupe bel et bien la mémoire de travail du lecteur.
- * La lentille n'est donc PAS orthogonale à S107 — mesurée sur 40 594 méthodes,
- * elle corrèle davantage avec le nombre de paramètres (0,70) qu'avec S3776
- * (0,64).
+ * Parameters USED in the body count, deliberately: an argument the reader has to
+ * keep in mind does occupy their working memory. The lens is therefore NOT
+ * orthogonal to S107; measured over 40,594 methods, it correlates more with the
+ * parameter count (0.70) than with S3776 (0.64).
  *
- * Le signal tient donc à la PAIRE avec l'intrication : une factory `restore()` à
- * 8 champs a un pic élevé et une intrication nulle, une méthode qui entremêle
- * réellement ses variables a les deux. Exclure les paramètres du calcul a été
- * mesuré (docs/validation-lentilles.md) : cela décorrèle de S107 (0,29) mais
- * rapproche la lentille de S3776 (0,71) et de l'intrication (0,83). La
- * redondance serait déplacée, pas supprimée.
+ * The signal thus lies in the PAIR with entanglement: a `restore()` factory with
+ * 8 fields has a high peak and zero entanglement, whereas a method that really
+ * interweaves its variables has both. Excluding parameters from the computation
+ * was measured (docs/validation-lentilles.md): it does decorrelate from S107
+ * (0.29) but moves the lens closer to S3776 (0.71) and to entanglement (0.83).
+ * The redundancy would be displaced, not removed.
  */
 final class LiveVariablePeakLens implements Lens
 {
@@ -48,12 +47,11 @@ final class LiveVariablePeakLens implements Lens
 
     public function description(): string
     {
-        return 'Nombre maximal de variables locales « vivantes » en même temps '
-            . '(durée de vie = de la première à la dernière utilisation, recouvrant '
-            . 'une même ligne). Proxy de la charge en mémoire de travail du lecteur '
-            . '(7±2). Les paramètres utilisés comptent : à lire en regard de '
-            . "l'intrication, qui seule sépare une signature large d'un "
-            . 'enchevêtrement réel.';
+        return 'The largest number of local variables alive at the same time '
+            . '(lifetime running from first to last use, overlapping a single '
+            . "line). A proxy for the reader's working-memory load (7±2). Used "
+            . 'parameters count: read it alongside entanglement, which alone '
+            . 'separates a wide signature from real interweaving.';
     }
 
     public function measure(Node\FunctionLike $function, array $stmts): float

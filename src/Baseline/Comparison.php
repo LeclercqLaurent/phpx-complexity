@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhpxComplexity\Baseline;
 
 /**
- * Résultat d'une confrontation à l'instantané de référence.
+ * The result of a comparison against the reference snapshot.
  */
 final class Comparison
 {
@@ -36,8 +36,8 @@ final class Comparison
     }
 
     /**
-     * Ce que le mode gate refuse : le code empire. Les violations héritées
-     * inchangées, elles, passent — sinon la baseline ne servirait à rien.
+     * What gate mode refuses: the code getting worse. Inherited violations that
+     * have not moved pass, otherwise the baseline would serve no purpose.
      */
     public function regressionCount(): int
     {

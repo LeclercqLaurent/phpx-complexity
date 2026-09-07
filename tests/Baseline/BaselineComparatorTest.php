@@ -21,7 +21,7 @@ final class BaselineComparatorTest extends TestCase
     {
         $names = $this->namesOf($this->compare(), DeltaCategory::NewViolation);
 
-        // « crossing » passe de 10 à 16, « fresh » naît déjà au-dessus.
+        // "crossing" goes from 10 to 16, "fresh" is born already above.
         self::assertSame(['crossing', 'fresh'], $names);
     }
 
@@ -41,8 +41,8 @@ final class BaselineComparatorTest extends TestCase
     }
 
     /**
-     * Le cœur du cliquet : une violation héritée que personne n'a touchée ne
-     * doit produire aucun écart, sinon la baseline ne servirait à rien.
+     * The heart of the ratchet: an inherited violation nobody has touched must
+     * produce no delta at all, or the baseline would serve no purpose.
      */
     public function testUnchangedLegacyViolationProducesNoDelta(): void
     {
@@ -63,9 +63,9 @@ final class BaselineComparatorTest extends TestCase
     }
 
     /**
-     * Toutes les méthodes survivantes ont bougé d'une ligne entre les deux
-     * instantanés : si l'identité dépendait de la ligne, chacune passerait pour
-     * disparue puis réapparue et le fichier entier semblerait réécrit.
+     * Every surviving method shifted by one line between the two snapshots: if
+     * identity depended on the line, each would look removed then re-added and the
+     * whole file would seem rewritten.
      */
     public function testLineShiftAloneDoesNotBreakTheIdentity(): void
     {
@@ -78,7 +78,7 @@ final class BaselineComparatorTest extends TestCase
 
     public function testRegressionCountIgnoresResolvedAndLegacy(): void
     {
-        // 2 nouvelles + 1 aggravée ; « fixed » (résolue) et « stable » exclues.
+        // 2 new + 1 worsened; "fixed" (resolved) and "stable" are excluded.
         self::assertSame(3, $this->compare()->regressionCount());
     }
 
@@ -88,8 +88,8 @@ final class BaselineComparatorTest extends TestCase
 
         self::assertSame(['cognitive' => ['from' => 15.0, 'to' => 20.0]], $comparison->thresholdChanges);
         // Classement fait sur le seuil COURANT, celui que le gate doit imposer :
-        // à 20, « crossing » (16) et « fresh » (19) ne sont plus des violations,
-        // tandis que « worse » (18 → 22) vient de le franchir.
+        // at 20, "crossing" (16) and "fresh" (19) are no longer violations,
+        // whereas "worse" (18 -> 22) has just crossed it.
         self::assertSame(['worse'], $this->namesOf($comparison, DeltaCategory::NewViolation));
     }
 

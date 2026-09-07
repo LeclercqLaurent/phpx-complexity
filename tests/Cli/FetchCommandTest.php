@@ -8,8 +8,8 @@ use PHPUnit\Framework\TestCase;
 use PhpxComplexity\Vcs\Checkout;
 
 /**
- * Bout en bout de la sous-commande fetch, avec un faux « git » en tête de PATH :
- * on vérifie le contrat CLI sans jamais sortir sur le réseau.
+ * End to end on the fetch subcommand, with a fake "git" at the head of PATH: the
+ * CLI contract is checked without ever reaching the network.
  */
 final class FetchCommandTest extends TestCase
 {
@@ -33,7 +33,7 @@ final class FetchCommandTest extends TestCase
         [$code, $output] = $this->cli('fetch', 'https://example.org/projet.git');
 
         self::assertSame(0, $code, $output);
-        self::assertStringContainsString('1 méthodes / 1 fichiers', $output);
+        self::assertStringContainsString('1 methods / 1 files', $output);
         self::assertStringContainsString('src/Cloned.php::run', $output);
     }
 
@@ -41,7 +41,7 @@ final class FetchCommandTest extends TestCase
     {
         $this->cli('fetch', 'https://example.org/projet.git');
 
-        self::assertSame([], $this->leftovers(), 'aucune copie résiduelle');
+        self::assertSame([], $this->leftovers(), 'no leftover copy');
     }
 
     public function testKeepPreservesTheCopyAndSaysWhere(): void
@@ -49,7 +49,7 @@ final class FetchCommandTest extends TestCase
         [$code, $output] = $this->cli('fetch', 'https://example.org/projet.git', '--keep');
 
         self::assertSame(0, $code, $output);
-        self::assertStringContainsString('Copie conservée', $output);
+        self::assertStringContainsString('Copy kept at', $output);
         self::assertCount(1, $this->leftovers());
     }
 
@@ -67,8 +67,8 @@ final class FetchCommandTest extends TestCase
         [$code, $output] = $this->cli('fetch', 'ext::sh -c whoami');
 
         self::assertSame(2, $code);
-        self::assertStringContainsString('URL de dépôt non supportée', $output);
-        self::assertSame([], $this->leftovers(), 'aucun temporaire créé avant validation');
+        self::assertStringContainsString('Unsupported repository URL', $output);
+        self::assertSame([], $this->leftovers(), 'no temp directory created before validation');
     }
 
     public function testFetchWithoutUrlIsAUsageError(): void
@@ -76,7 +76,7 @@ final class FetchCommandTest extends TestCase
         [$code, $output] = $this->cli('fetch');
 
         self::assertSame(2, $code);
-        self::assertStringContainsString('attend une URL', $output);
+        self::assertStringContainsString('expects a repository URL', $output);
     }
 
     /**

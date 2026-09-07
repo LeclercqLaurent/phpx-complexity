@@ -14,14 +14,14 @@ final class CoverageReporterTest extends TestCase
     use SampleAudit;
 
     /**
-     * Règle d'honnêteté centrale du module : sans rapport, la couverture est
-     * « non mesurée ». Afficher 0 % serait un verdict infondé.
+     * The central honesty rule of the module: with no report, coverage is "not
+     * measured". Showing 0% would be an unfounded verdict.
      */
     public function testAbsentReportIsNotMeasuredRatherThanZero(): void
     {
         $output = (new CoverageReporter())->render(CoverageReport::notFound(), $this->presence());
 
-        self::assertStringContainsString('non mesurée', $output);
+        self::assertStringContainsString('not measured', $output);
         self::assertStringNotContainsString('0 %', $output);
         self::assertStringNotContainsString('0%', $output);
         // Et l'outil dit comment l'obtenir.
@@ -32,25 +32,25 @@ final class CoverageReporterTest extends TestCase
     {
         $output = $this->render();
 
-        // Les zéros de queue sont élagués : 82.5 %, pas 82.50 %.
-        self::assertStringContainsString('82.5% lignes', $output);
+        // Trailing zeros are trimmed: 82.5%, not 82.50%.
+        self::assertStringContainsString('82.5% lines', $output);
         self::assertStringContainsString('(330/400)', $output);
-        self::assertStringContainsString('74% méthodes', $output);
+        self::assertStringContainsString('74% methods', $output);
         self::assertStringContainsString('build/logs/clover.xml', $output);
         self::assertStringContainsString('clover', $output);
     }
 
     /**
-     * La présence de tests est un plancher, pas de la couverture : le rapport
-     * doit le dire explicitement pour ne pas être lu de travers.
+     * Test presence is a floor, not coverage: the report has to say so
+     * explicitly so it is not misread.
      */
     public function testPresenceIsLabelledAsNotBeingCoverage(): void
     {
         $output = $this->render();
 
-        self::assertStringContainsString("n'est PAS de la couverture", $output);
-        self::assertStringContainsString('4 classes de test, 21 méthodes de test', $output);
-        self::assertStringContainsString('8/10 classes source ont une classe *Test', $output);
+        self::assertStringContainsString('this is NOT coverage', $output);
+        self::assertStringContainsString('4 test classes, 21 test methods', $output);
+        self::assertStringContainsString('8/10 source classes have a *Test class', $output);
         self::assertStringContainsString('Bar', $output);
     }
 

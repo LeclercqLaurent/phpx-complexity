@@ -17,9 +17,9 @@ use SplFileInfo;
 use Throwable;
 
 /**
- * Proxy STATIQUE de présence de tests. Scanne tout le projet (racine résolue via
+ * A STATIC proxy for test presence. It scans the whole project (root resolved
  * composer.json) pour distinguer classes source et classes de test, puis associe
- * chaque classe concrète à une éventuelle classe `<Nom>Test` (convention de
+ * each concrete class to a possible `<Name>Test` class (the convention of
  * nommage). Ne mesure pas la couverture — voir CoverageReportReader pour cela.
  */
 final class TestPresenceAnalyzer
@@ -88,9 +88,9 @@ final class TestPresenceAnalyzer
     }
 
     /**
-     * @param string $relativePath chemin relatif à la racine projet (évite de
-     *                             confondre un dossier `tests/` ancêtre avec le
-     *                             répertoire de tests du projet)
+     * @param string $relativePath path relative to the project root (avoids
+     *                             mistaking an ancestor `tests/` directory for
+     *                             the project's own test directory)
      */
     private function isTestClass(Node\Stmt\Class_ $class, string $relativePath): bool
     {
@@ -158,7 +158,7 @@ final class TestPresenceAnalyzer
     }
 
     /**
-     * Comme pour la config : fragments comparés au chemin relatif à la racine.
+     * As for the config: fragments are compared to the path relative to the root.
      */
     private function isExcluded(string $relativePath): bool
     {

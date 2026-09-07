@@ -9,39 +9,39 @@ use PhpxComplexity\Baseline\DeltaCategory;
 use PhpxComplexity\Baseline\MethodDelta;
 
 /**
- * Rapport texte des écarts à l'instantané de référence.
+ * The text report of the deltas against the reference snapshot.
  *
- * Un écart est un fait — « cognitive 15 → 18 » — jamais une note. Les violations
- * héritées et inchangées n'apparaissent pas : seul le mouvement est montré.
+ * A delta is a fact ("cognitive 15 -> 18"), never a grade. Inherited violations
+ * that have not moved do not appear: only movement is shown.
  */
 final class DeltaReporter
 {
     public function render(Comparison $comparison): string
     {
-        $lines = [sprintf('Baseline — écarts par rapport à %s :', $comparison->source)];
+        $lines = [sprintf('Baseline: deltas against %s', $comparison->source)];
         $lines = array_merge(
             $lines,
-            $this->block('Nouvelles violations', $comparison->of(DeltaCategory::NewViolation)),
-            $this->block('Violations aggravées', $comparison->of(DeltaCategory::Worsened)),
-            $this->block('Violations résolues', $comparison->of(DeltaCategory::Resolved)),
+            $this->block('New violations', $comparison->of(DeltaCategory::NewViolation)),
+            $this->block('Worsened violations', $comparison->of(DeltaCategory::Worsened)),
+            $this->block('Resolved violations', $comparison->of(DeltaCategory::Resolved)),
         );
 
         $lines[] = sprintf(
-            '  Méthodes apparues : %d · disparues : %d',
+            '  Methods added: %d, removed: %d',
             count($comparison->appeared),
             count($comparison->disappeared),
         );
 
         foreach ($comparison->thresholdChanges as $lens => $change) {
             $lines[] = sprintf(
-                '  Seuil « %s » modifié depuis l\'instantané : %s → %s (les valeurs brutes restent comparables)',
+                '  Threshold "%s" changed since the snapshot: %s -> %s (raw values stay comparable)',
                 $lens,
                 $this->num($change['from']),
                 $this->num($change['to']),
             );
         }
 
-        $lines[] = sprintf('  → %d régression(s)', $comparison->regressionCount());
+        $lines[] = sprintf('  -> %d regression(s)', $comparison->regressionCount());
 
         return implode("\n", $lines) . "\n";
     }

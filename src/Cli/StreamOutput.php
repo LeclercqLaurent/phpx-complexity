@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhpxComplexity\Cli;
 
 /**
- * Sorties standard du processus : le comportement réel en ligne de commande.
+ * The standard streams of the process: the real behaviour on the command line.
  */
 final class StreamOutput implements Output
 {

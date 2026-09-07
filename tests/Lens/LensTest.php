@@ -31,7 +31,7 @@ final class LensTest extends TestCase
             new EntanglementLens(),
         ];
         foreach ($lenses as $lens) {
-            self::assertNotSame('', trim($lens->description()), $lens->key() . ' doit définir sa mesure');
+            self::assertNotSame('', trim($lens->description()), $lens->key() . ' must define what it measures');
         }
     }
 
@@ -47,7 +47,7 @@ final class LensTest extends TestCase
 
     public function testCognitiveComplexityWithNestingAndLogicalOperators(): void
     {
-        // if (+1) ; && (+1) ; foreach imbriqué (+2 : +1 structurel +1 nesting)
+        // if (+1), && (+1), nested foreach (+2: +1 structural, +1 nesting)
         // = 4 au total.
         $code = 'function f($a, $b, $items) {
             if ($a && $b) {
@@ -61,7 +61,7 @@ final class LensTest extends TestCase
 
     public function testFlatAssignmentsAreNotEntangled(): void
     {
-        // $this->x = $x; n'entremêle rien → degré moyen 0.
+        // $this->x = $x; interweaves nothing, so the average degree is 0.
         $code = 'function f($a, $b, $c) {
             $this->a = $a;
             $this->b = $b;
@@ -72,8 +72,9 @@ final class LensTest extends TestCase
 
     public function testCombinedVariablesAreEntangled(): void
     {
-        // $c = $a + $b : a-b via le « + », c-a et c-b via le flux d'affectation
-        // → triangle (3 sommets, 3 arêtes) → degré moyen 2·3/3 = 2.0.
+        // $c = $a + $b: a-b through the "+", c-a and c-b through the assignment
+        // flow, hence a triangle (3 vertices, 3 edges) and an average degree of
+        // 2*3/3 = 2.0.
         $code = 'function f($a, $b) {
             $c = $a + $b;
             return $c;

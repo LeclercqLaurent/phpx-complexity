@@ -10,8 +10,8 @@ use PhpxComplexity\Vcs\Exception\GitException;
 use PhpxComplexity\Vcs\RepositoryUrl;
 
 /**
- * L'URL vient de l'utilisateur et finit passée à git : cette validation est la
- * frontière de sécurité du module.
+ * The URL comes from the user and ends up handed to git: this validation is the
+ * security boundary of the module.
  */
 final class RepositoryUrlTest extends TestCase
 {
@@ -35,11 +35,11 @@ final class RepositoryUrlTest extends TestCase
         return [
             ['--upload-pack=touch /tmp/pwned', 'pris pour une option de git'],
             ['-c', 'pris pour une option de git'],
-            ['ext::sh -c whoami', 'transport ext, exécution de commande'],
-            ['git://github.com/vendor/projet.git', 'ni chiffré ni authentifié'],
+            ['ext::sh -c whoami', 'ext transport, arbitrary command execution'],
+            ['git://github.com/vendor/projet.git', 'neither encrypted nor authenticated'],
             ['file:///etc', 'un dossier local s\'analyse directement'],
             ['/etc/passwd', 'chemin local'],
-            ['https://', 'schéma sans dépôt'],
+            ['https://', 'a scheme with no repository'],
             ['', 'vide'],
         ];
     }
@@ -54,7 +54,7 @@ final class RepositoryUrlTest extends TestCase
     public function testRejects(string $url, string $why): void
     {
         $this->expectException(GitException::class);
-        $this->expectExceptionMessage('URL de dépôt non supportée');
+        $this->expectExceptionMessage('Unsupported repository URL');
 
         RepositoryUrl::fromString($url);
     }

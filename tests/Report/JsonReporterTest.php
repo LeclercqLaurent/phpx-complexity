@@ -9,9 +9,9 @@ use PhpxComplexity\Report\JsonReporter;
 use PhpxComplexity\Tests\Support\SampleAudit;
 
 /**
- * La sortie JSON n'est pas un affichage : c'est le CONTRAT consommé par la CI et
- * par la baseline, qui s'en sert de format d'instantané. Une clé renommée casse
- * silencieusement le cliquet — d'où des assertions de structure, pas de forme.
+ * The JSON output is not a display: it is the CONTRACT consumed by CI and by the
+ * baseline, which uses it as its snapshot format. A renamed key silently breaks
+ * the ratchet, hence assertions on structure rather than on shape.
  */
 final class JsonReporterTest extends TestCase
 {
@@ -34,15 +34,15 @@ final class JsonReporterTest extends TestCase
 
         self::assertSame(['cognitive', 'params', 'returns', 'live_peak', 'entangle'], array_keys($lenses));
         self::assertSame('S3776', $lenses['cognitive']['reference']);
-        // JSON réencode un flottant rond en entier ; le lecteur de baseline
+        // JSON re-encodes a round float as an integer; the baseline reader
         // accepte les deux (is_numeric puis cast), cf. SnapshotTest.
         self::assertSame(15, $lenses['cognitive']['threshold']);
-        self::assertSame('', $lenses['live_peak']['reference'], 'lentille maison : pas de référence Sonar');
+        self::assertSame('', $lenses['live_peak']['reference'], 'in-house lens: no Sonar reference');
         self::assertNotSame('', $lenses['entangle']['description']);
     }
 
     /**
-     * Les cinq champs que le comparateur de baseline lit réellement.
+     * The five fields the baseline comparator really reads.
      */
     public function testEachMethodCarriesTheFieldsTheBaselineNeeds(): void
     {
@@ -65,7 +65,7 @@ final class JsonReporterTest extends TestCase
 
         $descending = $divergences;
         rsort($descending);
-        self::assertSame($descending, $divergences, 'la divergence la plus forte en tête');
+        self::assertSame($descending, $divergences, 'the strongest divergence comes first');
     }
 
     public function testQaAndCoverageBlocksAppearOnlyWhenTheModulesRan(): void
@@ -91,10 +91,10 @@ final class JsonReporterTest extends TestCase
         self::assertCount(2, $baseline['newViolations']);
         self::assertCount(1, $baseline['worsened']);
         self::assertCount(1, $baseline['resolved']);
-        self::assertSame(3, $baseline['regressions'], 'nouvelles + aggravées, jamais les résolues');
+        self::assertSame(3, $baseline['regressions'], 'new + worsened, never the resolved ones');
         self::assertSame(1, $baseline['appeared']);
         self::assertSame(1, $baseline['disappeared']);
-        self::assertNull($baseline['newViolations'][1]['before'], 'méthode absente de la référence');
+        self::assertNull($baseline['newViolations'][1]['before'], 'method absent from the reference');
         self::assertSame(['entangle' => ['from' => 4, 'to' => 3]], $baseline['thresholdChanges']);
     }
 
@@ -109,7 +109,7 @@ final class JsonReporterTest extends TestCase
             }
         }
 
-        self::fail('méthode absente : ' . $name);
+        self::fail('method not found: ' . $name);
     }
 
     /**

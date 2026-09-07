@@ -7,7 +7,7 @@ namespace PhpxComplexity\Report;
 use PhpxComplexity\Qa\QaToolResult;
 
 /**
- * Rapport texte de présence des outils de QA, groupé par catégorie.
+ * The text report of QA tool presence, grouped by category.
  */
 final class QaReporter
 {
@@ -16,7 +16,7 @@ final class QaReporter
      */
     public function render(array $results): string
     {
-        $lines = ['Présence des outils de QA :'];
+        $lines = ['QA tooling present:'];
 
         $byCategory = [];
         foreach ($results as $result) {
@@ -28,7 +28,7 @@ final class QaReporter
             $lines[] = '  ' . $category;
             foreach ($tools as $result) {
                 $mark = $result->present ? '✓' : '✗';
-                $flag = $result->required && !$result->present ? ' (REQUIS, manquant)' : '';
+                $flag = $result->required && !$result->present ? ' (REQUIRED, missing)' : '';
                 $evidence = $result->present ? ' [' . implode(', ', $result->evidence) . ']' : '';
                 $lines[] = sprintf('    %s %s%s%s', $mark, $result->tool->label, $evidence, $flag);
                 if ($result->present) {
@@ -43,12 +43,12 @@ final class QaReporter
         ));
         $missingRequired = $this->missingRequired($results);
         $lines[] = sprintf(
-            '  → %d/%d outils détectés, %d/%d catégories couvertes%s',
+            '  -> %d/%d tools detected, %d/%d categories covered%s',
             $present,
             count($results),
             $coveredCategories,
             count($byCategory),
-            [] === $missingRequired ? '' : sprintf(', %d requis manquant(s)', count($missingRequired)),
+            [] === $missingRequired ? '' : sprintf(', %d required one(s) missing', count($missingRequired)),
         );
 
         return implode("\n", $lines) . "\n";

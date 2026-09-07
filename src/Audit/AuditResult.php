@@ -10,11 +10,11 @@ use PhpxComplexity\Coverage\TestPresence;
 use PhpxComplexity\Qa\QaToolResult;
 
 /**
- * Faits assemblés d'un audit : mesures des lentilles, et si les modules
- * correspondants ont tourné, présence des outils de QA et couverture.
+ * The assembled facts of an audit: lens measurements and, when the matching
+ * modules ran, QA tool presence and coverage.
  *
- * Objet inerte, passé tel quel à tous les rapports : c'est ce contrat unique qui
- * leur évite de trimballer six paramètres chacun (et qui laisse la place aux
+ * An inert object, passed as-is to every report: this single contract is what
+ * spares each of them six parameters (and what leaves room for the
  * futurs deltas de baseline sans faire exploser les signatures).
  */
 final class AuditResult

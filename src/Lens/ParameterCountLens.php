@@ -7,8 +7,8 @@ namespace PhpxComplexity\Lens;
 use PhpParser\Node;
 
 /**
- * SonarQube S107 — trop de paramètres. Réimplémentation native (php-parser pur,
- * sans couplage PHPStan) de la règle custom Codeam d'origine.
+ * SonarQube S107, too many parameters. A native reimplementation (pure
+ * php-parser, no PHPStan coupling) of the original custom rule.
  */
 final class ParameterCountLens implements Lens
 {
@@ -23,7 +23,7 @@ final class ParameterCountLens implements Lens
 
     public function label(): string
     {
-        return 'Paramètres';
+        return 'Parameters';
     }
 
     public function reference(): string
@@ -33,9 +33,10 @@ final class ParameterCountLens implements Lens
 
     public function description(): string
     {
-        return 'Nombre de paramètres de la signature. Mesure les degrés de liberté '
-            . "en entrée : au-delà du seuil, l'appel devient difficile à mémoriser et "
-            . 'trahit souvent une responsabilité à scinder ou un objet à introduire.';
+        return 'The number of parameters in the signature. It measures the degrees '
+            . 'of freedom on input: past the threshold, the call becomes hard to '
+            . 'memorise and often betrays a responsibility to split or an object to '
+            . 'introduce.';
     }
 
     public function measure(Node\FunctionLike $function, array $stmts): float

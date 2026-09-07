@@ -3,18 +3,18 @@
 declare(strict_types=1);
 
 /**
- * Éprouve une VARIANTE de `live_peak` qui exclut les paramètres du calcul de
- * vivacité.
+ * Tries out a VARIANT of `live_peak` that excludes parameters from the liveness
+ * computation.
  *
- * Motivation : l'étude du corpus a montré que `live_peak` corrèle davantage avec
+ * Motivation: the corpus study showed that `live_peak` correlates more with
  * `params` (0,703) qu'avec `cognitive` (0,637), alors que sa documentation
- * affirme mesurer « la pression interne, pas la signature ». Un paramètre
- * utilisé dans le corps est en effet une variable vivante.
+ * claims to measure "internal pressure, not the signature". A parameter used in
+ * the body is indeed a live variable.
  *
  * La variante ne compte que les variables INTRODUITES par le corps. Question
- * posée : cela décorrèle-t-il réellement de S107, et à quel prix ?
+ * asked: does it really decorrelate from S107, and at what cost?
  *
- * Rien n'est modifié dans src/ : c'est une mesure, pas un changement.
+ * Nothing in src/ is modified: this is a measurement, not a change.
  */
 
 require __DIR__ . '/../vendor/autoload.php';
@@ -31,7 +31,7 @@ use PhpxComplexity\Lens\LiveVariablePeakLens;
 use PhpxComplexity\Lens\ParameterCountLens;
 
 /**
- * Pic de variables vivantes, paramètres exclus.
+ * Peak of live variables, parameters excluded.
  */
 final class InternalLivePeakLens implements Lens
 {
@@ -52,8 +52,8 @@ final class InternalLivePeakLens implements Lens
 
     public function description(): string
     {
-        return 'Pic de variables vivantes, paramètres exclus : ne compte que les '
-            . 'variables introduites par le corps de la méthode.';
+        return 'Peak of live variables, parameters excluded: counts only the '
+            . 'variables introduced by the body of the method.';
     }
 
     public function defaultThreshold(): float
@@ -123,10 +123,10 @@ foreach ($sources as $source) {
 }
 
 $total = count($columns['cognitive']);
-printf("\n%d méthodes, %d projets\n\n", $total, count($sources));
+printf("\n%d methods, %d projects\n\n", $total, count($sources));
 
-// Seuil de la variante placé au MÊME centile que live_peak > 8, pour que la
-// comparaison porte sur la mesure et non sur une sévérité différente.
+// The variant's threshold sits at the SAME percentile as live_peak > 8, so the
+// comparison bears on the measurement rather than on a different severity.
 $sortedPeak = $columns['live_peak'];
 sort($sortedPeak);
 $quantile = quantileOf($sortedPeak, LIVE_PEAK_THRESHOLD);
@@ -183,7 +183,7 @@ foreach ([['live_peak', LIVE_PEAK_THRESHOLD], ['live_internal', $internalThresho
         $blindToBoth += $missedByCognitive && $missedByParams ? 1 : 0;
     }
     printf(
-        "  %-14s %5d signalées · hors S3776 : %4d (%4.1f%%) · hors S3776 ET S107 : %4d (%4.1f%%)\n",
+        "  %-14s %5d flagged, outside S3776: %4d (%4.1f%%), outside S3776 AND S107: %4d (%4.1f%%)\n",
         $key,
         $flagged,
         $blindToCognitive,

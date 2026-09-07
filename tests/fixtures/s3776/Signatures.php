@@ -3,8 +3,8 @@
 declare(strict_types=1);
 
 /**
- * Cas de conformité S107 (nombre de paramètres) et S1142 (points de sortie).
- * Jamais exécuté : seulement analysé.
+ * S107 (parameter count) and S1142 (exit points) conformance cases.
+ * Never executed: only analysed.
  */
 final class Signatures
 {
@@ -12,12 +12,12 @@ final class Signatures
     {
     }
 
-    // Les propriétés promues restent des paramètres de la signature.
+    // Promoted properties remain parameters of the signature.
     public function __construct(private readonly int $a, private readonly string $b, public readonly bool $c)
     {
     }
 
-    // Le variadique est UN paramètre, quel que soit le nombre d'arguments reçus.
+    // A variadic is ONE parameter, whatever the number of arguments received.
     public function variadicCountsOnce(int $a, string ...$rest): void
     {
     }
@@ -48,7 +48,7 @@ final class Signatures
         return 0;
     }
 
-    // Les return d'une fonction imbriquée appartiennent à celle-ci.
+    // The return statements of a nested function belong to that function.
     public function returnsInClosureBelongToIt(array $rows): array
     {
         return array_map(static function (int $row): int {
@@ -60,7 +60,7 @@ final class Signatures
         }, $rows);
     }
 
-    // Le return implicite d'une fonction fléchée n'est pas celui de la méthode.
+    // The implicit return of an arrow function is not the method's own.
     public function arrowFunctionReturnExcluded(array $rows): array
     {
         return array_map(static fn (int $row): int => $row * 2, $rows);

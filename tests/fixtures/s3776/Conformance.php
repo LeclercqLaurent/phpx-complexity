@@ -3,11 +3,11 @@
 declare(strict_types=1);
 
 /**
- * Cas de conformité S3776. Les valeurs attendues sont dérivées de la
- * SPÉCIFICATION (white paper SonarSource « Cognitive Complexity »), jamais de la
- * sortie de notre implémentation — sans quoi le test ne validerait rien.
+ * S3776 conformance cases. The expected values are derived from the
+ * SPECIFICATION (the SonarSource "Cognitive Complexity" white paper), never from
+ * the output of our implementation, without which the test would validate
  *
- * Ce fichier n'est jamais exécuté : il est seulement analysé.
+ * This file is never executed: it is only analysed.
  */
 final class Conformance
 {
@@ -19,8 +19,8 @@ final class Conformance
         return $c;
     }
 
-    // Exemple canonique du white paper : for +1, for imbriqué +2, if +3,
-    // saut étiqueté +1.
+    // The canonical example from the white paper: for +1, nested for +2, if +3,
+    // labelled jump +1.
     public function sumOfPrimes(int $max): int
     {
         $total = 0;
@@ -37,7 +37,7 @@ final class Conformance
     }
 
     // Exemple canonique du white paper : un switch, quel que soit le nombre de
-    // cas, ne coûte que +1.
+    // case, costs only +1.
     public function getWords(int $number): string
     {
         switch ($number) {
@@ -58,7 +58,7 @@ final class Conformance
         }
     }
 
-    // PHP ne distingue pas « else if » de « elseif » : même coût attendu.
+    // PHP does not tell "else if" from "elseif": the same cost is expected.
     public function withElseSpaceIf(int $a): string
     {
         if (1 === $a) {
@@ -70,8 +70,8 @@ final class Conformance
         }
     }
 
-    // Un else ne subit PAS de pénalité d'imbrication : le lecteur reste au
-    // même niveau.
+    // An else takes NO nesting penalty: the reader stays at the same
+    // level.
     public function elseAvoidsNestingPenalty(int $a, int $b): int
     {
         if ($a > 0) {
@@ -100,7 +100,7 @@ final class Conformance
         return $n;
     }
 
-    // Une séquence d'opérateurs identiques ne compte qu'une fois.
+    // A sequence of identical operators counts only once.
     public function singleSequence(bool $a, bool $b, bool $c): bool
     {
         if ($a && $b && $c) {
@@ -110,7 +110,7 @@ final class Conformance
         return false;
     }
 
-    // Deux séquences distinctes : une en &&, une en ||.
+    // Two distinct sequences: one in &&, one in ||.
     public function mixedSequences(bool $a, bool $b, bool $c, bool $d, bool $e): bool
     {
         if ($a && $b && $c || $d || $e) {
@@ -120,7 +120,7 @@ final class Conformance
         return false;
     }
 
-    // La négation n'ajoute rien.
+    // Negation adds nothing.
     public function negationIsFree(bool $a, bool $b): bool
     {
         if (!$a && !$b) {
@@ -166,7 +166,7 @@ final class Conformance
         return 0;
     }
 
-    // Une fonction imbriquée augmente le niveau sans incrément propre.
+    // A nested function raises the level without an increment of its own.
     public function closureAddsNestingOnly(array $rows): array
     {
         return array_map(static function (int $row): int {
@@ -178,7 +178,7 @@ final class Conformance
         }, $rows);
     }
 
-    // break/continue sans niveau : simple sortie, aucun coût.
+    // break/continue with no level: a plain exit, no cost.
     public function simpleBreakIsFree(array $rows): int
     {
         foreach ($rows as $row) {
@@ -190,7 +190,7 @@ final class Conformance
         return 0;
     }
 
-    // break avec niveau : équivalent PHP du « break LABEL » de la spec.
+    // break with a level: PHP's equivalent of the spec's "break LABEL".
     public function labelledBreakCounts(array $rows): int
     {
         foreach ($rows as $row) {
@@ -214,7 +214,7 @@ final class Conformance
         return 0;
     }
 
-    // Postérieur à la spec : traité comme un switch (écart documenté).
+    // Postdates the spec: treated as a switch (a documented deviation).
     public function matchLikeSwitch(int $a): string
     {
         return match (true) {

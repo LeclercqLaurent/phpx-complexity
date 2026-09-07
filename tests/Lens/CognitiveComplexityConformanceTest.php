@@ -12,13 +12,13 @@ use PHPUnit\Framework\TestCase;
 use PhpxComplexity\Lens\CognitiveComplexityLens;
 
 /**
- * Conformité à S3776.
+ * Conformance with S3776.
  *
  * Les valeurs attendues viennent de la SPÉCIFICATION (white paper SonarSource
- * « Cognitive Complexity »), pas de la sortie de notre implémentation : c'est la
- * seule façon pour ce test de détecter une réimplémentation fautive. Le README
- * annonce une reproduction native de la règle, cette suite est ce qui rend
- * l'annonce vérifiable.
+ * "Cognitive Complexity"), not from the output of our implementation, which is
+ * the only way for this test to catch a faulty reimplementation. The README
+ * claims a native reproduction of the rule, and this suite is what makes the
+ * claim verifiable.
  */
 final class CognitiveComplexityConformanceTest extends TestCase
 {
@@ -28,25 +28,25 @@ final class CognitiveComplexityConformanceTest extends TestCase
     public static function cases(): array
     {
         return [
-            ['noBranching', 0, 'aucune structure de contrôle'],
-            ['sumOfPrimes', 7, 'exemple canonique : boucle 1 + boucle imbriquée 2 + if 3 + saut 1'],
-            ['getWords', 1, 'exemple canonique : un switch coûte 1, quel que soit le nombre de cas'],
+            ['noBranching', 0, 'no control structure at all'],
+            ['sumOfPrimes', 7, 'canonical example: loop 1 + nested loop 2 + if 3 + jump 1'],
+            ['getWords', 1, 'canonical example: a switch costs 1, whatever the number of cases'],
             ['withElseif', 3, 'if 1 + elseif 1 + else 1'],
-            ['withElseSpaceIf', 3, '« else if » se compte comme « elseif »'],
-            ['elseAvoidsNestingPenalty', 4, 'if 1 + if imbriqué 2 + else 1, sans pénalité sur le else'],
+            ['withElseSpaceIf', 3, '"else if" counts as "elseif"'],
+            ['elseAvoidsNestingPenalty', 4, 'if 1 + nested if 2 + else 1, with no penalty on the else'],
             ['nestedConditions', 6, 'boucle 1 + if 2 + boucle 3'],
-            ['singleSequence', 2, 'if 1 + une seule séquence &&'],
-            ['mixedSequences', 3, 'if 1 + séquence && 1 + séquence || 1'],
-            ['negationIsFree', 2, 'if 1 + séquence && 1 ; la négation est gratuite'],
-            ['ternary', 1, 'un ternaire coûte 1'],
-            ['nestedTernary', 3, 'ternaire 1 + ternaire imbriqué 2'],
-            ['catchIncrements', 2, 'deux catch, le try ne coûte rien'],
+            ['singleSequence', 2, 'if 1 + one single && sequence'],
+            ['mixedSequences', 3, 'if 1 + && sequence 1 + || sequence 1'],
+            ['negationIsFree', 2, 'if 1 + && sequence 1; negation is free'],
+            ['ternary', 1, 'a ternary costs 1'],
+            ['nestedTernary', 3, 'ternary 1 + nested ternary 2'],
+            ['catchIncrements', 2, 'two catches, the try itself costs nothing'],
             ['catchNesting', 3, 'boucle 1 + catch 2 ; continue sans niveau est gratuit'],
-            ['closureAddsNestingOnly', 2, 'la closure ne coûte rien mais imbrique le if à 2'],
+            ['closureAddsNestingOnly', 2, 'the closure costs nothing but nests the if to 2'],
             ['simpleBreakIsFree', 3, 'boucle 1 + if 2 ; break simple gratuit'],
             ['labelledBreakCounts', 7, 'boucle 1 + boucle 2 + if 3 + break 2 → 1'],
             ['gotoCounts', 2, 'if 1 + goto 1'],
-            ['matchLikeSwitch', 1, 'écart assumé : match traité comme un switch'],
+            ['matchLikeSwitch', 1, 'accepted deviation: match treated as a switch'],
         ];
     }
 
@@ -64,7 +64,7 @@ final class CognitiveComplexityConformanceTest extends TestCase
         );
         $asserted = array_map(static fn (array $case): string => $case[0], self::cases());
 
-        // « run » n'est qu'un réceptacle pour les blocs try.
+        // "run" is nothing but a container for the try blocks.
         self::assertSame([], array_values(array_diff($declared, $asserted, ['run'])));
     }
 
@@ -76,7 +76,7 @@ final class CognitiveComplexityConformanceTest extends TestCase
             }
         }
 
-        self::fail(sprintf('Méthode absente du fixture : %s', $method));
+        self::fail(sprintf('Method not found in the fixture: %s', $method));
     }
 
     /**

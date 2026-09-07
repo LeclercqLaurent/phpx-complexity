@@ -7,32 +7,32 @@ namespace PhpxComplexity\Lens;
 use PhpParser\Node;
 
 /**
- * Une « lentille » mesure une facette de complexité d'une méthode/fonction.
- * Chaque lentille produit une valeur brute comparable à un seuil ; le rapport de
- * divergence confronte les rangs de toutes les lentilles pour repérer les
- * méthodes où elles se contredisent (l'angle mort des métriques isolées).
+ * A "lens" measures one facet of the complexity of a method or function. Every
+ * lens produces a raw value comparable to a threshold; the divergence report
+ * plays the ranks of all lenses against each other to spot the methods where
+ * they contradict one another, which is the blind spot of isolated metrics.
  */
 interface Lens
 {
-    /** Clé courte et stable (ex. « cognitive », « params »). */
+    /** A short, stable key ("cognitive", "params"). */
     public function key(): string;
 
-    /** Libellé lisible. */
+    /** A readable label. */
     public function label(): string;
 
-    /** Référence SonarQube si applicable (ex. « S3776 »), sinon chaîne vide. */
+    /** The SonarQube reference when applicable ("S3776"), otherwise an empty string. */
     public function reference(): string;
 
-    /** Définition lisible de ce que mesure la lentille (une à deux phrases). */
+    /** A readable definition of what the lens measures, in one or two sentences. */
     public function description(): string;
 
     /**
-     * Valeur brute pour une fonction/méthode.
+     * The raw value for a function or method.
      *
-     * @param Node\Stmt[] $stmts corps de la fonction (jamais null)
+     * @param Node\Stmt[] $stmts the body of the function (never null)
      */
     public function measure(Node\FunctionLike $function, array $stmts): float;
 
-    /** Seuil par défaut au-delà duquel la valeur est considérée élevée. */
+    /** The default threshold beyond which the value counts as high. */
     public function defaultThreshold(): float;
 }

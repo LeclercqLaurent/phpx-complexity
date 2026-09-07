@@ -3,11 +3,11 @@
 declare(strict_types=1);
 
 /**
- * Statistiques partagées par les outils d'étude du corpus.
+ * Statistics shared by the corpus study tools.
  */
 
 /**
- * @param list<float> $sorted valeurs triées
+ * @param list<float> $sorted sorted values
  */
 function percentile(array $sorted, float $q): float
 {
@@ -17,7 +17,7 @@ function percentile(array $sorted, float $q): float
 }
 
 /**
- * Part des valeurs strictement inférieures à $value — position d'un seuil dans
+ * The share of values strictly below $value, that is the position of a threshold
  * la distribution.
  *
  * @param list<float> $sorted
@@ -41,7 +41,7 @@ function fmt(float $value): string
 }
 
 /**
- * Rangs avec égalités moyennées.
+ * Ranks with ties averaged.
  *
  * @param list<float> $values
  *
@@ -94,7 +94,7 @@ function pearson(array $x, array $y): float
 }
 
 /**
- * Corrélation de rangs (Spearman).
+ * Rank correlation (Spearman).
  *
  * @param list<float> $x
  * @param list<float> $y

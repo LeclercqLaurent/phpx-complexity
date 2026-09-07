@@ -7,17 +7,17 @@ namespace PhpxComplexity\Vcs;
 use PhpxComplexity\Vcs\Exception\GitException;
 
 /**
- * Récupère un dépôt distant dans un dossier temporaire.
+ * Fetches a remote repository into a temporary directory.
  *
- * SEUL point de l'outil qui accède au réseau. Il est délibérément tenu à
- * l'écart du cœur : il produit un chemin local, et l'analyse ne connaît que ce
- * chemin. La garantie « hors-ligne » de l'analyse elle-même reste donc vraie.
+ * The ONLY point of the tool that touches the network. It is deliberately kept
+ * away from the core: it produces a local path, and the analysis knows nothing
+ * but that path. The offline guarantee of the analysis itself therefore holds.
  *
- * Durcissement du clonage : commande passée en tableau (aucun shell, donc
- * aucune interpolation), séparateur « -- » avant l'URL, transport `ext::`
- * interdit (exécution de commande arbitraire), hooks neutralisés, clone
- * superficiel et sans étiquettes, et pas d'invite interactive — un dépôt privé
- * échoue franchement au lieu de faire attendre indéfiniment.
+ * Hardening of the clone: the command is passed as an array (no shell, hence no
+ * interpolation), a "--" separator precedes the URL, the `ext::` transport is
+ * forbidden (arbitrary command execution), hooks are neutralised, the clone is
+ * shallow and tagless, and no interactive prompt is raised, so a private
+ * repository fails outright instead of hanging forever.
  */
 final class GitCloner
 {
@@ -58,8 +58,8 @@ final class GitCloner
         $base = $this->temporaryBase ?? sys_get_temp_dir();
         $root = sprintf('%s/phpx-complexity-%s-%s', rtrim($base, '/'), $name, bin2hex(random_bytes(6)));
 
-        // « hooks » reste vide : core.hooksPath y pointe pour n'exécuter aucun
-        // script apporté par le dépôt.
+        // "hooks" stays empty: core.hooksPath points at it so that no script
+        // brought by the repository is ever executed.
         if (!@mkdir($root . '/hooks', 0o700, true) && !is_dir($root . '/hooks')) {
             throw GitException::temporaryDirectoryFailed($root);
         }

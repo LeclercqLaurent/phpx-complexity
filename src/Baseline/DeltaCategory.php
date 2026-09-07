@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace PhpxComplexity\Baseline;
 
 /**
- * Nature d'un écart entre l'instantané de référence et l'état courant.
+ * The nature of a delta between the reference snapshot and the current state.
  *
- * Une violation héritée et inchangée n'entre dans aucune catégorie : c'est tout
- * l'intérêt de la baseline, accepter l'existant pour n'exposer que le mouvement.
+ * An inherited, unchanged violation falls into no category at all, which is the
+ * whole point of a baseline: accept what exists so only movement shows.
  */
 enum DeltaCategory: string
 {

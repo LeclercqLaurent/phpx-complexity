@@ -10,9 +10,9 @@ use PhpParser\NodeVisitorAbstract;
 use PhpxComplexity\Ast\AstHelper;
 
 /**
- * SonarQube S1142 — trop d'instructions « return ». Réimplémentation native de la
- * règle custom Codeam d'origine. Les « return » des fonctions imbriquées ne sont
- * pas comptés : ils relèvent de leur propre portée.
+ * SonarQube S1142, too many "return" statements. A native reimplementation of the
+ * original custom rule. The "return" statements of nested functions are not
+ * counted: they belong to their own scope.
  */
 final class ReturnCountLens implements Lens
 {
@@ -37,10 +37,10 @@ final class ReturnCountLens implements Lens
 
     public function description(): string
     {
-        return "Nombre d'instructions « return » dans la portée de la méthode "
-            . '(les fonctions imbriquées comptent pour la leur). Trop de points de '
-            . 'sortie multiplie les chemins terminaux et rend le post-conditionnement '
-            . 'plus dur à raisonner.';
+        return 'The number of "return" statements within the scope of the method '
+            . '(nested functions count towards their own). Too many exits multiplies '
+            . 'the terminal paths and makes the post-condition harder to reason '
+            . 'about.';
     }
 
     public function measure(Node\FunctionLike $function, array $stmts): float

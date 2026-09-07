@@ -11,7 +11,7 @@ use PhpxComplexity\Config\Config;
 use PhpxComplexity\Lens\LensRegistry;
 
 /**
- * Le point d'entrée que réutilise tout appelant amont : il n'accepte qu'un
+ * The entry point every upstream caller reuses: it accepts nothing but a
  * chemin local et n'active les modules optionnels que si on les demande.
  */
 final class AuditRunnerTest extends TestCase
@@ -25,7 +25,7 @@ final class AuditRunnerTest extends TestCase
         self::assertSame(2, $result->files, 'Foo.php + Bar.php');
         self::assertNotSame([], $result->results);
         self::assertSame([], $result->parseErrors);
-        self::assertSame([], $result->qaResults, 'module QA non demandé');
+        self::assertSame([], $result->qaResults, 'the QA module was not requested');
         self::assertNull($result->coverage);
         self::assertNull($result->presence);
     }

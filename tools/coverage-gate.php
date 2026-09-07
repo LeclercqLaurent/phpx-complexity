@@ -3,23 +3,23 @@
 declare(strict_types=1);
 
 /**
- * Vérifie qu'un rapport clover atteint le plancher de couverture du socle.
- * Factuel : un compteur confronté à un seuil, jamais une note.
+ * Checks that a clover report reaches the coverage floor.
+ * Factual: a counter compared to a threshold, never a grade.
  *
- * Usage : php tools/coverage-gate.php var/clover.xml 90
+ * Usage: php tools/coverage-gate.php var/clover.xml 90
  */
 
 $file = $argv[1] ?? '';
 $minimum = (float) ($argv[2] ?? 90);
 
 if (!is_file($file)) {
-    fwrite(STDERR, sprintf("Rapport de couverture introuvable : %s\n", $file));
+    fwrite(STDERR, sprintf("Coverage report not found: %s\n", $file));
     exit(2);
 }
 
 $xml = simplexml_load_file($file);
 if (false === $xml) {
-    fwrite(STDERR, sprintf("Rapport de couverture illisible : %s\n", $file));
+    fwrite(STDERR, sprintf("Coverage report is unreadable: %s\n", $file));
     exit(2);
 }
 
@@ -31,11 +31,11 @@ foreach ($xml->xpath('//file/metrics') ?: [] as $metrics) {
 }
 
 if (0 === $statements) {
-    fwrite(STDERR, "Aucune instruction mesurée.\n");
+    fwrite(STDERR, "No statement measured.\n");
     exit(2);
 }
 
 $percent = 100 * $covered / $statements;
-printf("   couverture : %.1f %% (%d/%d instructions), plancher %.0f %%\n", $percent, $covered, $statements, $minimum);
+printf("   coverage: %.1f%% (%d/%d statements), floor %.0f%%\n", $percent, $covered, $statements, $minimum);
 
 exit($percent + 0.05 < $minimum ? 1 : 0);

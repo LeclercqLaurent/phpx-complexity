@@ -14,14 +14,14 @@ final class ConsoleReporterTest extends TestCase
 
     public function testHeaderStatesWhatWasAnalysed(): void
     {
-        self::assertStringContainsString('3 méthodes / 3 fichiers', $this->render());
+        self::assertStringContainsString('3 methods / 3 files', $this->render());
     }
 
     public function testExceededValuesAreMarked(): void
     {
         $output = $this->render();
 
-        // « 18! » : la valeur dépasse son seuil ; « 1 » seul ne le dépasse pas.
+        // "18!" means the value crosses its threshold; a bare "1" does not.
         self::assertMatchesRegularExpression('/18!\s/', $output);
         self::assertStringContainsString('src/Foo.php::compute (l.12)', $output);
     }
@@ -30,9 +30,9 @@ final class ConsoleReporterTest extends TestCase
     {
         $output = $this->render();
 
-        self::assertStringContainsString('2/3 méthodes concernées (3 dépassement(s)', $output);
-        self::assertStringContainsString('Cognitive (cognitive > 15) : 1', $output);
-        self::assertStringContainsString('Paramètres (params > 7) : 1', $output);
+        self::assertStringContainsString('2/3 methods affected (3 violation(s)', $output);
+        self::assertStringContainsString('Cognitive (cognitive > 15): 1', $output);
+        self::assertStringContainsString('Parameters (params > 7): 1', $output);
     }
 
     public function testDivergenceSectionCanBeHidden(): void

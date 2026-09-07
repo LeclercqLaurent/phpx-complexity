@@ -7,12 +7,12 @@ namespace PhpxComplexity\Vcs;
 use PhpxComplexity\Vcs\Exception\GitException;
 
 /**
- * URL de dépôt validée. C'est la frontière de sécurité du module : l'URL vient
- * de l'utilisateur et sera passée à git, donc rien ne franchit ce point sans
- * avoir été reconnu.
+ * A validated repository URL. This is the security boundary of the module: the
+ * URL comes from the user and will be handed to git, so nothing crosses this
+ * point without having been recognised.
  *
- * Sont refusés : les transports non chiffrés ou non authentifiés (`git://`), les
- * chemins et `file://` — un audit se fait sur un dépôt distant, un dossier local
+ * Refused: unencrypted or unauthenticated transports (`git://`), plain paths and
+ * `file://`, since an audit runs on a remote repository and a local directory
  * s'analyse directement —, et tout ce qui commence par un tiret, que git
  * prendrait pour une option.
  */
@@ -21,7 +21,7 @@ final class RepositoryUrl
     private const SCHEMES = ['https://', 'ssh://'];
 
     /**
-     * Forme abrégée de SSH : utilisateur@hôte:chemin.
+     * The short SSH form: user@host:path.
      */
     private const SCP_LIKE = '#^[A-Za-z0-9._-]+@[A-Za-z0-9.-]+:[A-Za-z0-9._~/-]+$#';
 
@@ -43,7 +43,7 @@ final class RepositoryUrl
     }
 
     /**
-     * Nom lisible déduit de l'URL, pour que le dossier temporaire soit
+     * A readable name derived from the URL, so the temporary directory is
      * identifiable quand on le conserve avec --keep.
      */
     public function name(): string

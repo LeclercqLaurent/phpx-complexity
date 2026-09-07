@@ -19,8 +19,8 @@ use SplFileInfo;
 use Throwable;
 
 /**
- * Orchestre l'analyse : parcourt les fichiers PHP, applique chaque lentille à
- * chaque méthode, puis calcule rangs centiles et divergence à l'échelle du lot.
+ * Orchestrates the analysis: walks the PHP files, applies every lens to every
+ * method, then computes percentile ranks and divergence across the whole batch.
  */
 final class ProjectAnalyzer
 {
@@ -117,7 +117,7 @@ final class ProjectAnalyzer
     }
 
     /**
-     * Rang centile de chaque lentille, puis divergence = écart entre le rang le
+     * The percentile rank of each lens, then divergence as the gap between the
      * plus haut et le plus bas (les lentilles se contredisent → angle mort).
      *
      * @param list<MethodResult> $results

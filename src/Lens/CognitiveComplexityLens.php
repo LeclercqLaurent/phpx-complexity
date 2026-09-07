@@ -10,31 +10,32 @@ use PhpParser\Node\Stmt;
 use PhpxComplexity\Ast\AstHelper;
 
 /**
- * SonarQube S3776 — complexité cognitive (cœur du white paper SonarSource),
- * réimplémentée nativement pour éviter toute dépendance à PHPStan / extensions.
+ * SonarQube S3776, cognitive complexity (the core of the SonarSource white
+ * paper), reimplemented natively to avoid any dependency on PHPStan or its
+ * extensions.
  *
- * Trois familles d'incréments :
- *  1. STRUCTUREL : +1 pour if / elseif / else, boucles, switch, catch, ternaire,
- *     match, et chaque séquence d'opérateurs logiques (&&, ||).
- *  2. IMBRICATION : +N supplémentaire pour les structures imbriquées (if, boucles,
- *     switch, catch, ternaire, match), où N = niveau d'imbrication courant.
- *  3. SAUT ÉTIQUETÉ : +1 pour `goto`, et pour `break N` / `continue N` avec
- *     N > 1 — PHP n'a pas d'étiquette de boucle, l'équivalent du `break LABEL`
- *     de la spec est la sortie de plusieurs structures d'un coup. Un `break;`
- *     simple ne compte pas.
- *  4. Les fonctions imbriquées (closures, arrow fn) augmentent le niveau
- *     d'imbrication sans incrément structurel propre.
+ * Three families of increments:
+ *  1. STRUCTURAL: +1 for if / elseif / else, loops, switch, catch, ternary,
+ *     match, and each sequence of logical operators (&&, ||).
+ *  2. NESTING: an extra +N for nested structures (if, loops, switch, catch,
+ *     ternary, match), where N is the current nesting level.
+ *  3. LABELLED JUMP: +1 for `goto`, and for `break N` / `continue N` with
+ *     N > 1. PHP has no loop labels, so the equivalent of the spec's
+ *     `break LABEL` is leaving several structures at once. A plain `break;`
+ *     costs nothing.
+ *  4. Nested functions (closures, arrow functions) raise the nesting level
+ *     without a structural increment of their own.
  *
- * Écarts assumés à la spec :
- *  - **Récursion** : la spec ajoute +1 par méthode d'un cycle récursif ; non
- *    implémenté (demanderait une analyse inter-procédurale).
- *  - **`else if` en deux mots** : php-parser en produit le même AST que
- *    `else { if ... }`, sans moyen de les distinguer sans le texte source. Les
- *    deux sont traités comme `elseif` (+1, sans pénalité d'imbrication), ce qui
- *    suit la sémantique de PHP pour qui `else if` et `elseif` sont identiques.
- *    La forme rare `else { if ... }` est donc légèrement sous-comptée — préféré
- *    à surcompter de +2 la forme courante.
- *  - **`match`** : postérieur à la spec, traité comme un `switch`.
+ * Deliberate deviations from the spec:
+ *  - **Recursion**: the spec adds +1 per method of a recursive cycle; not
+ *    implemented, as it would require interprocedural analysis.
+ *  - **Two-word `else if`**: php-parser produces the same AST as
+ *    `else { if ... }`, with no way to tell them apart without the source text.
+ *    Both are treated as `elseif` (+1, with no nesting penalty), which follows
+ *    PHP's own semantics, where `else if` and `elseif` are identical. The rare
+ *    `else { if ... }` form is therefore slightly under-counted, which is
+ *    preferred to over-counting the common form by +2.
+ *  - **`match`**: postdates the spec, treated as a `switch`.
  */
 final class CognitiveComplexityLens implements Lens
 {
@@ -59,10 +60,10 @@ final class CognitiveComplexityLens implements Lens
 
     public function description(): string
     {
-        return 'Effort mental pour suivre le flux de contrôle : +1 par branche '
-            . '(if/else, boucle, switch, catch, ternaire, séquence &&/||) et +N '
-            . "supplémentaire selon le niveau d'imbrication. Mesure la difficulté de "
-            . 'lecture, pas le nombre de chemins (≠ complexité cyclomatique).';
+        return 'The mental effort of following the control flow: +1 per branch '
+            . '(if/else, loop, switch, catch, ternary, &&/|| sequence) plus an extra '
+            . '+N for the nesting level. It measures reading difficulty, not the '
+            . 'number of paths, so it is not cyclomatic complexity.';
     }
 
     public function measure(Node\FunctionLike $function, array $stmts): float
@@ -122,10 +123,10 @@ final class CognitiveComplexityLens implements Lens
     }
 
     /**
-     * Les branches « sinon » coûtent +1 chacune SANS pénalité d'imbrication : la
-     * spec ne fait pas payer un `else` deux fois, le lecteur reste au même
-     * niveau. Un `else if` en deux mots est aplati dans la chaîne plutôt que
-     * traité comme un `else` contenant un `if` imbriqué.
+     * Each "else" branch costs +1 WITHOUT a nesting penalty: the spec does not
+     * charge for an `else` twice, since the reader stays at the same level. A
+     * two-word `else if` is flattened into the chain rather than treated as an
+     * `else` containing a nested `if`.
      */
     private function walkElseBranches(Stmt\If_ $node, int $nesting): int
     {
@@ -151,7 +152,7 @@ final class CognitiveComplexityLens implements Lens
     }
 
     /**
-     * Le `if` unique d'un `else`, qui forme donc un « else if ».
+     * The single `if` inside an `else`, which therefore forms an "else if".
      */
     private function chainedIf(Stmt\Else_ $else): ?Stmt\If_
     {
@@ -161,8 +162,8 @@ final class CognitiveComplexityLens implements Lens
     }
 
     /**
-     * Saut hors de plusieurs structures : l'équivalent PHP du `break LABEL` de
-     * la spec. Un `break;` ou `continue;` simple ne coûte rien.
+     * A jump out of several structures: PHP's equivalent of the spec's
+     * `break LABEL`. A plain `break;` or `continue;` costs nothing.
      */
     private function walkJump(Stmt\Break_|Stmt\Continue_ $node): int
     {

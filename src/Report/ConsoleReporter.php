@@ -10,9 +10,9 @@ use PhpxComplexity\Config\Config;
 use PhpxComplexity\Lens\Lens;
 
 /**
- * Rapport texte lisible : classement par lentille dominante, violations de
- * seuils, et rapport de DIVERGENCE (méthodes où les lentilles se contredisent —
- * le cœur de l'outil). Aucune dépendance externe (sortie ANSI minimale).
+ * The readable text report: a ranking by dominant lens, threshold violations,
+ * and the DIVERGENCE report (methods where the lenses contradict each other,
+ * which is the heart of the tool). No external dependency, minimal ANSI output.
  */
 final class ConsoleReporter
 {
@@ -29,7 +29,7 @@ final class ConsoleReporter
     {
         $results = $audit->results;
         $out = [];
-        $out[] = sprintf('phpx-complexity — %d méthodes / %d fichiers', count($results), $audit->files);
+        $out[] = sprintf('phpx-complexity: %d methods / %d files', count($results), $audit->files);
         $out[] = str_repeat('=', 60);
         $out[] = '';
         $out[] = $this->topTable($results);
@@ -53,7 +53,7 @@ final class ConsoleReporter
         usort($results, fn (MethodResult $a, MethodResult $b) => $this->primary($b) <=> $this->primary($a));
         $rows = array_slice($results, 0, $this->config->top);
 
-        $lines = ['Top ' . count($rows) . ' méthodes (toutes lentilles) :'];
+        $lines = ['Top ' . count($rows) . ' methods (all lenses):'];
         $lines[] = $this->header();
         foreach ($rows as $r) {
             $lines[] = $this->row($r);
@@ -67,8 +67,8 @@ final class ConsoleReporter
      */
     private function divergenceSection(array $results): string
     {
-        // Actionnable : une vraie violation de seuil QUE les autres lentilles
-        // laisseraient passer (divergence de rangs élevée). C'est l'angle mort.
+        // Actionable: a real threshold violation THAT the other lenses would let
+        // through (high rank divergence). That is the blind spot.
         $candidates = array_filter(
             $results,
             fn (MethodResult $r) => $r->divergence >= 0.6 && $this->hasViolation($r),
@@ -76,9 +76,9 @@ final class ConsoleReporter
         usort($candidates, static fn (MethodResult $a, MethodResult $b) => $b->divergence <=> $a->divergence);
         $candidates = array_slice($candidates, 0, 15);
 
-        $lines = ['Divergence — violations qu\'une métrique isolée laisserait passer :'];
+        $lines = ['Divergence: violations a single metric would let through:'];
         if ([] === $candidates) {
-            $lines[] = '  (aucune)';
+            $lines[] = '  (none)';
 
             return implode("\n", $lines);
         }
@@ -99,7 +99,7 @@ final class ConsoleReporter
         $totalViolations = array_sum(array_map(fn (MethodResult $r) => $this->violationCount($r), $results));
 
         $lines = [sprintf(
-            'Dépassements de seuils — %d/%d méthodes concernées (%d dépassement(s) au total) :',
+            'Threshold violations: %d/%d methods affected (%d violation(s) in total):',
             $methodsInViolation,
             count($results),
             $totalViolations,
@@ -113,10 +113,10 @@ final class ConsoleReporter
                 continue;
             }
             $found = true;
-            $lines[] = sprintf('  %s (%s > %s) : %d', $lens->label(), $key, $this->num($threshold), count($offenders));
+            $lines[] = sprintf('  %s (%s > %s): %d', $lens->label(), $key, $this->num($threshold), count($offenders));
         }
         if (!$found) {
-            $lines[] = '  (aucune)';
+            $lines[] = '  (none)';
         }
 
         return implode("\n", $lines);
@@ -124,13 +124,13 @@ final class ConsoleReporter
 
     private function header(): string
     {
-        $cells = ['LENTILLE'];
+        $cells = ['LENS'];
         foreach ($this->lenses as $lens) {
             $cells[] = str_pad(strtoupper(substr($lens->key(), 0, 6)), 7);
         }
 
         return '  ' . implode(' ', array_map(static fn ($c) => str_pad($c, 7), array_slice($cells, 1)))
-            . '  MÉTHODE';
+            . '  METHOD';
     }
 
     private function row(MethodResult $r): string
@@ -179,8 +179,8 @@ final class ConsoleReporter
 
     private function primary(MethodResult $r): float
     {
-        // Rang centile le plus haut, toutes lentilles confondues : surface une
-        // méthode extrême sur n'importe quel axe.
+        // The highest percentile rank across every lens: surfaces a method that
+        // is extreme on any axis.
         return [] === $r->percentile ? 0.0 : max($r->percentile);
     }
 

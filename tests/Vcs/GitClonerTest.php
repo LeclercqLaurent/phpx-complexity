@@ -11,8 +11,9 @@ use PhpxComplexity\Vcs\GitCloner;
 use PhpxComplexity\Vcs\RepositoryUrl;
 
 /**
- * Le clonage est exercé avec un faux « git » : les tests restent hors-ligne et
- * déterministes, tout en vérifiant l'orchestration réelle (temporaire, options
+ * Cloning is exercised with a fake "git": the tests stay offline and
+ * deterministic while still checking the real orchestration (temp directory,
+ * options
  * de durcissement, nettoyage).
  */
 final class GitClonerTest extends TestCase
@@ -42,7 +43,7 @@ final class GitClonerTest extends TestCase
     }
 
     /**
-     * Le durcissement doit être effectif, pas seulement documenté.
+     * The hardening has to be effective, not merely documented.
      */
     public function testCloneCommandIsHardened(): void
     {
@@ -51,8 +52,8 @@ final class GitClonerTest extends TestCase
 
         self::assertContains('--depth=1', $arguments, 'clone superficiel');
         self::assertContains('protocol.ext.allow=never', $arguments, 'transport ext interdit');
-        self::assertContains('--', $arguments, "séparateur avant l'URL");
-        self::assertContains('core.hooksPath=' . $checkout->root . '/hooks', $arguments, 'hooks neutralisés');
+        self::assertContains('--', $arguments, 'separator before the URL');
+        self::assertContains('core.hooksPath=' . $checkout->root . '/hooks', $arguments, 'hooks neutralised');
     }
 
     public function testHooksDirectoryIsCreatedEmpty(): void
@@ -72,19 +73,19 @@ final class GitClonerTest extends TestCase
 
         try {
             $this->cloner()->fetch($this->url('https://example.org/echec.git'));
-            self::fail('un clone en échec doit lever une exception');
+            self::fail('a failed clone must raise an exception');
         } catch (GitException $e) {
             self::assertStringContainsString('Clonage impossible', $e->getMessage());
-            self::assertStringContainsString('not found', $e->getMessage(), 'la raison de git est rapportée');
+            self::assertStringContainsString('not found', $e->getMessage(), 'the reason given by git is reported');
         }
 
-        self::assertSame($before, $this->entries(), 'aucun temporaire résiduel');
+        self::assertSame($before, $this->entries(), 'no leftover temporary directory');
     }
 
     public function testMissingGitBinaryIsReportedClearly(): void
     {
         $this->expectException(GitException::class);
-        $this->expectExceptionMessage('introuvable');
+        $this->expectExceptionMessage('not found');
 
         (new GitCloner(__DIR__ . '/absent-git', $this->base))->fetch($this->url('https://example.org/projet.git'));
     }

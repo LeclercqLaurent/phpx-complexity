@@ -29,7 +29,7 @@ final class SnapshotTest extends TestCase
     {
         $snapshot = Snapshot::fromFile(self::FIXTURES . '/homonyms.json');
 
-        // Rang attribué dans l'ordre des lignes, pas dans celui du fichier JSON.
+        // The rank is assigned in line order, not in JSON file order.
         self::assertSame(10, $snapshot->methods['src/Two.php::render']->line);
         self::assertSame(40, $snapshot->methods['src/Two.php::render#2']->line);
     }
@@ -51,15 +51,15 @@ final class SnapshotTest extends TestCase
     public function testMalformedPayloadIsRejected(): void
     {
         $this->expectException(BaselineException::class);
-        $this->expectExceptionMessageMatches('/Baseline invalide/');
+        $this->expectExceptionMessageMatches('/Invalid baseline/');
 
         Snapshot::fromFile(__DIR__ . '/../fixtures/baseline-project/broken-baseline.json');
     }
 
     /**
-     * L'instantané écrit ne garde que ce que la comparaison lit. Les rangs
+     * The written snapshot keeps only what the comparison reads. Percentile
      * centiles et la divergence en sont exclus : relatifs au lot, ils seraient
-     * réécrits pour toutes les méthodes dès qu'une seule bouge.
+     * rewritten for every method as soon as a single one moves.
      */
     public function testSerialisedSnapshotDropsWhatComparisonDoesNotRead(): void
     {
@@ -74,7 +74,7 @@ final class SnapshotTest extends TestCase
     }
 
     /**
-     * Ordre d'identité et non de divergence : un ajout insère un bloc au lieu
+     * Identity order rather than divergence order: an addition inserts a block
      * de redistribuer tout le fichier.
      */
     public function testSerialisedMethodsAreOrderedByIdentity(): void

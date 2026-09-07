@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace PhpxComplexity\Coverage;
 
 /**
- * Résultat d'ingestion d'un rapport de couverture. La couverture est une mesure
- * d'EXÉCUTION : l'outil ne la calcule pas, il rapporte ce qu'un rapport généré
- * par le projet contient. Absence de rapport ⇒ couverture « non mesurée »
- * (jamais 0 %, qui serait un verdict infondé).
+ * The result of ingesting a coverage report. Coverage is an EXECUTION
+ * measurement: the tool does not compute it, it reports what a report generated
+ * by the project contains. No report means coverage is "not measured", never
+ * 0%, which would be an unfounded verdict.
  */
 final class CoverageReport
 {

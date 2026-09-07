@@ -19,9 +19,9 @@ use PhpxComplexity\Qa\QaTool;
 use PhpxComplexity\Qa\QaToolResult;
 
 /**
- * Jeu d'essai partagé par les tests de rapport : trois méthodes couvrant une
- * méthode en dépassement sur deux axes, une en dépassement sur la signature, et
- * une saine. Aux seuils par défaut : 3 dépassements sur 2 méthodes.
+ * The sample shared by the report tests: three methods covering one in violation
+ * on two axes, one in violation on its signature, and one healthy. At the
+ * default thresholds: 3 violations across 2 methods.
  */
 trait SampleAudit
 {

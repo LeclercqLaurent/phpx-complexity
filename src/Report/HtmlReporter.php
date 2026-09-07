@@ -15,14 +15,14 @@ use PhpxComplexity\Lens\Lens;
 use PhpxComplexity\Qa\QaToolResult;
 
 /**
- * Rapport HTML autonome : un seul fichier, CSS et JS INLINE, aucune ressource
- * externe ni appel réseau (conforme au « hors-ligne strict »). Consommateur du
- * même contrat de données que JsonReporter — aucune logique d'analyse ici.
+ * A standalone HTML report: one file, INLINE CSS and JS, with neither an
+ * external asset nor a network call, in line with the strict offline stance. It
+ * consumes the same data contract as JsonReporter, with no analysis logic here.
  *
- * Pièce maîtresse : un nuage de points lentille-vs-lentille (rangs centiles) qui
- * rend visible la DIVERGENCE — les points loin de la diagonale sont les méthodes
- * qu'une métrique isolée laisserait passer. Reste factuel : valeurs brutes,
- * compteurs, seuils. Aucun score.
+ * The centrepiece is a lens-versus-lens scatter plot (percentile ranks) that
+ * makes DIVERGENCE visible: the points far from the diagonal are the methods a
+ * single metric would let through. It stays factual: raw values, counters and
+ * thresholds. No score.
  *
  * @phpstan-type Summary array{files: int, methods: int, methodsInViolation: int, totalViolations: int, parseErrors: int}
  */
@@ -56,32 +56,32 @@ final class HtmlReporter
 
         return <<<HTML
             <!DOCTYPE html>
-            <html lang="fr">
+            <html lang="en">
             <head>
             <meta charset="utf-8">
             <meta name="viewport" content="width=device-width, initial-scale=1">
-            <title>phpx-complexity — rapport</title>
+            <title>phpx-complexity report</title>
             <style>{$css}</style>
             </head>
             <body>
             <header class="hd">
               <h1>phpx-complexity</h1>
-              <p class="sub">Audit de complexité multi-lentilles — rapport factuel, hors-ligne.</p>
+              <p class="sub">Multi-lens complexity audit, a factual and offline report.</p>
             </header>
             {$nav}
             {$generated}
             {$baselineSection}
             {$qaSection}
             {$coverageSection}
-            <section class="card" id="methodes">
-              <h2>Méthodes</h2>
-              <p class="hint">Cliquez un en-tête pour trier. <span class="viol-key">!</span> = seuil dépassé.</p>
+            <section class="card" id="method-list">
+              <h2>Methods</h2>
+              <p class="hint">Click a header to sort. <span class="viol-key">!</span> means the threshold is crossed.</p>
               <div class="axes">
-                <label>Afficher
+                <label>Show
                   <select id="methodFilter">
-                    <option value="viol" selected>les méthodes en dépassement</option>
-                    <option value="ok">les méthodes sans dépassement</option>
-                    <option value="all">toutes les méthodes</option>
+                    <option value="viol" selected>methods in violation</option>
+                    <option value="ok">methods with no violation</option>
+                    <option value="all">all methods</option>
                   </select>
                 </label>
                 <span class="ck" id="methodCount"></span>
@@ -89,12 +89,12 @@ final class HtmlReporter
               <div class="tablewrap"><table id="methods"></table></div>
             </section>
             <section class="card" id="divergence">
-              <h2>Divergence — lentille contre lentille</h2>
-              <p class="hint">Un nuage par couple de lentilles. Axes = rangs centiles [0,1].
-              Un point loin de la diagonale diverge : élevé sur un axe, bas sur l'autre —
-              l'angle mort d'une métrique isolée.</p>
+              <h2>Divergence: lens against lens</h2>
+              <p class="hint">One scatter per pair of lenses. Axes are percentile ranks [0,1].
+              A point far from the diagonal diverges: high on one axis, low on the other,
+              which is the blind spot of any single metric.</p>
               <div class="axes">
-                <label class="ck"><input type="checkbox" id="onlyViol"> Violations seules</label>
+                <label class="ck"><input type="checkbox" id="onlyViol"> Violations only</label>
               </div>
               <div class="pairs" id="pairs"></div>
             </section>
@@ -106,22 +106,22 @@ final class HtmlReporter
     }
 
     /**
-     * Menu d'accès direct. Les entrées ne sont proposées que pour les sections
-     * réellement rendues, sinon le menu mentirait sur le contenu de la page.
+     * The jump menu. Entries are offered only for sections that are actually
+     * rendered, otherwise the menu would lie about the content of the page.
      */
     private function navHtml(bool $withBaseline, bool $withQa, bool $withCoverage): string
     {
-        $entries = ['#lentilles' => 'Lentilles'];
+        $entries = ['#lenses' => 'Lenses'];
         if ($withBaseline) {
             $entries['#baseline'] = 'Baseline';
         }
         if ($withQa) {
-            $entries['#qa'] = 'Outils de QA';
+            $entries['#qa'] = 'QA tooling';
         }
         if ($withCoverage) {
-            $entries['#couverture'] = 'Tests & couverture';
+            $entries['#coverage'] = 'Tests & coverage';
         }
-        $entries['#methodes'] = 'Méthodes';
+        $entries['#method-list'] = 'Methods';
         $entries['#divergence'] = 'Divergence';
 
         $links = '';
@@ -139,10 +139,10 @@ final class HtmlReporter
     private function headerHtml(array $summary, array $parseErrors): string
     {
         $cards = [
-            ['Fichiers', (string) $summary['files']],
-            ['Méthodes', (string) $summary['methods']],
-            ['Méthodes en dépassement', (string) $summary['methodsInViolation']],
-            ['Dépassements (total)', (string) $summary['totalViolations']],
+            ['Files', (string) $summary['files']],
+            ['Methods', (string) $summary['methods']],
+            ['Methods in violation', (string) $summary['methodsInViolation']],
+            ['Violations (total)', (string) $summary['totalViolations']],
         ];
         $cells = '';
         foreach ($cards as [$label, $value]) {
@@ -153,7 +153,7 @@ final class HtmlReporter
         foreach ($this->lenses as $lens) {
             $ref = '' !== $lens->reference() ? sprintf(' <span class="ref">%s</span>', $this->e($lens->reference())) : '';
             $legend .= sprintf(
-                '<li><div class="ltop"><span><code>%s</code>%s — %s</span><span class="thr">seuil %s</span></div><p class="ldesc">%s</p></li>',
+                '<li><div class="ltop"><span><code>%s</code>%s — %s</span><span class="thr">threshold %s</span></div><p class="ldesc">%s</p></li>',
                 $this->e($lens->key()),
                 $ref,
                 $this->e($lens->label()),
@@ -168,13 +168,13 @@ final class HtmlReporter
             foreach ($parseErrors as $err) {
                 $items .= sprintf('<li>%s</li>', $this->e($err));
             }
-            $errors = sprintf('<div class="card warn"><h2>Erreurs de parsing (%d)</h2><ul class="errs">%s</ul></div>', count($parseErrors), $items);
+            $errors = sprintf('<div class="card warn"><h2>Parse errors (%d)</h2><ul class="errs">%s</ul></div>', count($parseErrors), $items);
         }
 
         return <<<HTML
             <section class="stats">{$cells}</section>
-            <section class="card" id="lentilles">
-              <h2>Lentilles</h2>
+            <section class="card" id="lenses">
+              <h2>Lenses</h2>
               <ul class="legend">{$legend}</ul>
             </section>
             {$errors}
@@ -195,8 +195,8 @@ final class HtmlReporter
                 $missing[] = $r->tool->label;
             }
             $state = $r->present
-                ? '<span class="ok">présent</span>'
-                : ('<span class="' . ($r->required ? 'viol-key' : 'mut') . '">' . ($r->required ? 'manquant (requis)' : 'absent') . '</span>');
+                ? '<span class="ok">present</span>'
+                : ('<span class="' . ($r->required ? 'viol-key' : 'mut') . '">' . ($r->required ? 'missing (required)' : 'absent') . '</span>');
             $rows .= sprintf(
                 '<tr><td class="meth">%s</td><td>%s</td><td>%s</td><td class="meth">%s</td></tr>',
                 $this->e($r->tool->label),
@@ -206,14 +206,14 @@ final class HtmlReporter
             );
         }
         $missingNote = [] !== $missing
-            ? sprintf('<p class="hint viol-key">Outils requis manquants : %s</p>', $this->e(implode(', ', $missing)))
+            ? sprintf('<p class="hint viol-key">Required tools missing: %s</p>', $this->e(implode(', ', $missing)))
             : '';
 
         return <<<HTML
             <section class="card" id="qa">
-              <h2>Outils de QA — {$present}/{$total} présents</h2>
+              <h2>QA tooling: {$present}/{$total} present</h2>
               {$missingNote}
-              <div class="tablewrap"><table class="static"><tr><th>Outil</th><th>Catégorie</th><th>État</th><th>Preuves</th></tr>{$rows}</table></div>
+              <div class="tablewrap"><table class="static"><tr><th>Tool</th><th>Category</th><th>State</th><th>Evidence</th></tr>{$rows}</table></div>
             </section>
             HTML;
     }
@@ -222,24 +222,24 @@ final class HtmlReporter
     {
         $cards = '';
         if (null !== $coverage && $coverage->found) {
-            $line = null !== $coverage->linePercent ? $this->num($coverage->linePercent) . ' %' : 'n/d';
-            $cards .= $this->statCard('Couverture lignes', $line);
+            $line = null !== $coverage->linePercent ? $this->num($coverage->linePercent) . ' %' : 'n/a';
+            $cards .= $this->statCard('Line coverage', $line);
             if (null !== $coverage->methodPercent) {
-                $cards .= $this->statCard('Couverture méthodes', $this->num($coverage->methodPercent) . ' %');
+                $cards .= $this->statCard('Method coverage', $this->num($coverage->methodPercent) . ' %');
             }
             $cards .= $this->statCard('Format', $this->e((string) $coverage->format));
         } elseif (null !== $coverage) {
-            $cards .= $this->statCard('Couverture', 'aucun rapport');
+            $cards .= $this->statCard('Coverage', 'no report');
         }
         if (null !== $presence) {
-            $cards .= $this->statCard('Classes testées', $presence->testedClasses() . '/' . $presence->sourceClasses);
-            $cards .= $this->statCard('Méthodes de test', (string) $presence->testMethods);
+            $cards .= $this->statCard('Tested classes', $presence->testedClasses() . '/' . $presence->sourceClasses);
+            $cards .= $this->statCard('Test methods', (string) $presence->testMethods);
         }
 
         return <<<HTML
-            <section class="card" id="couverture">
-              <h2>Tests &amp; couverture</h2>
-              <p class="hint">Faits statiques : la présence d'un outil ne garantit ni des tests, ni leur couverture.</p>
+            <section class="card" id="coverage">
+              <h2>Tests &amp; coverage</h2>
+              <p class="hint">Static facts: the presence of a tool guarantees neither tests nor their coverage.</p>
               <div class="stats inner">{$cards}</div>
             </section>
             HTML;
@@ -315,11 +315,11 @@ final class HtmlReporter
 
     private function baselineHtml(Comparison $comparison): string
     {
-        $rows = $this->deltaRows($comparison, DeltaCategory::NewViolation, 'nouvelle')
-            . $this->deltaRows($comparison, DeltaCategory::Worsened, 'aggravée')
-            . $this->deltaRows($comparison, DeltaCategory::Resolved, 'résolue');
+        $rows = $this->deltaRows($comparison, DeltaCategory::NewViolation, 'new')
+            . $this->deltaRows($comparison, DeltaCategory::Worsened, 'worsened')
+            . $this->deltaRows($comparison, DeltaCategory::Resolved, 'resolved');
         if ('' === $rows) {
-            $rows = '<tr><td colspan="5" class="mut">Aucun écart : rien n\'a bougé depuis l\'instantané.</td></tr>';
+            $rows = '<tr><td colspan="5" class="mut">No delta: nothing moved since the snapshot.</td></tr>';
         }
 
         $source = $this->e($comparison->source);
@@ -329,10 +329,10 @@ final class HtmlReporter
 
         return <<<HTML
             <section class="card" id="baseline">
-              <h2>Baseline — écarts par rapport à {$source}</h2>
-              <p class="hint">{$regressions} régression(s) · {$appeared} méthode(s) apparue(s) · {$disappeared} disparue(s).
-              Les violations héritées et inchangées ne figurent pas : seul le mouvement est montré.</p>
-              <div class="tablewrap"><table class="static"><tr><th>Nature</th><th>Lentille</th><th>Avant</th><th>Après</th><th>Méthode</th></tr>{$rows}</table></div>
+              <h2>Baseline: deltas against {$source}</h2>
+              <p class="hint">{$regressions} regression(s), {$appeared} method(s) added, {$disappeared} removed.
+              Inherited violations that have not moved are omitted: only movement is shown.</p>
+              <div class="tablewrap"><table class="static"><tr><th>Kind</th><th>Lens</th><th>Before</th><th>After</th><th>Method</th></tr>{$rows}</table></div>
             </section>
             HTML;
     }
@@ -455,7 +455,7 @@ final class HtmlReporter
                 var tr=document.createElement('tr');
                 L.forEach(function(l){tr.appendChild(th(l.key,l.key.slice(0,6).toUpperCase()));});
                 tr.appendChild(th('divergence','Δ'));
-                var m=document.createElement('th');m.textContent='Méthode';m.dataset.k='name';
+                var m=document.createElement('th');m.textContent='Method';m.dataset.k='name';
                 m.onclick=function(){setSort('name');};tr.appendChild(m);
                 return tr;
               }
@@ -476,7 +476,7 @@ final class HtmlReporter
                   if(c.dataset.k===sortKey){c.classList.add('sorted');if(asc)c.classList.add('asc');}
                 });
                 var rows=visible();
-                fcount.textContent=rows.length+' / '+M.length+' méthodes';
+                fcount.textContent=rows.length+' / '+M.length+' methods';
                 rows.slice().sort(cmp).forEach(function(m){
                   var tr=document.createElement('tr');
                   L.forEach(function(l){
@@ -493,7 +493,7 @@ final class HtmlReporter
                 });
               }
 
-              // ---- un nuage par couple de lentilles ----
+              // ---- one scatter per pair of lenses ----
               var only=document.getElementById('onlyViol');
               var NS='http://www.w3.org/2000/svg';
               function el(n,a){var e=document.createElementNS(NS,n);for(var k in a)e.setAttribute(k,a[k]);return e;}

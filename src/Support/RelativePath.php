@@ -5,17 +5,17 @@ declare(strict_types=1);
 namespace PhpxComplexity\Support;
 
 /**
- * Chemin d'un fichier relativement à la racine auditée.
+ * The path of a file relative to the audited root.
  *
- * Sert autant à l'affichage qu'aux exclusions : ces dernières doivent porter sur
- * le chemin RELATIF, sans quoi un fragment comme `/var/` exclurait la totalité
- * d'un projet installé dans /var/www/… (cas courant sous Apache).
+ * It serves display as much as exclusions, and exclusions must apply to the
+ * RELATIVE path: otherwise a fragment such as `/var/` would exclude the whole
+ * of a project installed in /var/www, which is common under Apache.
  */
 final class RelativePath
 {
     /**
-     * Séparateurs normalisés en « / ». Renvoie le chemin complet si le fichier
-     * n'est pas sous la racine.
+     * Separators are normalised to "/". Returns the full path when the file
+     * is not under the root.
      */
     public static function from(string $root, string $file): string
     {

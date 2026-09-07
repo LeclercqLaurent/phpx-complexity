@@ -6,14 +6,14 @@ namespace PhpxComplexity\Coverage;
 
 /**
  * Faits de PRÉSENCE de tests, obtenus statiquement. À ne PAS confondre avec la
- * couverture : qu'une classe `FooTest` existe ne prouve pas que `Foo` est testée
- * utilement. C'est un plancher (« ces classes n'ont aucun fichier de test »),
- * pas une mesure de ce que les tests exécutent.
+ * coverage: the existence of a `FooTest` class does not prove that `Foo` is
+ * usefully tested. It is a floor ("these classes have no test file at all"),
+ * not a measurement of what the tests execute.
  */
 final class TestPresence
 {
     /**
-     * @param list<string> $untestedClasses classes concrètes sans classe *Test correspondante
+     * @param list<string> $untestedClasses concrete classes with no matching *Test class
      */
     public function __construct(
         public readonly int $sourceClasses,

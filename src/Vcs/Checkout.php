@@ -10,10 +10,10 @@ use RecursiveIteratorIterator;
 use SplFileInfo;
 
 /**
- * Copie de travail temporaire d'un dépôt récupéré.
+ * The temporary working copy of a fetched repository.
  *
- * `root` est le dossier créé par l'outil et `path` la copie qu'il contient : la
- * suppression porte sur le premier, jamais sur un chemin fourni de l'extérieur.
+ * `root` is the directory created by the tool and `path` the copy it holds:
+ * removal targets the former, never a path supplied from outside.
  */
 final class Checkout
 {

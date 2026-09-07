@@ -1,9 +1,15 @@
 {
     "name": "codeam/phpx-complexity",
-    "description": "Auditeur de complexité PHP multi-lentilles, hors-ligne : reproduit la famille SonarQube (S3776/S1142/S107) nativement et ajoute une lentille d'intrication + un rapport de divergence entre lentilles.",
+    "description": "A multi-lens, offline PHP complexity auditor: it reimplements the SonarQube family (S3776/S1142/S107) natively, adds an entanglement lens, and plays the lenses against each other in a divergence report.",
     "type": "library",
     "license": "MIT",
-    "keywords": ["static-analysis", "complexity", "cognitive-complexity", "code-quality", "audit"],
+    "keywords": [
+        "static-analysis",
+        "complexity",
+        "cognitive-complexity",
+        "code-quality",
+        "audit"
+    ],
     "authors": [
         {
             "name": "Codeam",
@@ -29,7 +35,9 @@
             "PhpxComplexity\\Tests\\": "tests/"
         }
     },
-    "bin": ["bin/phpx-complexity"],
+    "bin": [
+        "bin/phpx-complexity"
+    ],
     "scripts": {
         "test": "phpunit",
         "stan": "phpstan analyse",

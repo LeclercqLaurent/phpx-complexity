@@ -30,8 +30,8 @@ final class TestPresenceAnalyzerTest extends TestCase
     }
 
     /**
-     * Régression : les exclusions internes de l'analyseur portaient sur le chemin
-     * absolu, donc un projet rangé sous /var/www/ ne remontait aucune classe.
+     * Regression: the analyser's internal exclusions applied to the absolute
+     * path, so a project filed under /var/www surfaced no class at all.
      */
     public function testScanIsNotVoidedByAnAncestorDirectoryName(): void
     {

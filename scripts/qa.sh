@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-# Garde-fou qualité local, hors-ligne. À lancer avant chaque commit.
-# Code de sortie non nul = commit à corriger.
+# Local, offline quality gate. Run it before every commit.
+# A non-zero exit status means the commit needs fixing.
 set -uo pipefail
 
 cd "$(dirname "$0")/.." || exit 2
 
 if [ ! -d vendor ]; then
-    echo "vendor/ absent : lancer d'abord « composer install »." >&2
+    echo "vendor/ is missing, run 'composer install' first." >&2
     exit 2
 fi
 
@@ -20,27 +20,26 @@ run() {
     if "$@"; then
         printf '\033[32m   OK\033[0m\n'
     else
-        printf '\033[31m   ÉCHEC\033[0m\n'
+        printf '\033[31m   FAILED\033[0m\n'
         status=1
     fi
 }
 
 run "PHP-CS-Fixer (PSR-12)" php vendor/bin/php-cs-fixer fix --dry-run --diff
 run "PHPStan (level 9)" php vendor/bin/phpstan analyse --no-progress
-# La couverture n'est mesurable qu'avec Xdebug ou PCOV. Sans pilote, on lance les
-# tests sans elle plutôt que d'échouer : mieux vaut un garde-fou partiel qu'un
-# garde-fou contourné.
+# Coverage can only be measured with Xdebug or PCOV. With no driver we run the
+# tests without it rather than fail: a partial guard beats a bypassed one.
 if php -r 'exit((extension_loaded("xdebug") || extension_loaded("pcov")) ? 0 : 1);'; then
-    run "PHPUnit + couverture (plancher ${COVERAGE_MIN} %)" bash -c \
+    run "PHPUnit + coverage (floor ${COVERAGE_MIN}%)" bash -c \
         "XDEBUG_MODE=coverage php vendor/bin/phpunit --coverage-clover var/clover.xml \
          && php tools/coverage-gate.php var/clover.xml ${COVERAGE_MIN}"
 else
-    run "PHPUnit (couverture non mesurée : ni Xdebug ni PCOV)" php vendor/bin/phpunit
+    run "PHPUnit (coverage not measured, no Xdebug or PCOV)" php vendor/bin/phpunit
 fi
-# Dogfooding : l'outil s'audite lui-même en mode cliquet. Les trois dépassements
-# hérités figurent dans baseline.json et passent ; toute régression échoue.
-run "phpx-complexity (cliquet)" php bin/phpx-complexity src/ --baseline=baseline.json --fail-on-new
+# Dogfooding: the tool audits its own code in ratchet mode. The inherited
+# violations sit in baseline.json and pass; any regression fails.
+run "phpx-complexity (ratchet)" php bin/phpx-complexity src/ --baseline=baseline.json --fail-on-new
 
 printf '\n'
-[ "$status" -eq 0 ] && printf '\033[32mQA OK\033[0m\n' || printf '\033[31mQA en échec\033[0m\n'
+[ "$status" -eq 0 ] && printf '\033[32mQA OK\033[0m\n' || printf '\033[31mQA FAILED\033[0m\n'
 exit $status

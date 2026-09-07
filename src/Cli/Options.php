@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace PhpxComplexity\Cli;
 
 /**
- * Options de la ligne de commande, figées en propriétés typées.
+ * The command-line options, frozen into typed properties.
  *
- * Le parsing est le seul endroit qui manipule des chaînes brutes : partout
- * ailleurs on lit une propriété dont le type est garanti, ce qui évite de
- * repasser des unions `string|bool|list<string>` à travers l'application.
+ * Parsing is the only place that handles raw strings: everywhere else a property
+ * with a guaranteed type is read, which avoids passing `string|bool|list<string>`
+ * unions back and forth through the application.
  */
 final class Options
 {
@@ -18,7 +18,7 @@ final class Options
 
     /**
      * Options non reconnues. Les ignorer en silence ferait passer une faute de
-     * frappe pour un succès : « --jsno » rendrait un rapport console avec un
+     * typo for a success: "--jsno" would render a console report with an
      * code 0, et la CI croirait avoir du JSON.
      *
      * @var list<string>
@@ -26,7 +26,7 @@ final class Options
     public readonly array $unknown;
 
     public readonly Command $command;
-    /** Chemin local à auditer, ou URL du dépôt en sous-commande « fetch ». */
+    /** The local path to audit, or the repository URL under the "fetch" subcommand. */
     public readonly ?string $target;
     public readonly bool $keep;
     public readonly bool $help;
@@ -54,7 +54,7 @@ final class Options
         $verb = isset($positionals[0]) ? Command::tryFrom($positionals[0]) : null;
 
         $this->command = $verb ?? Command::Audit;
-        // Le verbe, s'il est présent, consomme le premier argument positionnel.
+        // The verb, when present, consumes the first positional argument.
         $this->target = $positionals[null === $verb ? 0 : 1] ?? null;
         $this->keep = isset($raw['keep']);
         $this->help = isset($raw['help']);
@@ -75,7 +75,7 @@ final class Options
     }
 
     /**
-     * Drapeaux sans valeur : libellé accepté => clé interne.
+     * Valueless flags: accepted label => internal key.
      */
     private const FLAGS = [
         '-h' => 'help',
@@ -91,7 +91,7 @@ final class Options
     ];
 
     /**
-     * Options à valeur : préfixe => clé interne.
+     * Options taking a value: prefix => internal key.
      */
     private const VALUED = [
         '--html=' => 'html',
@@ -103,14 +103,14 @@ final class Options
     ];
 
     /**
-     * Clés dont chaque occurrence s'ajoute aux précédentes.
+     * Keys whose every occurrence adds to the previous ones.
      */
     private const REPEATABLE = ['exclude'];
 
     /**
-     * Une table plutôt qu'une chaîne de conditions : ajouter une option devient
-     * une ligne de constante, et le coût de lecture ne croît plus avec le nombre
-     * d'options acceptées.
+     * A table rather than a chain of conditions: adding an option becomes one
+     * constant line, and the reading cost no longer grows with the number of
+     * accepted options.
      *
      * @param list<string> $args
      *
@@ -129,7 +129,7 @@ final class Options
             $valued = self::valued($arg);
             if (null === $valued) {
                 // Tout ce qui ne commence pas par un tiret est positionnel :
-                // un verbe éventuel, puis la cible.
+                // an optional verb, then the target.
                 $repeated[str_starts_with($arg, '-') ? 'unknown' : 'positionals'][] = $arg;
                 continue;
             }

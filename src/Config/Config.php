@@ -5,15 +5,15 @@ declare(strict_types=1);
 namespace PhpxComplexity\Config;
 
 /**
- * Configuration de l'analyse, fusionnée depuis les valeurs par défaut et un
- * éventuel fichier JSON (`phpx-complexity.json` à la racine du projet audité).
+ * The analysis configuration, merged from the defaults and an optional JSON
+ * file (`phpx-complexity.json` at the root of the audited project).
  */
 final class Config
 {
     /**
-     * @param array<string,float> $thresholds  clé de lentille => seuil
+     * @param array<string,float> $thresholds  lens key => threshold
      * @param list<string>        $exclude     fragments de chemin exclus
-     * @param list<string>        $qaRequired  clés d'outils QA obligatoires
+     * @param list<string>        $qaRequired  keys of mandatory QA tools
      */
     private function __construct(
         public readonly array $thresholds,
@@ -72,7 +72,7 @@ final class Config
     }
 
     /**
-     * Valeur imbriquée `data[section][key]`, uniquement si c'est bien une chaîne.
+     * The nested value `data[section][key]`, only when it really is a string.
      *
      * @param array<string,mixed> $data
      */
@@ -84,7 +84,7 @@ final class Config
     }
 
     /**
-     * Idem, pour une liste de chaînes (les entrées non-chaînes sont écartées).
+     * The same, for a list of strings (non-string entries are discarded).
      *
      * @param array<string,mixed> $data
      *
@@ -113,10 +113,10 @@ final class Config
     }
 
     /**
-     * Les fragments se comparent au chemin RELATIF à la racine auditée, préfixé
-     * d'un « / » pour qu'un fragment comme `/vendor/` reconnaisse un segment de
-     * premier niveau. Les comparer au chemin absolu viderait l'audit d'un projet
-     * installé sous /var/www/, /tests/ ou tout autre dossier homonyme.
+     * Fragments are compared against the path RELATIVE to the audited root,
+     * prefixed with a "/" so that a fragment such as `/vendor/` matches a whole
+     * top-level segment. Comparing them to the absolute path would empty the
+     * audit of a project installed under /var/www, /tests/ or any namesake.
      */
     public function isExcluded(string $relativePath): bool
     {

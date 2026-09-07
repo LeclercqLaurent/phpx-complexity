@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace PhpxComplexity\Qa;
 
 /**
- * Résultat de détection d'un outil de QA : présent ou non, et les preuves
- * (paquets Composer / fichiers de config) ayant motivé la détection.
+ * The detection result for a QA tool: present or not, along with the evidence
+ * (Composer packages or config files) that motivated the detection.
  */
 final class QaToolResult
 {

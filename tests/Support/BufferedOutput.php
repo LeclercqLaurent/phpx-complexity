@@ -7,7 +7,7 @@ namespace PhpxComplexity\Tests\Support;
 use PhpxComplexity\Cli\Output;
 
 /**
- * Capture les sorties du CLI pour les inspecter en mémoire.
+ * Captures the CLI output so it can be inspected in memory.
  */
 final class BufferedOutput implements Output
 {

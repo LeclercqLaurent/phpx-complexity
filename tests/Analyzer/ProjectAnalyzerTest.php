@@ -12,15 +12,15 @@ use PhpxComplexity\Lens\LensRegistry;
 final class ProjectAnalyzerTest extends TestCase
 {
     /**
-     * Régression : les fragments d'exclusion étaient comparés au chemin ABSOLU.
-     * Un projet installé sous /var/www/ était donc entièrement écarté par le
-     * fragment « /var/ » livré par défaut, et l'audit rendait zéro fichier.
+     * Regression: exclusion fragments used to be compared to the ABSOLUTE path.
+     * A project installed under /var/www was therefore discarded in full by the
+     * default "/var/" fragment, and the audit returned zero files.
      */
     public function testExclusionsAreMatchedRelativeToTheAuditedRoot(): void
     {
         $analysis = $this->analyze(__DIR__ . '/../fixtures/var/www/project');
 
-        self::assertSame(1, $analysis['files'], 'src/Foo.php analysé, vendor/ écarté');
+        self::assertSame(1, $analysis['files'], 'src/Foo.php analysed, vendor/ discarded');
         self::assertSame(['compute'], array_map(
             static fn ($result) => $result->name,
             $analysis['results'],

@@ -5,15 +5,15 @@ declare(strict_types=1);
 namespace PhpxComplexity\Qa;
 
 /**
- * Description d'un outil de QA recherché dans un projet : il est considéré présent
- * s'il est déclaré dans composer.json (require / require-dev) OU si l'un de ses
- * fichiers de configuration existe à la racine du projet.
+ * The description of a QA tool looked for in a project: it counts as present if
+ * it is declared in composer.json (require / require-dev) OR if one of its
+ * configuration files exists at the root of the project.
  */
 final class QaTool
 {
     /**
      * @param list<string> $packages noms de paquets Composer (minuscule)
-     * @param list<string> $files    fichiers/dossiers de config à la racine
+     * @param list<string> $files    config files or directories at the root
      */
     public function __construct(
         public readonly string $key,

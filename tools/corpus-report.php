@@ -3,15 +3,15 @@
 declare(strict_types=1);
 
 /**
- * Agrège les audits figés par tools/corpus-study.sh et répond aux deux questions
+ * Aggregates the audits frozen by tools/corpus-study.sh and answers the two
  * que les garde-fous du projet posent aux lentilles maison :
  *
  *   1. NON-REDONDANCE — `live_peak` et `entangle` classent-ils autrement que
  *      S3776 ? Sinon ce sont des copies repeintes, donc du bruit.
- *   2. SEUILS — les valeurs 8 et 4, inventées, se défendent-elles face à la
- *      distribution réelle du code PHP publié ?
+ *   2. THRESHOLDS: do the invented values 8 and 4 hold up against the real
+ *      distribution of published PHP code?
  *
- * Reste factuel : distributions, corrélations de rangs, effectifs. Aucun score.
+ * It stays factual: distributions, rank correlations, counts. No score.
  */
 
 require __DIR__ . '/stats.php';
@@ -47,9 +47,9 @@ $total = count($columns['cognitive']);
 
 echo "CORPUS\n";
 foreach ($projects as $name => $count) {
-    printf("  %-20s %6d méthodes\n", $name, $count);
+    printf("  %-20s %6d methods\n", $name, $count);
 }
-printf("  %-20s %6d méthodes, %d projets\n\n", 'TOTAL', $total, count($projects));
+printf("  %-20s %6d methods, %d projects\n\n", 'TOTAL', $total, count($projects));
 
 echo "DISTRIBUTION PAR LENTILLE (valeurs brutes)\n";
 printf("  %-10s %7s %7s %7s %7s %7s %9s %10s\n", 'lentille', 'p50', 'p75', 'p90', 'p95', 'p99', 'seuil', '% > seuil');
@@ -70,7 +70,7 @@ foreach (LENSES as $lens) {
     );
 }
 
-echo "\nCORRÉLATION DE RANGS (Spearman) — 1 = redondant, 0 = indépendant\n";
+echo "\nRANK CORRELATION (Spearman): 1 = redundant, 0 = independent\n";
 $ranks = [];
 foreach (LENSES as $lens) {
     $ranks[$lens] = ranks($columns[$lens]);
@@ -89,8 +89,8 @@ foreach (LENSES as $a) {
 }
 
 echo "\nANGLE MORT AUX SEUILS COURANTS\n";
-echo "  Parmi les méthodes que chaque lentille signale, part que S3776 ne\n";
-echo "  signale PAS — donc invisible pour un linter mono-métrique.\n";
+echo "  Among the methods each lens flags, the share S3776 does NOT\n";
+echo "  flag, hence invisible to a single-metric linter.\n";
 foreach (LENSES as $lens) {
     if ('cognitive' === $lens) {
         continue;
@@ -107,7 +107,7 @@ foreach (LENSES as $lens) {
         }
     }
     printf(
-        "  %-10s %6d signalées, dont %6d hors radar S3776 (%5.1f%%)\n",
+        "  %-10s %6d flagged, of which %6d off the S3776 radar (%5.1f%%)\n",
         $lens,
         $flagged,
         $missedByCognitive,

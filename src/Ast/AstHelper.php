@@ -9,15 +9,15 @@ use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitorAbstract;
 
 /**
- * Helpers d'analyse partagés par les lentilles. Toutes les traversées ignorent
- * les fonctions imbriquées (closures, arrow functions) dont les variables et les
- * « return » relèvent de leur propre portée — sauf le nœud racine lui-même.
+ * Analysis helpers shared by the lenses. Every traversal ignores nested
+ * functions (closures, arrow functions), whose variables and "return" statements
+ * belong to their own scope, with the exception of the root node itself.
  */
 final class AstHelper
 {
     /**
      * Variables locales (hors $this) d'un sous-arbre, sans entrer dans les
-     * fonctions imbriquées.
+     * nested functions.
      *
      * @return list<string>
      */
@@ -50,8 +50,8 @@ final class AstHelper
     }
 
     /**
-     * Durée de vie [première occurrence, dernière occurrence] de chaque variable
-     * locale d'un corps de méthode.
+     * The lifetime [first occurrence, last occurrence] of each local variable of
+     * a method body.
      *
      * @param Node\Stmt[] $stmts
      *
@@ -90,8 +90,8 @@ final class AstHelper
     }
 
     /**
-     * Enfants directs d'un nœud, aplatis (un sous-nœud peut être un Node, un
-     * tableau de Node, ou un scalaire ignoré).
+     * The direct children of a node, flattened (a subnode may be a Node, an
+     * array of Nodes, or an ignored scalar).
      *
      * @return list<Node>
      */

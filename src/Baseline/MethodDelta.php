@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace PhpxComplexity\Baseline;
 
 /**
- * Écart constaté sur une lentille d'une méthode. Purement factuel : deux valeurs
- * brutes et leur nature, jamais de note ni de pondération.
+ * A delta observed on one lens of one method. Purely factual: two raw values
+ * and their nature, never a grade nor a weighting.
  */
 final class MethodDelta
 {

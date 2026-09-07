@@ -7,14 +7,14 @@ namespace PhpxComplexity\Qa;
 use PhpxComplexity\Support\ProjectRoot;
 
 /**
- * Vérifie la présence des outils de QA à la racine d'un projet, en croisant les
- * dépendances déclarées dans composer.json et les fichiers de configuration.
+ * Checks which QA tools are present at the root of a project, by cross-checking
+ * the dependencies declared in composer.json against the configuration files.
  */
 final class QaPresenceChecker
 {
     /**
      * @param list<QaTool>  $tools
-     * @param list<string>  $required clés des outils considérés obligatoires
+     * @param list<string>  $required keys of the tools deemed mandatory
      */
     public function __construct(
         private readonly array $tools,

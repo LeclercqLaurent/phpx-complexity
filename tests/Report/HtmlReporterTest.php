@@ -25,12 +25,12 @@ final class HtmlReporterTest extends TestCase
         self::assertStringStartsWith('<!DOCTYPE html>', $html);
         self::assertStringContainsString('<table id="methods">', $html);
         self::assertStringContainsString('id="pairs"', $html);
-        self::assertStringContainsString('<h2>Lentilles</h2>', $html);
-        // Chaque KPI est défini dans la légende.
+        self::assertStringContainsString('<h2>Lenses</h2>', $html);
+        // Every KPI is defined in the legend.
         self::assertStringContainsString('ldesc', $html);
-        self::assertStringContainsString('Effort mental', $html);
-        self::assertStringContainsString('mémoire de travail', $html);
-        // Données factuelles présentes : pas de notion de score.
+        self::assertStringContainsString('mental effort', $html);
+        self::assertStringContainsString('working-memory load', $html);
+        // Factual data is present, with no notion of a score.
         self::assertStringNotContainsStringIgnoringCase('score', $html);
     }
 
@@ -38,7 +38,7 @@ final class HtmlReporterTest extends TestCase
     {
         $html = $this->render($this->sampleResults());
 
-        // Aucune ressource réseau : pas de http(s) hormis l'URI de namespace SVG,
+        // No network resource: no http(s) beyond the SVG namespace URI,
         // ni src= externe.
         $withoutSvgNs = str_replace('http://www.w3.org/2000/svg', '', $html);
         self::assertStringNotContainsString('http://', $withoutSvgNs);
@@ -66,11 +66,11 @@ final class HtmlReporterTest extends TestCase
 
         $html = $this->render([$evil]);
 
-        // Le code injecté ne doit jamais apparaître tel quel : ni dans le HTML
-        // serveur (échappé en &lt;), ni dans le JSON embarqué (échappé en <).
+        // Injected code must never appear verbatim: neither in the server HTML
+        // (escaped to &lt;) nor in the embedded JSON (escaped to <).
         self::assertStringNotContainsString('<script>alert(1)</script>', $html);
-        // Exactement deux balises </script> légitimes : fermeture du bloc data et
-        // du bloc JS. Une troisième signalerait une évasion du contexte.
+        // Exactly two legitimate </script> tags: closing the data block and the
+        // JS block. A third would signal a context escape.
         self::assertSame(2, substr_count($html, '</script>'));
     }
 

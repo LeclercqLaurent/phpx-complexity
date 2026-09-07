@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace PhpxComplexity\Baseline;
 
 /**
- * Une méthode telle que figée dans un instantané : son identité et ses valeurs
- * brutes. Ni rang centile ni divergence — ceux-ci dépendent du lot analysé et
- * varieraient d'un run à l'autre sans que la méthode ait bougé.
+ * A method as frozen in a snapshot: its identity and its raw values. Neither
+ * percentile rank nor divergence, since those depend on the analysed batch and
+ * would vary from run to run without the method having moved.
  */
 final class MethodSnapshot
 {
     /**
-     * @param array<string,float> $metrics clé de lentille => valeur brute
+     * @param array<string,float> $metrics lens key => raw value
      */
     public function __construct(
         public readonly string $key,

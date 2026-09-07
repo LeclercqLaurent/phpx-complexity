@@ -7,10 +7,10 @@ namespace PhpxComplexity\Lens;
 use PhpxComplexity\Config\Config;
 
 /**
- * Liste des lentilles appliquées par défaut, seuils issus de la configuration.
+ * The list of lenses applied by default, with thresholds taken from the config.
  *
- * Ajouter une métrique = implémenter Lens puis l'enregistrer ici : c'est le seul
- * endroit à modifier.
+ * Adding a metric means implementing Lens then registering it here: this is the
+ * only place to change.
  */
 final class LensRegistry
 {

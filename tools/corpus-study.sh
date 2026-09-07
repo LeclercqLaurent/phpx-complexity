@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
-# Récupère un corpus de projets PHP réels et fige un audit --json par projet.
+# Fetches a corpus of real PHP projects and freezes one --json audit per project.
 #
-# Sert à VALIDER les deux lentilles maison (garde-fous 1 et 2 de la doc de conception) :
-# non-redondance vis-à-vis de S3776, et défendabilité des seuils. Les résultats
-# sont ensuite agrégés par tools/corpus-report.php.
+# It serves to VALIDATE the two in-house lenses (guards 1 and 2 of the design
+# notes): non-redundancy against S3776, and defensible thresholds. The results are
+# then aggregated by tools/corpus-report.php.
 #
-# Les sources sont mises en cache sous var/corpus-src/ : réévaluer une variante
-# de lentille ne doit pas coûter un nouveau clonage. Supprimer ce dossier pour
-# repartir de dépôts frais. (L'étude initiale a été menée via la sous-commande
-# « fetch » de l'outil ; on clone ici directement, le cache étant l'objectif.)
+# Sources are cached under var/corpus-src/: re-evaluating a lens variant must not
+# cost a fresh clone. Delete that directory to start from fresh repositories. (The
+# initial study was run through the tool's own "fetch" subcommand; here we clone
+# directly, since caching is the point.)
 set -uo pipefail
 
 cd "$(dirname "$0")/.." || exit 2
@@ -17,7 +17,7 @@ OUT="var/corpus"
 SRC="var/corpus-src"
 mkdir -p "$OUT" "$SRC"
 
-# Le code de test gonflerait le corpus de méthodes non représentatives.
+# Test code would inflate the corpus with unrepresentative methods.
 EXCLUDES=(--exclude=/tests/ --exclude=/Tests/ --exclude=/test/ --exclude=/spec/
           --exclude=/fixtures/ --exclude=/Fixtures/ --exclude=/stubs/ --exclude=/Stubs/)
 
@@ -46,7 +46,7 @@ for entry in "${REPOS[@]}"; do
     fi
 
     php bin/phpx-complexity "$SRC/$name" --json "${EXCLUDES[@]}" > "$OUT/$name.json"
-    printf '%s méthodes\n' "$(php -r '$d=json_decode(file_get_contents($argv[1]),true);echo $d["summary"]["methods"]??0;' "$OUT/$name.json")"
+    printf '%s methods\n' "$(php -r '$d=json_decode(file_get_contents($argv[1]),true);echo $d["summary"]["methods"]??0;' "$OUT/$name.json")"
 done
 
 printf '\nCorpus dans %s\n' "$OUT"

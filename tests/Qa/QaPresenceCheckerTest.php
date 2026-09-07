@@ -15,7 +15,7 @@ final class QaPresenceCheckerTest extends TestCase
 
     public function testDetectsToolViaComposerDependency(): void
     {
-        self::assertTrue($this->resultFor('phpstan')->present, 'PHPStan déclaré en require-dev');
+        self::assertTrue($this->resultFor('phpstan')->present, 'PHPStan declared in require-dev');
         self::assertContains('composer:phpstan/phpstan', $this->resultFor('phpstan')->evidence);
     }
 
@@ -43,7 +43,7 @@ final class QaPresenceCheckerTest extends TestCase
         self::assertTrue($phpstan->required);
         self::assertTrue($psalm->required);
         self::assertTrue($phpstan->present);
-        self::assertFalse($psalm->present, 'Psalm requis mais absent → gate doit échouer');
+        self::assertFalse($psalm->present, 'Psalm required but absent, so the gate must fail');
     }
 
     private function resultFor(string $key): QaToolResult

@@ -8,12 +8,11 @@ use PhpxComplexity\Config\Config;
 use PhpxComplexity\Lens\Lens;
 
 /**
- * Confronte l'état courant à un instantané de référence.
+ * Compares the current state against a reference snapshot.
  *
  * La classification s'appuie sur les seuils COURANTS, puisque c'est eux que le
- * mode gate doit faire respecter ; un seuil qui aurait bougé depuis l'instantané
- * est signalé à part, pour que le lecteur sache que la base de comparaison s'est
- * déplacée.
+ * gate mode has to enforce; a threshold that moved since the snapshot is
+ * reported separately, so the reader knows the basis of comparison shifted.
  */
 final class BaselineComparator
 {
@@ -64,7 +63,7 @@ final class BaselineComparator
     {
         $isOver = $after > $threshold;
         if (null === $before) {
-            // Méthode absente de l'instantané : elle naît déjà en dépassement.
+            // A method absent from the snapshot: it is born already in violation.
             return $isOver ? DeltaCategory::NewViolation : null;
         }
 

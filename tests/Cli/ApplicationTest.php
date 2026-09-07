@@ -11,8 +11,8 @@ use PhpxComplexity\Vcs\Checkout;
 use PhpxComplexity\Vcs\GitCloner;
 
 /**
- * Comportement du CLI vérifié en mémoire. Les tests de bout en bout qui lancent
- * réellement le binaire restent dans BaselineGateTest et FetchCommandTest : ils
+ * CLI behaviour checked in memory. The end-to-end tests that actually run the
+ * binary stay in BaselineGateTest and FetchCommandTest: they
  * valident le câblage (autoloader, propagation du code de sortie), pas la
  * logique.
  */
@@ -41,19 +41,19 @@ final class ApplicationTest extends TestCase
     {
         self::assertSame(0, $this->cli(['--help']));
         self::assertStringContainsString('USAGE', $this->output->out);
-        self::assertStringContainsString('SOUS-COMMANDE FETCH', $this->output->out);
+        self::assertStringContainsString('FETCH SUBCOMMAND', $this->output->out);
     }
 
     public function testUnknownOptionIsRefusedRatherThanIgnored(): void
     {
         self::assertSame(2, $this->cli(['--jsno', self::PROJECT]));
-        self::assertStringContainsString('Option inconnue : --jsno', $this->output->err);
+        self::assertStringContainsString('Unknown option: --jsno', $this->output->err);
     }
 
     public function testMissingPathIsReported(): void
     {
         self::assertSame(2, $this->cli([__DIR__ . '/nexiste-pas']));
-        self::assertStringContainsString('Chemin introuvable', $this->output->err);
+        self::assertStringContainsString('Path not found', $this->output->err);
     }
 
     public function testFailOnNewWithoutBaselineIsRefused(): void
@@ -65,7 +65,7 @@ final class ApplicationTest extends TestCase
     public function testConsoleReportIsTheDefault(): void
     {
         self::assertSame(0, $this->cli([self::PROJECT]));
-        self::assertStringContainsString('phpx-complexity —', $this->output->out);
+        self::assertStringContainsString('phpx-complexity: 1 methods', $this->output->out);
         self::assertStringContainsString('src/Sample.php::compute', $this->output->out);
     }
 
@@ -89,8 +89,8 @@ final class ApplicationTest extends TestCase
         $target = $this->temporary . '/sous/dossier/rapport.html';
 
         self::assertSame(0, $this->cli([self::PROJECT, '--html=' . $target]));
-        self::assertFileExists($target, 'le répertoire manquant est créé');
-        self::assertStringContainsString('Rapport HTML écrit', $this->output->err);
+        self::assertFileExists($target, 'the missing directory is created');
+        self::assertStringContainsString('HTML report written to', $this->output->err);
     }
 
     public function testUnwritableHtmlTargetIsAnIoError(): void
@@ -99,30 +99,30 @@ final class ApplicationTest extends TestCase
         touch($blocker);
 
         self::assertSame(2, $this->cli([self::PROJECT, '--html=' . $blocker . '/rapport.html']));
-        self::assertStringContainsString('non créable', $this->output->err);
+        self::assertStringContainsString('cannot be created', $this->output->err);
     }
 
     public function testQaAndCoverageSectionsAreAppendedToTheConsoleReport(): void
     {
         self::assertSame(0, $this->cli([self::PROJECT, '--qa', '--coverage']));
-        self::assertStringContainsString('Présence des outils de QA', $this->output->out);
-        self::assertStringContainsString("n'est PAS de la couverture", $this->output->out);
+        self::assertStringContainsString('QA tooling present', $this->output->out);
+        self::assertStringContainsString('this is NOT coverage', $this->output->out);
     }
 
     public function testGateFailsOnAnyBreachedThreshold(): void
     {
         self::assertSame(1, $this->cli([self::PROJECT, '--config=' . self::STRICT, '--fail-on-violations']));
-        self::assertSame(0, $this->cli([self::PROJECT, '--fail-on-violations']), 'seuils par défaut : rien ne dépasse');
+        self::assertSame(0, $this->cli([self::PROJECT, '--fail-on-violations']), 'default thresholds: nothing is crossed');
     }
 
     public function testRatchetAcceptsInheritedViolationsButRefusesNewOnes(): void
     {
         self::assertSame(0, $this->runRatchet('matching-baseline.json'));
-        self::assertStringContainsString('0 régression(s)', $this->output->out);
+        self::assertStringContainsString('0 regression(s)', $this->output->out);
 
         $this->output = new BufferedOutput();
         self::assertSame(1, $this->runRatchet('empty-baseline.json'));
-        self::assertStringContainsString('Nouvelles violations (1)', $this->output->out);
+        self::assertStringContainsString('New violations (1)', $this->output->out);
     }
 
     public function testBaselineOutFreezesASnapshotUsableAsAReference(): void
@@ -131,12 +131,12 @@ final class ApplicationTest extends TestCase
 
         self::assertSame(0, $this->cli([self::PROJECT, '--config=' . self::STRICT, '--baseline-out=' . $snapshot]));
         self::assertFileExists($snapshot);
-        self::assertStringContainsString('Instantané écrit', $this->output->err);
-        // Le rapport habituel a tout de même lieu : c'est un artefact, pas un
+        self::assertStringContainsString('Snapshot written to', $this->output->err);
+        // The usual report still happens: this is an artefact, not an
         // format de sortie.
-        self::assertStringContainsString('phpx-complexity —', $this->output->out);
+        self::assertStringContainsString('phpx-complexity: 1 methods', $this->output->out);
 
-        // Et il est immédiatement exploitable comme référence : rien n'a bougé.
+        // And it is immediately usable as a reference: nothing has moved.
         $this->output = new BufferedOutput();
         self::assertSame(0, $this->cli([
             self::PROJECT,
@@ -144,7 +144,7 @@ final class ApplicationTest extends TestCase
             '--baseline=' . $snapshot,
             '--fail-on-new',
         ]));
-        self::assertStringContainsString('0 régression(s)', $this->output->out);
+        self::assertStringContainsString('0 regression(s)', $this->output->out);
     }
 
     public function testUnwritableSnapshotTargetIsAnIoError(): void
@@ -153,12 +153,12 @@ final class ApplicationTest extends TestCase
         touch($blocker);
 
         self::assertSame(2, $this->cli([self::PROJECT, '--baseline-out=' . $blocker . '/x.json']));
-        self::assertStringContainsString('non créable', $this->output->err);
+        self::assertStringContainsString('cannot be created', $this->output->err);
     }
 
     /**
-     * Rétrocompatibilité : une sortie --json complète reste une référence
-     * valide, le format d'instantané n'étant qu'un sous-ensemble.
+     * Backwards compatibility: a full --json output stays a valid reference,
+     * since the snapshot format is only a subset of it.
      */
     public function testFullJsonOutputRemainsAValidBaseline(): void
     {
@@ -173,19 +173,19 @@ final class ApplicationTest extends TestCase
             '--baseline=' . $full,
             '--fail-on-new',
         ]));
-        self::assertStringContainsString('0 régression(s)', $this->output->out);
+        self::assertStringContainsString('0 regression(s)', $this->output->out);
     }
 
     public function testMalformedBaselineIsAnIoError(): void
     {
         self::assertSame(2, $this->runRatchet('broken-baseline.json'));
-        self::assertStringContainsString('Baseline invalide', $this->output->err);
+        self::assertStringContainsString('Invalid baseline', $this->output->err);
     }
 
     public function testTopAndExcludeNarrowTheReport(): void
     {
         self::assertSame(0, $this->cli([self::PROJECT, '--top=1', '--exclude=/src/', '--no-divergence']));
-        self::assertStringContainsString('0 méthodes', $this->output->out);
+        self::assertStringContainsString('0 methods', $this->output->out);
         self::assertStringNotContainsString('Divergence', $this->output->out);
     }
 
@@ -201,7 +201,7 @@ final class ApplicationTest extends TestCase
     public function testRejectedUrlIsAUsageError(): void
     {
         self::assertSame(2, $this->cli(['fetch', 'ext::sh -c whoami']));
-        self::assertStringContainsString('URL de dépôt non supportée', $this->output->err);
+        self::assertStringContainsString('Unsupported repository URL', $this->output->err);
     }
 
     private function runRatchet(string $baseline): int

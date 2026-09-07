@@ -25,10 +25,10 @@ use PhpxComplexity\Vcs\GitCloner;
 use PhpxComplexity\Vcs\RepositoryUrl;
 
 /**
- * Point d'entrée CLI : résout les options et le chemin, délègue l'audit, choisit
- * un rapport, calcule le code de sortie. Aucune logique de mesure ici.
+ * CLI entry point: resolves the options and the path, delegates the audit, picks
+ * a report, computes the exit code. No measurement logic lives here.
  *
- * Codes de sortie : 0 = OK, 1 = violations (mode gate), 2 = erreur d'usage ou d'E-S.
+ * Exit codes: 0 = OK, 1 = violations (gate mode), 2 = usage or I/O error.
  */
 final class Application
 {
@@ -65,42 +65,42 @@ final class Application
     }
 
     /**
-     * Invocation incohérente : message d'erreur, ou null si elle tient debout.
+     * An inconsistent invocation: an error message, or null if it holds up.
      */
     private function usageError(Options $options): ?string
     {
         if ([] !== $options->unknown) {
             return sprintf(
-                "Option inconnue : %s\nVoir « phpx-complexity --help » pour la liste.",
+                "Unknown option: %s\nSee 'phpx-complexity --help' for the list.",
                 implode(', ', $options->unknown),
             );
         }
 
         if ($options->failOnNew && null === $options->baselineFile) {
-            return '--fail-on-new attend une référence : ajouter --baseline=FICHIER.';
+            return '--fail-on-new expects a reference: add --baseline=FILE.';
         }
 
         return $this->targetError($options);
     }
 
     /**
-     * La cible attendue diffère selon la commande : une URL de dépôt pour fetch,
-     * un chemin existant pour l'audit local.
+     * The expected target differs per command: a repository URL for fetch, an
+     * existing path for a local audit.
      */
     private function targetError(Options $options): ?string
     {
         if (Command::Fetch === $options->command) {
-            return null === $options->target ? 'La sous-commande « fetch » attend une URL de dépôt.' : null;
+            return null === $options->target ? "The 'fetch' subcommand expects a repository URL." : null;
         }
 
         $path = $this->resolvePath($options);
 
-        return file_exists($path) ? null : sprintf('Chemin introuvable : %s', $path);
+        return file_exists($path) ? null : sprintf('Path not found: %s', $path);
     }
 
     /**
-     * Récupère un dépôt distant puis lui applique l'audit local ordinaire. Le
-     * temporaire est retiré quoi qu'il arrive, y compris si l'analyse échoue.
+     * Fetches a remote repository then runs the ordinary local audit on it. The
+     * temporary copy is removed whatever happens, including on analysis failure.
      */
     private function fetch(Options $options): int
     {
@@ -122,7 +122,7 @@ final class Application
     private function discard(Checkout $checkout, bool $keep): void
     {
         if ($keep) {
-            $this->output->error(sprintf('Copie conservée : %s', $checkout->path));
+            $this->output->error(sprintf('Copy kept at: %s', $checkout->path));
 
             return;
         }
@@ -151,9 +151,9 @@ final class Application
     }
 
     /**
-     * Fige l'instantané demandé par --baseline-out, en marge du rapport : ce
-     * n'est pas un format de sortie mais un artefact, le rapport habituel a
-     * lieu quand même.
+     * Freezes the snapshot requested by --baseline-out, alongside the report:
+     * this is an artefact rather than an output format, so the usual report is
+     * produced all the same.
      *
      * @param list<Lens> $lenses
      */
@@ -171,7 +171,7 @@ final class Application
             return 2;
         }
 
-        $this->output->error(sprintf('Instantané écrit : %s', $options->baselineOut));
+        $this->output->error(sprintf('Snapshot written to: %s', $options->baselineOut));
 
         return 0;
     }
@@ -195,7 +195,7 @@ final class Application
     }
 
     /**
-     * Rend le rapport demandé. Renvoie 0, ou 2 si une écriture a échoué.
+     * Renders the requested report. Returns 0, or 2 if a write failed.
      *
      * @param list<Lens> $lenses
      */
@@ -208,7 +208,7 @@ final class Application
         }
 
         if ($options->html) {
-            // Précédence : --html=FICHIER (CLI) > html.path (config) > stdout.
+            // Precedence: --html=FILE (CLI) > html.path (config) > stdout.
             $target = $options->htmlTarget ?? $config->htmlPath;
 
             return $this->emitHtml((new HtmlReporter($lenses, $config))->render($audit, $comparison), $target);
@@ -234,23 +234,23 @@ final class Application
             return 2;
         }
 
-        $this->output->error(sprintf('Rapport HTML écrit : %s', $target));
+        $this->output->error(sprintf('HTML report written to: %s', $target));
 
         return 0;
     }
 
     /**
-     * @return string|null message d'erreur, ou null si l'écriture a réussi
+     * @return string|null an error message, or null when the write succeeded
      */
     private function writeFile(string $target, string $contents): ?string
     {
         $directory = \dirname($target);
         if (!is_dir($directory) && !@mkdir($directory, 0o777, true) && !is_dir($directory)) {
-            return sprintf('Répertoire de sortie introuvable et non créable : %s', $directory);
+            return sprintf('Output directory is missing and cannot be created: %s', $directory);
         }
 
         if (false === @file_put_contents($target, $contents)) {
-            return sprintf('Écriture impossible : %s', $target);
+            return sprintf('Cannot write to: %s', $target);
         }
 
         return null;
@@ -281,13 +281,14 @@ final class Application
     }
 
     /**
-     * Mode gate : 1 dès qu'un seuil est dépassé ou qu'un outil QA requis manque.
+     * Gate mode: 1 as soon as a threshold is crossed or a required QA tool is
+     * missing.
      *
      * @param list<Lens> $lenses
      */
     private function exitCode(AuditResult $audit, ?Comparison $comparison, Options $options, Config $config, array $lenses): int
     {
-        // Cliquet : seules les régressions échouent, l'existant hérité passe.
+        // Ratchet: only regressions fail, inherited debt passes.
         if ($options->failOnNew && null !== $comparison && $comparison->regressionCount() > 0) {
             return 1;
         }
@@ -340,7 +341,7 @@ final class Application
     }
 
     /**
-     * Chemin audité : l'argument s'il est fourni, sinon le répertoire courant.
+     * The audited path: the argument when given, otherwise the current directory.
      */
     private function resolvePath(Options $options): string
     {
@@ -354,8 +355,8 @@ final class Application
     }
 
     /**
-     * Contenu JSON du fichier de config, réduit aux clés textuelles : un tableau
-     * JSON de premier niveau n'est pas une configuration valide.
+     * The JSON content of the config file, narrowed to string keys: a top-level
+     * JSON array is not a valid configuration.
      *
      * @return array<string,mixed>
      */
@@ -394,52 +395,52 @@ final class Application
         $version = self::VERSION;
 
         return <<<TXT
-            phpx-complexity {$version} — auditeur de complexité PHP multi-lentilles
+            phpx-complexity {$version}, a multi-lens PHP complexity auditor
 
             USAGE
-              phpx-complexity [CHEMIN] [options]
+              phpx-complexity [PATH] [options]
               phpx-complexity fetch URL [options]
 
-            LENTILLES
-              cognitive  S3776 complexité cognitive (branches + imbrication)
-              params     S107  nombre de paramètres
-              returns    S1142 nombre d'instructions return
-              live_peak  pic de variables vivantes (mémoire de travail)
-              entangle   intrication des données (degré du graphe de co-occurrence)
+            LENSES
+              cognitive  S3776 cognitive complexity (branching + nesting)
+              params     S107  parameter count
+              returns    S1142 number of return statements
+              live_peak  peak of live variables (working memory)
+              entangle   data entanglement (degree of the co-occurrence graph)
 
             OPTIONS
-              --json                 Sortie JSON (CI, dashboards)
-              --html[=FICHIER]       Rapport HTML autonome (hors-ligne). Sans valeur :
-                                     sortie standard ; avec =FICHIER : écrit le fichier
-              --qa                   Vérifie la présence des outils de QA du projet
-              --coverage             Lit un rapport de couverture (clover/cobertura) s'il
-                                     existe + faits de présence de tests (statique)
-              --config=FICHIER       Fichier de config (défaut : phpx-complexity.json)
-              --baseline=FICHIER     Compare à un instantané figé. Affiche nouvelles
-                                     violations, aggravées, résolues
-              --baseline-out=FICHIER Fige l'instantané de référence. Réduit à ce que
-                                     la comparaison lit, trié par identité : les
-                                     régénérations restent lisibles en revue
-              --fail-on-new          Code de sortie 1 sur les seules RÉGRESSIONS par
-                                     rapport à la baseline : l'existant hérité passe
-              --fail-on-violations   Code de sortie 1 si un seuil est dépassé, ou si un
-                                     outil QA requis manque (mode gate)
-              --top=N                Nombre de lignes du classement
-              --exclude=FRAGMENT     Exclut les chemins contenant FRAGMENT (répétable)
-              --no-divergence        Masque le rapport de divergence
-              --keep                 (fetch) Conserve la copie temporaire du dépôt
-              -h, --help             Cette aide
+              --json                 JSON output (CI, dashboards)
+              --html[=FILE]          Standalone HTML report (offline). With no value:
+                                     standard output; with =FILE: writes the file
+              --qa                   Checks that the project's QA tools are present
+              --coverage             Reads a coverage report (clover/cobertura) when one
+                                     exists, plus static facts about test presence
+              --config=FILE          Config file (default: phpx-complexity.json)
+              --baseline=FILE        Compares against a frozen snapshot. Reports new,
+                                     worsened and resolved violations
+              --baseline-out=FILE    Freezes the reference snapshot. Narrowed to what
+                                     the comparison reads and sorted by identity, so
+                                     regenerating it stays reviewable
+              --fail-on-new          Exit code 1 on REGRESSIONS against the baseline
+                                     only: inherited debt passes
+              --fail-on-violations   Exit code 1 when a threshold is crossed, or when a
+                                     required QA tool is missing (gate mode)
+              --top=N                Number of rows in the ranking
+              --exclude=FRAGMENT     Excludes paths containing FRAGMENT (repeatable)
+              --no-divergence        Hides the divergence report
+              --keep                 (fetch) Keeps the temporary copy of the repository
+              -h, --help             This help
 
-            SOUS-COMMANDE FETCH
-              Clone un dépôt distant en superficiel dans un dossier temporaire, lui
-              applique l'audit, puis nettoie. Schémas acceptés : https://, ssh:// et
-              git@hote:chemin. C'est la SEULE partie de l'outil qui accède au réseau ;
-              l'analyse, elle, ne voit jamais qu'un chemin local. L'authentification
-              est celle de git (agent SSH, credential helper) — aucune invite n'est
-              posée, un dépôt privé inaccessible échoue immédiatement.
+            FETCH SUBCOMMAND
+              Shallow-clones a remote repository into a temporary directory, audits it,
+              then cleans up. Accepted schemes: https://, ssh:// and git@host:path. This
+              is the ONLY part of the tool that touches the network; the analysis itself
+              never sees anything but a local path. Authentication is git's own (SSH
+              agent, credential helper) and no prompt is ever raised, so an unreachable
+              private repository fails immediately.
 
-            Le rapport de DIVERGENCE met en avant les méthodes où les lentilles se
-            contredisent — l'angle mort des métriques de complexité isolées.
+            The DIVERGENCE report highlights the methods where the lenses contradict
+            each other, which is the blind spot of any single complexity metric.
 
             TXT;
     }

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Faux « git » pour les tests : reproduit un clone sans réseau, et consigne les
-# arguments reçus afin que le durcissement de la commande soit vérifiable.
+# A fake "git" for the tests: it reproduces a clone with no network and records
+# the arguments received, so the hardening of the command stays verifiable.
 set -u
 
 target="${@: -1}"

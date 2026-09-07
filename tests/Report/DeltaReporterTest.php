@@ -16,9 +16,9 @@ final class DeltaReporterTest extends TestCase
     {
         $output = $this->render();
 
-        self::assertStringContainsString('Nouvelles violations (2)', $output);
-        self::assertStringContainsString('Violations aggravées (1)', $output);
-        self::assertStringContainsString('Violations résolues (1)', $output);
+        self::assertStringContainsString('New violations (2)', $output);
+        self::assertStringContainsString('Worsened violations (1)', $output);
+        self::assertStringContainsString('Resolved violations (1)', $output);
     }
 
     public function testValuesAreShownAsAFactualBeforeAfter(): void
@@ -26,24 +26,24 @@ final class DeltaReporterTest extends TestCase
         $output = $this->render();
 
         self::assertMatchesRegularExpression('/cognitive\s+12 → 18\s+src\/Foo\.php::compute/', $output);
-        // Méthode absente de la référence : pas de valeur « avant ».
+        // A method absent from the reference has no "before" value.
         self::assertMatchesRegularExpression('/cognitive\s+— → 20\s+src\/Neuf\.php::fresh/', $output);
     }
 
     public function testRegressionCountExcludesResolvedOnes(): void
     {
-        self::assertStringContainsString('→ 3 régression(s)', $this->render());
+        self::assertStringContainsString('-> 3 regression(s)', $this->render());
     }
 
     public function testMovedThresholdIsSignalled(): void
     {
-        self::assertStringContainsString('Seuil « entangle » modifié', $this->render());
-        self::assertStringContainsString('4 → 3', $this->render());
+        self::assertStringContainsString('Threshold "entangle" changed', $this->render());
+        self::assertStringContainsString('4 -> 3', $this->render());
     }
 
     public function testAppearedAndDisappearedGiveContext(): void
     {
-        self::assertStringContainsString('Méthodes apparues : 1 · disparues : 1', $this->render());
+        self::assertStringContainsString('Methods added: 1, removed: 1', $this->render());
     }
 
     private function render(): string

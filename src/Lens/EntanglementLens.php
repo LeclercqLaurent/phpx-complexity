@@ -10,17 +10,17 @@ use PhpParser\NodeVisitorAbstract;
 use PhpxComplexity\Ast\AstHelper;
 
 /**
- * Intrication des données : degré moyen du graphe de co-occurrence des variables
- * locales (2·arêtes / sommets). Une arête relie deux variables RÉELLEMENT
- * combinées via un flux de données :
- *   - affectation : la cible dépend de chaque variable du RHS
- *     (`$c = f($a, $b)` → c–a, c–b ; mais PAS a–b : arguments indépendants) ;
- *   - opérateur binaire / ternaire : les deux opérandes sont combinés
- *     (`if ($a && $b)` → a–b).
+ * Data entanglement: the average degree of the co-occurrence graph of local
+ * variables (2*edges / vertices). An edge links two variables REALLY combined
+ * through a data flow:
+ *   - assignment: the target depends on every variable of the right-hand side
+ *     (`$c = f($a, $b)` gives c-a and c-b, but NOT a-b: independent arguments);
+ *   - binary or ternary operator: both operands are combined
+ *     (`if ($a && $b)` gives a-b).
  *
- * `$this->x = $x` ne produit aucune arête (affectation plate) : c'est ce qui
- * distingue l'entropie ENCHEVÊTRÉE (coûteuse) de l'entropie PLATE d'une factory.
- * Seul axe non couvert par S3776 (branches) ni S107 (signature).
+ * `$this->x = $x` produces no edge at all (a flat assignment), and that is what
+ * separates INTERWOVEN entropy (expensive) from the FLAT entropy of a factory.
+ * It is the only axis covered by neither S3776 (branching) nor S107 (signature).
  */
 final class EntanglementLens implements Lens
 {
@@ -45,10 +45,10 @@ final class EntanglementLens implements Lens
 
     public function description(): string
     {
-        return 'Degré moyen du graphe de co-occurrence des variables locales '
-            . '(2·arêtes / sommets) : une arête relie deux variables réellement '
-            . "combinées par un flux de données. Distingue l'entropie enchevêtrée "
-            . "(coûteuse) de l'entropie plate d'une factory. Seul axe hors S3776/S107.";
+        return 'The average degree of the co-occurrence graph of local variables '
+            . '(2*edges / vertices): an edge links two variables really combined by '
+            . 'a data flow. It separates interwoven entropy (expensive) from the '
+            . 'flat entropy of a factory. The only axis outside S3776 and S107.';
     }
 
     public function measure(Node\FunctionLike $function, array $stmts): float
@@ -106,8 +106,8 @@ final class EntanglementLens implements Lens
 
         AstHelper::traverse($stmts, $visitor);
 
-        // Toutes les variables locales comptent comme sommets, même isolées,
-        // pour que le degré moyen ne soit pas surévalué.
+        // Every local variable counts as a vertex, isolated ones included, so
+        // that the average degree is not overstated.
         foreach (AstHelper::variableSpans($stmts) as $name => $_) {
             $visitor->nodes[$name] = true;
         }

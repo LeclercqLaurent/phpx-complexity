@@ -10,7 +10,7 @@ use PhpxComplexity\Cli\Options;
 
 /**
  * Verrouille le contrat de la ligne de commande : c'est lui que les prochaines
- * options (baseline, sous-commande) viendront étendre.
+ * options (baseline, subcommand) will extend.
  */
 final class OptionsTest extends TestCase
 {
@@ -31,7 +31,7 @@ final class OptionsTest extends TestCase
         self::assertNull($options->configFile);
         self::assertNull($options->top);
         self::assertSame([], $options->exclude);
-        // La divergence est le coeur de l'outil : affichée sauf refus explicite.
+        // Divergence is the heart of the tool: shown unless explicitly refused.
         self::assertTrue($options->showDivergence);
     }
 
@@ -95,8 +95,8 @@ final class OptionsTest extends TestCase
     }
 
     /**
-     * Une option mal orthographiée doit être signalée, jamais absorbée : sinon
-     * « --jsno » rendrait un rapport console avec un code de sortie 0.
+     * A misspelled option must be reported, never absorbed: otherwise "--jsno"
+     * would render a console report with exit code 0.
      */
     public function testUnknownFlagIsRecordedAndNotTakenForAPath(): void
     {
@@ -123,7 +123,7 @@ final class OptionsTest extends TestCase
 
     public function testAuditVerbIsOptional(): void
     {
-        // Les deux formes doivent désigner la même cible.
+        // Both forms must designate the same target.
         self::assertSame('src/', (new Options(['src/']))->target);
         self::assertSame('src/', (new Options(['audit', 'src/']))->target);
     }

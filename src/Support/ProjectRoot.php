@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace PhpxComplexity\Support;
 
 /**
- * Résout la racine d'un projet : on part du chemin analysé et on remonte jusqu'au
- * premier dossier contenant composer.json (cas courant : on audite `app/src` mais
- * la config / les rapports vivent dans `app/`). À défaut, le dossier de départ.
+ * Resolves the root of a project: it starts from the analysed path and walks
+ * up to the first directory holding a composer.json (a common case: auditing
+ * `app/src` while the config and the reports live in `app/`). Failing that, the
+ * starting directory.
  */
 final class ProjectRoot
 {

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 # Construit le PHAR distribuable.
 #
-# Deux contraintes que « box compile » seul ne règle pas :
+# Two constraints that "box compile" alone does not settle:
 #   - php.ini livre phar.readonly=On, il faut le lever le temps du build ;
-#   - box embarque tout vendor/, donc PHPUnit et PHPStan si les dépendances de
-#     dev sont installées. On bascule sur --no-dev le temps de compiler, puis on
-#     restaure l'environnement de développement quoi qu'il arrive.
+#   - box bundles the whole of vendor/, hence PHPUnit and PHPStan when the dev
+#     dependencies are installed. We switch to --no-dev for the compilation, then
+#     restore the development environment whatever happens.
 set -uo pipefail
 
 cd "$(dirname "$0")/.." || exit 2
@@ -17,12 +17,12 @@ if [ ! -x "$BOX" ]; then
 fi
 
 restore() {
-    echo "== restauration des dépendances de développement"
+    echo "== restoring the development dependencies"
     composer install --quiet
 }
 trap restore EXIT
 
-echo "== dépendances de production seules"
+echo "== production dependencies only"
 composer install --no-dev --quiet || exit 2
 
 echo "== compilation"

@@ -7,9 +7,9 @@ namespace PhpxComplexity\Cli;
 /**
  * Destination des sorties du CLI.
  *
- * Exister en tant que collaborateur plutôt qu'en appels directs à STDOUT permet
- * de vérifier le comportement de l'application EN MÉMOIRE : sans cette couture,
- * la seule façon de la tester est de lancer un sous-processus, que les outils de
+ * Existing as a collaborator rather than as direct STDOUT calls is what allows
+ * the behaviour of the application to be checked IN MEMORY: without this seam,
+ * the only way to test it is to spawn a subprocess, which coverage tools
  * couverture n'instrumentent pas.
  */
 interface Output
@@ -17,7 +17,7 @@ interface Output
     public function write(string $text): void;
 
     /**
-     * Message d'erreur ; le saut de ligne final est ajouté.
+     * An error message; the trailing newline is added.
      */
     public function error(string $line): void;
 }

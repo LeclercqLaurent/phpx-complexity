@@ -7,8 +7,8 @@ use PhpxComplexity\Cli\Application;
 
 (static function (): void {
     $candidates = [
-        __DIR__ . '/../vendor/autoload.php', // dépôt cloné / dev
-        __DIR__ . '/../../../autoload.php',  // installé comme dépendance
+        __DIR__ . '/../vendor/autoload.php', // cloned repository / dev
+        __DIR__ . '/../../../autoload.php',  // installed as a dependency
     ];
     foreach ($candidates as $autoload) {
         if (is_file($autoload)) {
@@ -17,7 +17,7 @@ use PhpxComplexity\Cli\Application;
             return;
         }
     }
-    fwrite(\STDERR, "Autoloader Composer introuvable. Lancez « composer install ».\n");
+    fwrite(\STDERR, "Composer autoloader not found. Run 'composer install'.\n");
     exit(2);
 })();
 

@@ -10,7 +10,7 @@ use PhpxComplexity\Tests\Support\SampleAudit;
 
 /**
  * Le module `--qa` constate une PRÉSENCE, il ne juge pas : les assertions
- * vérifient qu'il rapporte des faits et ne produit aucune note.
+ * check that it reports facts and produces no grade.
  */
 final class QaReporterTest extends TestCase
 {
@@ -35,12 +35,12 @@ final class QaReporterTest extends TestCase
 
     public function testCountsPresentToolsAndCoveredCategories(): void
     {
-        self::assertStringContainsString('1/3 outils détectés, 1/3 catégories couvertes', $this->render());
+        self::assertStringContainsString('1/3 tools detected, 1/3 categories covered', $this->render());
     }
 
     public function testMissingRequiredToolsAreSignalled(): void
     {
-        self::assertStringContainsString('1 requis manquant', $this->render());
+        self::assertStringContainsString('1 required one(s) missing', $this->render());
         self::assertSame(['phpunit'], (new QaReporter())->missingRequired($this->qaResults()));
     }
 

@@ -14,11 +14,11 @@ use PhpxComplexity\Qa\QaToolRegistry;
 use PhpxComplexity\Qa\QaToolResult;
 
 /**
- * Assemble un audit complet à partir d'un chemin LOCAL, et rien d'autre : aucun
- * accès réseau, aucune notion de CLI ni de format de sortie.
+ * Assembles a complete audit from a LOCAL path and nothing else: no network
+ * access, no notion of a CLI or of an output format.
  *
- * C'est le point d'entrée que réutilisera tout appelant amont — un wrapper qui
- * clonerait un dépôt, par exemple — sans jamais toucher au cœur d'analyse.
+ * This is the entry point any upstream caller reuses, a wrapper cloning a
+ * repository for instance, without ever touching the analysis core.
  */
 final class AuditRunner
 {

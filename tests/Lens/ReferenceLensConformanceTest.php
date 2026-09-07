@@ -14,9 +14,9 @@ use PhpxComplexity\Lens\ParameterCountLens;
 use PhpxComplexity\Lens\ReturnCountLens;
 
 /**
- * Conformité des deux autres règles SonarQube reproduites : S107 (paramètres) et
- * S1142 (points de sortie). Comme pour S3776, les valeurs attendues décrivent la
- * règle, pas notre sortie.
+ * Conformance of the two other reproduced SonarQube rules: S107 (parameters) and
+ * S1142 (exit points). As for S3776, the expected values describe the rule, not
+ * our output.
  */
 final class ReferenceLensConformanceTest extends TestCase
 {
@@ -27,9 +27,9 @@ final class ReferenceLensConformanceTest extends TestCase
     {
         return [
             ['noParams', 0, 'signature vide'],
-            ['__construct', 3, 'les propriétés promues restent des paramètres'],
+            ['__construct', 3, 'promoted properties remain parameters'],
             ['variadicCountsOnce', 2, 'le variadique compte pour un'],
-            ['defaultsDoNotChangeCount', 3, 'les valeurs par défaut ne retirent rien'],
+            ['defaultsDoNotChangeCount', 3, 'default values remove nothing'],
         ];
     }
 
@@ -43,7 +43,7 @@ final class ReferenceLensConformanceTest extends TestCase
             ['singleReturn', 1, 'sortie unique'],
             ['returnInEachBranch', 3, 'une sortie par branche'],
             ['returnsInClosureBelongToIt', 1, 'les return de la closure sont les siens'],
-            ['arrowFunctionReturnExcluded', 1, 'le return implicite de la fonction fléchée est le sien'],
+            ['arrowFunctionReturnExcluded', 1, 'the arrow function\'s implicit return is its own'],
             ['returnsAcrossTryCatchFinally', 2, 'try et catch comptent, finally ne sort pas'],
         ];
     }
@@ -73,6 +73,6 @@ final class ReferenceLensConformanceTest extends TestCase
             }
         }
 
-        self::fail(sprintf('Méthode absente du fixture : %s', $method));
+        self::fail(sprintf('Method not found in the fixture: %s', $method));
     }
 }
