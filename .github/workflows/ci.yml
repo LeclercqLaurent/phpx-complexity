@@ -41,13 +41,13 @@ jobs:
           vendor/bin/phpunit --coverage-clover var/clover.xml
           php tools/coverage-gate.php var/clover.xml 90
 
-      - name: Dogfooding — l'outil s'audite en mode cliquet
+      - name: Dogfooding : l'outil s'audite en mode cliquet
         run: php bin/phpx-complexity src/ --baseline=baseline.json --fail-on-new
 
   # Preuve que la borne annoncée (PHP >= 8.2) tient réellement. Le lock ne peut
   # pas servir ici : résolu sous 8.4, il entraîne des composants Symfony exigeant
   # >= 8.4.1 via PHP-CS-Fixer. On résout donc pour la plateforme testée, et on
-  # n'exécute que ce qui engage la bibliothèque elle-même — jamais le gate, qui
+  # n'exécute que ce qui engage la bibliothèque elle-même, jamais le gate, qui
   # resterait à la merci d'une version d'outil non figée.
   tests:
     name: Tests (PHP ${{ matrix.php }})
@@ -75,5 +75,5 @@ jobs:
       - name: PHPUnit
         run: vendor/bin/phpunit
 
-      - name: Dogfooding — l'outil s'audite en mode cliquet
+      - name: Dogfooding : l'outil s'audite en mode cliquet
         run: php bin/phpx-complexity src/ --baseline=baseline.json --fail-on-new
