@@ -37,7 +37,7 @@ final class LiveVariablePeakLens implements Lens
 
     public function label(): string
     {
-        return 'Pic vivantes';
+        return 'Live peak';
     }
 
     public function reference(): string

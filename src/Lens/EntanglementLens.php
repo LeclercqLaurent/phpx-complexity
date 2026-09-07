@@ -35,7 +35,7 @@ final class EntanglementLens implements Lens
 
     public function label(): string
     {
-        return 'Intrication';
+        return 'Entanglement';
     }
 
     public function reference(): string

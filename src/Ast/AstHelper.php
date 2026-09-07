@@ -16,7 +16,7 @@ use PhpParser\NodeVisitorAbstract;
 final class AstHelper
 {
     /**
-     * Variables locales (hors $this) d'un sous-arbre, sans entrer dans les
+     * The local variables (excluding $this) of a subtree, without entering
      * nested functions.
      *
      * @return list<string>

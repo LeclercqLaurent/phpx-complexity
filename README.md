@@ -1,8 +1,10 @@
 # phpx-complexity
 
 A **multi-lens**, **offline** PHP complexity auditor with a single dependency
-(`nikic/php-parser`). It natively reproduces the SonarQube "complexity" family of
-rules, adds two lenses of its own, then **plays the lenses against each other** to
+(`nikic/php-parser`). It natively reproduces the SonarQube "complexity" family
+of
+rules, adds two lenses of its own, then **plays the lenses against each other**
+to
 reveal what any isolated metric lets through.
 
 [![CI](https://github.com/LeclercqLaurent/phpx-complexity/actions/workflows/ci.yml/badge.svg)](https://github.com/LeclercqLaurent/phpx-complexity/actions/workflows/ci.yml)
@@ -10,110 +12,212 @@ reveal what any isolated metric lets through.
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![Coverage](https://img.shields.io/badge/coverage-95%25-brightgreen)](#the-quality-of-the-project-itself)
 
-PHP >= 8.2 · MIT · `codeam/phpx-complexity` · single dependency: `nikic/php-parser`
+PHP >= 8.2 · MIT · `codeam/phpx-complexity` · single dependency:
+`nikic/php-parser`
 
 ---
 
-## The starting idea: QA as an entropy policy
+## Why another complexity tool
 
-The tool grew out of one underlying argument: **QA rules are proxies for
-entropy** in Shannon's sense, the number of bits needed to describe the behaviour
-of a method. S3776 bounds execution paths, S107 the degrees of freedom on input,
-S1142 the terminal branches. Each puts a limit on one facet of "how much
-information you have to hold in mind to understand this code".
+Traditional QA metrics measure complexity one axis at a time. This tool looks
+for **disagreement between several of them**, because a method that one metric
+finds simple and another finds hard is usually where a single-metric linter lets
+a problem through.
 
-What remains is the causal link one assumes between QA and entropy. The naive
-answer, *QA lowers entropy*, does not hold: if that were the goal, the best code
-would always be the most trivial, and software that does nothing would be a
-masterpiece. The position taken here is narrower:
+## The idea in one example
 
-> **Essential** entropy is irreducible: it comes from the problem to be solved,
-> not from the way it is written (Brooks, *No Silver Bullet*). QA eliminates
-> **accidental** entropy, the kind added without necessity, which is what DRY,
-> KISS and YAGNI target, and it **localises** essential entropy into packets that
-> fit under the reader's cognitive threshold.
->
-> It is a policy of **compression and localisation**, not a fight against
-> complexity.
+Both methods below have a cognitive complexity (S3776) of 2 and take one
+parameter. Any Sonar-style linter treats them the same.
 
-Three direct consequences, which explain the tool far better than its options do.
+```php
+// Method A: four independent values, assembled at the end
+public function assemble(Order $order): Report
+{
+    $customer = $this->customers->find($order->customerId());
+    $invoice  = $this->invoices->latest();
+    $shipping = $this->carriers->cheapest();
+    $history  = $this->history->recent();
 
-**The existing rules are missing an axis.** S3776 counts *branches* but is blind
-to **dependency between symbols**. Two methods with a cognitive complexity of 12
-can impose very different reading loads depending on whether their variables are
-independent or interwoven. That gap is what the two in-house lenses, `live_peak`
-and `entangle`, fill.
+    if ($order->isGift())    { $invoice = $invoice->withoutPrices(); }
+    if ($order->isExpress()) { $shipping = $shipping->expedited(); }
 
-**Zero complexity is not the requirement; not growing without reason is.** Since
-essential entropy is irreducible, an absolute threshold is unenforceable on
-existing code. Hence the **ratchet** mode: accept what exists, fail only on
-regressions.
+    return new Report($customer, $invoice, $shipping, $history);
+}
 
-**A score would be a contradiction in terms.** The entropy of a method is not a
-grade; comparing it to a threshold is a fact, summarising it as 7.5/10 is an
-opinion in disguise. Hence the firm refusal to produce any score at all.
+// Method B: three values that keep referring to one another
+public function settle(Order $order): Money
+{
+    $base     = $this->pricer->price($order->items());
+    $discount = $order->isGift() ? $base * 0.5 : 0.0;
+    $tax      = ($base - $discount) * $this->rate($order->country());
 
----
+    if ($order->isExpress()) {
+        $tax = $tax + ($base - $discount) * 0.02;
+    }
+
+    return $base - $discount + $tax;
+}
+```
+
+| Lens        | Method A | Method B |
+|-------------|----------|----------|
+| `cognitive` | 2        | 2        |
+| `params`    | 1        | 1        |
+| `returns`   | 1        | 1        |
+| `live_peak` | 5        | 4        |
+| `entangle`  | 0.4      | 3.0      |
+
+Four lenses out of five say these methods are the same, and `live_peak` even
+gives the edge to B, which holds one variable fewer. Only `entangle` separates
+them, and it does so by a factor of seven.
+
+The difference is real. In A you can read each line, forget it, and move on:
+nothing you computed on line 3 is needed on line 5. In B, `$base`, `$discount`
+and `$tax` keep referring to one another, so to understand the last line you
+have
+to hold all three at once, along with how the express branch has already changed
+one of them. Same branch count, different reading load.
+
+That gap is what `entangle` measures, and what the divergence report surfaces.
+It
+is also the whole argument for crossing lenses rather than trusting one: a
+single-metric linter reports nothing here.
+
+> The figures above come from running the tool on these two snippets. Every
+> number in this README is measured rather than asserted, which is the least a
+> measuring tool owes its reader.
+
+## The frame: QA as an entropy policy
+
+We use *entropy* as a conceptual lens inspired by information theory, not as a
+literal Shannon measure: roughly, how much a reader has to hold in mind to
+describe what a method does. Each QA rule bounds one facet of it. S3776 bounds
+execution paths, S107 the degrees of freedom on input, S1142 the exit points.
+
+The naive reading, "QA lowers entropy", does not hold: taken literally, the best
+code would be the code that does nothing. Following Brooks (*No Silver Bullet*),
+we distinguish:
+
+- **Essential** complexity, which comes from the problem and cannot be removed;
+- **Accidental** complexity, added without necessity, which DRY, KISS and YAGNI exist to remove.
+
+QA, on this view, is a policy of **compression and localisation**: remove the
+accidental, and cut the essential into packets that fit under a reader's
+cognitive threshold. It is not a war on complexity.
+
+Three design decisions follow directly from this frame.
+
+**1. The standard rules are missing an axis.** S3776 counts branches but is blind to dependency between symbols. Two in-house lenses fill that gap:
+
+| Key          | Measures                                                             | Default threshold |
+|--------------|----------------------------------------------------------------------|-------------------|
+| `live_peak`  | Peak number of simultaneously live variables (working memory, 7 ± 2) | 8                 |
+| `entangle`   | Average degree of the variable co-occurrence graph                   | 3                 |
+
+They are read together: a high peak with low entanglement (a factory assembling
+8 fields) is fine; a high peak with high entanglement is not. Of the two,
+`entangle` is the genuinely new signal. `live_peak` counts parameters used in
+the body, so it correlates with S107 (ρ = 0.70); we keep it because an argument
+you must remember does occupy working memory, but we do not claim it is
+orthogonal.
+
+**2. Zero is not the target; unexplained growth is.** Since essential complexity cannot be removed, an absolute threshold cannot be enforced on existing code. Hence the **ratchet mode**: accept the current state, fail only on regressions.
+
+**3. No aggregate score.** The tool never prints a grade, per method or overall, in any output format, and tests enforce this. It reports raw values and comparisons to thresholds. To be precise about what is and is not factual here: the *thresholds* are opinions, made explicit and configurable; the *comparison* to a chosen threshold is a fact; a single number like "7.5/10" would blend the two while hiding the blend.
+
+There is a second, more fundamental reason not to aggregate. A formula like
+`cognitive + live_peak + entangle` assumes an exchange rate: why should one
+level of nesting be worth one live variable? Why should some amount of
+entanglement offset some amount of control-flow complexity? These questions have
+no general answer. Keeping the lenses separate avoids inventing an arbitrary
+equivalence between phenomena of different kinds.
+
+The divergence report does order methods, by how far their percentile ranks
+disagree across lenses, but that ordering is a triage aid, not a quality claim.
+
+## The five lenses
+
+| Key         | Reference | Measures                                                        | Default |
+|-------------|-----------|-----------------------------------------------------------------|---------|
+| `cognitive` | S3776     | Cognitive complexity: branching, nesting, logical-operator runs | 15      |
+| `params`    | S107      | Parameters in the signature                                     | 7       |
+| `returns`   | S1142     | Return statements                                               | 3       |
+| `live_peak` |           | Peak of simultaneously live variables                           | 8       |
+| `entangle`  |           | Average degree of the variable co-occurrence graph              | 3       |
+
+The first three are native reimplementations on top of php-parser (no PHPStan).
+Their conformance is tested case by case against values derived from the
+published rules, not from our own output, so that a wrong reimplementation
+actually fails a test (`tests/Lens/*ConformanceTest.php`).
+
+Documented deviations: recursion is not counted (it would need interprocedural
+analysis); `match` is treated as a `switch` (it postdates the spec); `else { if
+… }` counts as `else if`, because php-parser produces the same tree and PHP
+itself does not distinguish `else if` from `elseif`.
+
+The two in-house lenses have no external specification, so their definition *is*
+the specification and has to be just as precise. For `live_peak`: when a
+variable becomes live, when it stops being live, how branches, loops, closures
+and arrow functions, `$this` and properties, and exceptional control flow are
+handled. For `entangle`: what counts as a co-occurrence and at what granularity.
+These definitions are fixed in `docs/lenses.md` and covered by fixtures; a
+metric that cannot be explained precisely cannot serve as an engineering
+constraint.
+
+A note on `returns`: the default of 3 follows S1142, but it penalises
+guard-clause style. If your codebase uses early returns for invariant checks,
+raise it; the ratchet will still catch growth.
 
 ## Why cross the lenses
 
 An isolated complexity metric has blind spots. Cognitive complexity (S3776)
-counts branches but ignores a method with no `if` that interweaves ten variables;
-the parameter count (S107) ignores internal logic.
+counts branches, but ignores a method with no `if` at all that interweaves ten
+variables. Parameter count (S107) ignores what happens inside. Return count
+(S1142) says nothing about what precedes each `return`. Each is blind to what
+the others see.
 
-Crossing several lenses surfaces the methods where they **contradict each other**,
-and that is where the problems a single-metric linter lets through are hiding. On
-clean code the lenses converge. **Their divergence is the signal.**
+Crossing several lenses surfaces the methods where they contradict each other,
+and that is where the problems a single-metric linter lets through are hiding.
+Disagreement between lenses is the signal.
 
 This is not a hunch: measured over 40,594 methods from 10 public PHP projects,
-the rank correlations between lenses range from -0.02 to 0.72. They really do
-rank differently. Details in
-[docs/lens-validation.md](docs/lens-validation.md).
+rank correlations between lenses range from −0.02 to 0.72. They really do rank
+methods differently. Details in `docs/lens-validation.md`.
 
-### Guiding principle: factual, never a score
+## The divergence report
 
-In practice: **no score, neither per item nor overall**, anywhere, not in the
-console, not in the JSON, not in the HTML. Only **counters and raw values**
-compared to thresholds. Tests verify this on every output format.
+For each lens, methods are ranked by percentile within the analysed codebase.
+The report lists methods whose ranks disagree most across lenses: low on
+`cognitive`, high on `entangle`, for instance. Disable with `--no-divergence`.
 
----
+Because ranks are relative to the codebase, the report is a triage tool for
+*this* project, not a comparison between projects.
 
-## The 5 lenses
+The configurations worth a human look, in decreasing order of interest:
 
-| Key | Ref. | Measures | Threshold |
-|---|---|---|---:|
-| `cognitive` | S3776 | Cognitive complexity: branching + nesting + sequences of logical operators | 15 |
-| `params` | S107 | Number of parameters in the signature | 7 |
-| `returns` | S1142 | Number of `return` statements | 3 |
-| `live_peak` | | Peak of simultaneously live variables (working memory, 7±2) | 8 |
-| `entangle` | | Entanglement: average degree of the variable co-occurrence graph | 3 |
+- low `cognitive`, high `live_peak` or `entangle`: complexity that S3776 does not see;
+- high `live_peak` and high `entangle` together: state that is both plentiful *and* interdependent;
+- several lenses above their threshold at once;
+- high `live_peak`, low `entangle`: usually benign (assembly, factories); check once, then ignore.
 
-**`cognitive`, `params` and `returns` are native reimplementations** (pure
-php-parser, no PHPStan). Their conformance to the published rules is **tested case
-by case**, with expected values derived from the specification rather than from
-our own output, which is the only way for a test to catch a faulty
-reimplementation (`tests/Lens/*ConformanceTest.php`).
+These are signals for review, not proof that a rewrite is needed.
 
-Accepted and documented deviations: recursion is not counted (it would require
-interprocedural analysis), `match` is treated as a `switch` (it postdates the
-spec), and `else { if ... }` counts as an `else if`, because php-parser produces
-the same tree for both and PHP itself does not distinguish `else if` from
-`elseif`.
+## What the evidence shows
 
-**`live_peak` and `entangle` belong to the tool.** They are read **against each
-other**: a high peak with no entanglement (a factory with 8 fields) is not a
-problem; a high peak *with* strong entanglement is.
+The correlations in the previous section establish that the lenses diverge; they
+do not yet establish that divergence predicts defects or review time. That is
+the open question, and the reason the tool reports rather than grades. If you
+can correlate divergence with change frequency or bug density on your own code,
+we would like to hear about it.
 
-A measured and accepted reservation: `live_peak` counts the parameters **used** in
-the body, because for the reader an argument that has to be kept in mind does
-occupy working memory. The lens is therefore not orthogonal to S107 (correlation
-0.70, higher than its 0.64 with S3776).
+## Design principles
 
-### The divergence report
-
-The heart of the tool. It compares the **percentile ranks** of methods under each
-lens and surfaces those where the lenses contradict one another: low on S3776 but
-high on liveness, for instance. Hidden with `--no-divergence`.
+- **Measure, don't judge.** Values and thresholds, never a grade.
+- **Keep dimensions separate.** No exchange rate between different phenomena.
+- **Signals, not verdicts.** A warning points at something to examine; the decision stays with the developer.
+- **Reduce the accidental, preserve the essential.** A hard problem is allowed to produce a hard method; the tool should make that visible, not punish it.
+- **Monotonic improvement.** What the ratchet has accepted must not silently degrade.
+- **Reproducible metrics.** Every lens has a precise definition, documented deviations, and tests derived from its specification.
 
 ---
 
@@ -131,7 +235,8 @@ chmod +x phpx-complexity.phar
 ./phpx-complexity.phar --help
 ```
 
-PHARs are published on the [releases page](https://github.com/LeclercqLaurent/phpx-complexity/releases)
+PHARs are published on the [releases
+page](https://github.com/LeclercqLaurent/phpx-complexity/releases)
 and can be rebuilt from source (see *Building the PHAR*).
 
 ### From a clone of the repository
@@ -158,7 +263,8 @@ phpx-complexity [audit] [PATH] [options]
 phpx-complexity fetch URL [options]
 ```
 
-The verb is optional: `audit` is implicit, `fetch` is the only explicit one. With
+The verb is optional: `audit` is implicit, `fetch` is the only explicit one.
+With
 no path, the current directory is audited.
 
 > A directory literally named `fetch` or `audit` would be taken for a verb:
@@ -258,9 +364,11 @@ An **unchanged** inherited violation appears nowhere: only movement is shown.
 `--fail-on-new` exits 1 on new and worsened ones only.
 
 **Why `--baseline-out` rather than `--json`.** A snapshot is a subset of the
-`--json` contract, and a full `--json` output remains a valid reference. But that
+`--json` contract, and a full `--json` output remains a valid reference. But
+that
 output carries the percentile ranks and the divergence, which are **relative to
-the batch**: they change for every method as soon as a single one moves. Measured
+the batch**: they change for every method as soon as a single one moves.
+Measured
 on this repository by modifying one method:
 
 | | lines changed | size |
@@ -268,7 +376,8 @@ on this repository by modifying one method:
 | full `--json` output | 396 | 139 KB |
 | `--baseline-out` | **4** | 69 KB |
 
-A four-line diff gets reviewed; a four-hundred-line diff gets rubber-stamped, and
+A four-line diff gets reviewed; a four-hundred-line diff gets rubber-stamped,
+and
 a baseline nobody reads any more protects nothing.
 
 Points of method:
@@ -290,10 +399,12 @@ Psalm), standards (PHP-CS-Fixer, PHP_CodeSniffer), refactoring (Rector), tests
 (PHPUnit, Pest, Behat, Infection), CI (GitHub Actions, GitLab CI), EditorConfig.
 
 Each tool is detected through `composer.json` (require / require-dev) **or** the
-presence of its configuration file. The project root is resolved by walking up to
+presence of its configuration file. The project root is resolved by walking up
+to
 the `composer.json`.
 
-This is a **fact of presence, not a judgement**. Tools declared under `qa.required`
+This is a **fact of presence, not a judgement**. Tools declared under
+`qa.required`
 in the configuration and found missing make `--fail-on-violations` fail.
 
 ---
@@ -334,8 +445,10 @@ prints its path.
 **Accepted**: `https://`, `ssh://`, and the `git@host:path` form.
 **Refused**: `git://` (neither encrypted nor authenticated), `file://` and local
 paths (a local directory is analysed directly), the `ext::` transport (arbitrary
-command execution) and anything starting with a dash, which git would take for an
-option. The command is passed as an array, so no shell and no interpolation, with
+command execution) and anything starting with a dash, which git would take for
+an
+option. The command is passed as an array, so no shell and no interpolation,
+with
 `--` before the URL, hooks neutralised and a shallow clone.
 
 **Private repositories**: authentication is git's own (SSH agent, credential
@@ -344,7 +457,8 @@ repository fails immediately instead of hanging. A passphrase-protected key with
 no agent loaded will therefore fail too.
 
 **Limits**: `--coverage` needs a report that has **already been generated**, and a
-clone alone does not bring one, so the module will only see static test presence.
+clone alone does not bring one, so the module will only see static test
+presence.
 `--qa` works fully. The `git` binary is required, and its absence is reported.
 
 ---
@@ -390,12 +504,14 @@ composer qa      # the same
 ```
 
 The same guard runs in **continuous integration** on PHP 8.2, 8.3 and 8.4
-(`.github/workflows/ci.yml`): CS-Fixer, PHPStan, PHPUnit with the coverage floor,
+(`.github/workflows/ci.yml`): CS-Fixer, PHPStan, PHPUnit with the coverage
+floor,
 then the ratchet dogfooding. The badge at the top of this README reflects its
 state on `main`.
 
 Run the guard before every commit; a non-zero exit status means the commit needs
-fixing. The script includes the tool **applied to its own code in ratchet mode**:
+fixing. The script includes the tool **applied to its own code in ratchet
+mode**:
 inherited violations are frozen in `baseline.json` and pass, any regression
 fails. Everything is offline.
 
@@ -442,7 +558,8 @@ archive, then restores the development environment whatever happens.
 
 ## Origin
 
-The `params` (S107) and `returns` (S1142) lenses derive from custom PHPStan rules
+The `params` (S107) and `returns` (S1142) lenses derive from custom PHPStan
+rules
 written for internal projects, reimplemented here with no PHPStan coupling. They
 are also available as a PHPStan extension in
 [phpstan-sonar-rules](https://github.com/LeclercqLaurent/phpstan-sonar-rules),
